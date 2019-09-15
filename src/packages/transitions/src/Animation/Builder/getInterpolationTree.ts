@@ -3,7 +3,10 @@ import { DefaultTime } from "../../Utilities";
 import * as Constants from "../../Types/Constants";
 import { TransitionItem } from "../../Components/Types/TransitionItem";
 import { InterpolationInfo } from "../../Components/Types/InterpolationTypes";
-import { ChildAnimationDirection } from "../../Configuration";
+import {
+  ChildAnimationDirection,
+  isConfigStaggeredChildAnimation,
+} from "../../Configuration";
 
 /**
  *
@@ -16,7 +19,7 @@ import { ChildAnimationDirection } from "../../Configuration";
 export function getInterpolationTree(
   item: TransitionItem,
   interpolations: Array<InterpolationInfo>,
-  interpolationIds: Array<number>
+  interpolationIds: Array<number>,
 ): AnimationNode | undefined {
   // Build Tree
   const tree = createInterpolationNode(item, interpolations);
@@ -52,7 +55,7 @@ export function getInterpolations(ids: Array<number>): Animations {
  */
 export function getReducedInterpolationTree(
   root: AnimationNode,
-  interpolations: Animations
+  interpolations: Animations,
 ): AnimationNode | undefined {
   // Removed nodes without interpolations
   const retVal = reduceSubtree(root, interpolations);
@@ -84,7 +87,7 @@ const flattenNode = (node: AnimationNode, nodeList: Array<AnimationNode>) => {
  */
 export function findNodeByInterpolationId(
   interpolationId: number,
-  node: AnimationNode
+  node: AnimationNode,
 ): AnimationNode | undefined {
   if (node.interpolationId === interpolationId) return node;
   for (let i = 0; i < node.children.length; i++) {
@@ -97,14 +100,14 @@ export function findNodeByInterpolationId(
 /***********************************************************************/
 /** Private functions  **/
 function calculateOffset(node: AnimationNode) {
-  node.offset = getNodeOffset(node);
+  node.offset = node.offset === -1 ? getNodeOffset(node) : node.offset;
   node.children.forEach(child => calculateOffset(child));
   return node;
 }
 
 function reduceSubtree(
   node: AnimationNode,
-  interpolationIds: { [key: string]: boolean }
+  interpolationIds: { [key: string]: boolean },
 ): AnimationNode | undefined {
   // Map children
   node.children = node.children
@@ -118,7 +121,7 @@ function reduceSubtree(
 
       node.subtreeDuration = Math.max(
         subtreeDuration,
-        interpolationIds[node.id] ? node.duration + node.delay : -1
+        interpolationIds[node.id] ? node.duration + node.delay : -1,
       );
     } else {
       node.subtreeDuration = node.duration + node.delay;
@@ -131,7 +134,7 @@ function reduceSubtree(
 
 function resolveAsChildrenDurations(
   node: AnimationNode,
-  inheritedDuration: number = DefaultTime
+  inheritedDuration: number = DefaultTime,
 ) {
   if (
     node.subtreeDuration === Constants.AsGroup ||
@@ -143,27 +146,27 @@ function resolveAsChildrenDurations(
   node.children.forEach(child =>
     resolveAsChildrenDurations(
       child,
-      node.subtreeDuration === -1 ? inheritedDuration : node.subtreeDuration
-    )
+      node.subtreeDuration === -1 ? inheritedDuration : node.subtreeDuration,
+    ),
   );
 }
 
 function resolveAsContextDurations(
   node: AnimationNode,
-  contextDuration: number
+  contextDuration: number,
 ) {
   if (node.subtreeDuration === Constants.AsContext) {
     node.duration = contextDuration;
   }
 
   node.children.forEach(child =>
-    resolveAsContextDurations(child, contextDuration)
+    resolveAsContextDurations(child, contextDuration),
   );
 }
 
 const getSortedChildren = (
   children: AnimationNode[],
-  childDirection?: ChildAnimationDirection
+  childDirection?: ChildAnimationDirection,
 ): AnimationNode[] => {
   if (childDirection === ChildAnimationDirection.Forward) {
     // TODO: Add support for sorting children by position!
@@ -197,6 +200,19 @@ function getNodeOffset(node: AnimationNode): number {
         return acc + (i < index ? c.subtreeDuration || 0 : 0);
       }, currentOffset);
     case "staggered":
+      if (parent.staggerFunc !== undefined) {
+        let offset = currentOffset;
+        parent.children.forEach((c, i) => {
+          c.offset = parent.staggerFunc(
+            i,
+            c.metrics,
+            parent.metrics,
+            parent.children.map(p => p.metrics),
+          );
+          offset += c.offset;
+        });
+        return offset;
+      }
       return parent.children.reduce((acc, _, i) => {
         return i < index ? acc + parent.stagger : acc;
       }, currentOffset);
@@ -210,7 +226,7 @@ function getSubtreeDuration(node: AnimationNode): number {
     case "parallel":
       return children.reduce(
         (acc, c) => Math.max(c.subtreeDuration || 0, acc),
-        0
+        0,
       );
     case "sequential":
       return children.reduce((acc, c) => (c.subtreeDuration || 0) + acc, 0);
@@ -221,11 +237,11 @@ function getSubtreeDuration(node: AnimationNode): number {
             offset: accObj.offset + node.stagger,
             value: Math.max(
               accObj.value,
-              accObj.offset + (c.subtreeDuration || 0)
-            )
+              accObj.offset + (c.subtreeDuration || 0),
+            ),
           };
         },
-        { value: 0, offset: 0 }
+        { value: 0, offset: 0 },
       ).value;
   }
 }
@@ -234,7 +250,7 @@ function createInterpolationNode(
   item: TransitionItem,
   interpolations: Array<InterpolationInfo>,
   parent?: AnimationNode,
-  childDirection?: ChildAnimationDirection
+  childDirection?: ChildAnimationDirection,
 ): AnimationNode {
   // Find interpolations belonging to this element
   const itemInterpolations = interpolations.filter(i => i.itemId === item.id);
@@ -245,7 +261,7 @@ function createInterpolationNode(
 
   // Calculate stagger and child animation type
   const resolvedChildAnimation = configuration.childAnimation || {
-    type: "parallel"
+    type: "parallel",
   };
   const resolvedChildDirection =
     (configuration.childAnimation && configuration.childAnimation.direction) ||
@@ -266,6 +282,9 @@ function createInterpolationNode(
     metrics: item.metrics(),
     offset: -1,
     stagger: resolvedStagger,
+    staggerFunc: isConfigStaggeredChildAnimation(resolvedChildAnimation)
+      ? resolvedChildAnimation.staggerFunc
+      : undefined,
     childAnimation: resolvedChildAnimation.type,
     childDirection: resolvedChildDirection,
     duration:
@@ -280,7 +299,7 @@ function createInterpolationNode(
         singleInterpolation.animationType.delay) ||
       0,
     interpolationId:
-      singleInterpolation !== undefined ? singleInterpolation.id : -1
+      singleInterpolation !== undefined ? singleInterpolation.id : -1,
   };
 
   const ipChildren = singleInterpolation
@@ -302,17 +321,22 @@ function createInterpolationNode(
             ip.animationType.duration) ||
           0,
         delay: (ip.animationType && ip.animationType.delay) || 0,
-        animation: ip.animationType
+        animation: ip.animationType,
       }));
 
   node.children = getSortedChildren(
     item
       .children()
       .map(i =>
-        createInterpolationNode(i, interpolations, node, resolvedChildDirection)
+        createInterpolationNode(
+          i,
+          interpolations,
+          node,
+          resolvedChildDirection,
+        ),
       )
       .concat(ipChildren as Array<AnimationNode>),
-    resolvedChildDirection
+    resolvedChildDirection,
   );
 
   return node;

@@ -8,7 +8,7 @@ type EnumLiteralsOf<T extends Object> = T[keyof T];
 export type OnTypeEnum = EnumLiteralsOf<typeof OnTypeEnum>;
 export const OnTypeEnum = Object.freeze({
   Enter: "enter" as "enter",
-  Exit: "exit" as "exit"
+  Exit: "exit" as "exit",
 });
 
 export type OnFactoryResult = {
@@ -20,7 +20,7 @@ export type OnFactoryFunction = ({
   screenSize,
   metrics,
   state,
-  type
+  type,
 }: {
   screenSize: { width: number; height: number };
   metrics: Metrics;
@@ -39,7 +39,7 @@ export type ChildAnimationDirection = EnumLiteralsOf<
 >;
 export const ChildAnimationDirection = Object.freeze({
   Forward: "forward" as "forward",
-  Backward: "backward" as "backward"
+  Backward: "backward" as "backward",
 });
 
 /**
@@ -59,7 +59,9 @@ export type ConfigStateType = {
  */
 export type ConfigStaggerFunction = (
   index: number,
-  metrics: MetricsInfo
+  metrics: MetricsInfo,
+  parentMetrics: MetricsInfo,
+  children: Array<MetricsInfo>,
 ) => number;
 
 type BaseConfigChildAnimationType = {
@@ -80,6 +82,12 @@ export type ConfigStaggeredChildAnimationType = BaseConfigChildAnimationType & {
   type: "staggered";
   staggerMs?: number;
   staggerFunc?: ConfigStaggerFunction;
+};
+
+export const isConfigStaggeredChildAnimation = (
+  obj: ConfigChildAnimationType,
+): obj is ConfigStaggeredChildAnimationType => {
+  return (obj as ConfigStaggeredChildAnimationType).type === "staggered";
 };
 
 export type ConfigChildAnimationType =
@@ -110,13 +118,13 @@ export type ConfigAnimationType =
   | ConfigSpringAnimationType;
 
 export const isConfigAnimationTiming = (
-  obj: ConfigAnimationType
+  obj: ConfigAnimationType,
 ): obj is ConfigTimingAnimationType => {
   return (obj as ConfigTimingAnimationType).type === "timing";
 };
 
 export const isConfigAnimationSpring = (
-  obj: ConfigAnimationType
+  obj: ConfigAnimationType,
 ): obj is ConfigSpringAnimationType => {
   return (obj as ConfigSpringAnimationType).type === "spring";
 };
@@ -192,13 +200,13 @@ export type ConfigWhenInterpolationType = BaseConfigType & {
 export type ConfigWhenType = ConfigWhenStyleType | ConfigWhenInterpolationType;
 
 export const isConfigWhenStyle = (
-  obj: ConfigWhenType
+  obj: ConfigWhenType,
 ): obj is ConfigWhenStyleType => {
   return (obj as ConfigWhenStyleType).style !== undefined;
 };
 
 export const isConfigWhenInterpolation = (
-  obj: ConfigWhenType
+  obj: ConfigWhenType,
 ): obj is ConfigWhenInterpolationType => {
   return (obj as ConfigWhenInterpolationType).interpolation !== undefined;
 };
@@ -238,31 +246,31 @@ export type ConfigOnType =
   | ConfigOnSharedType;
 
 export const isConfigOnShared = (
-  obj: ConfigOnType
+  obj: ConfigOnType,
 ): obj is ConfigOnSharedType => {
   return (obj as ConfigOnSharedType).fromLabel !== undefined;
 };
 
 export const isConfigOnInterpolation = (
-  obj: ConfigOnType
+  obj: ConfigOnType,
 ): obj is ConfigOnInterpolationType => {
   return (obj as ConfigOnInterpolationType).interpolation !== undefined;
 };
 
 export const isConfigOnFactory = (
-  obj: ConfigOnType
+  obj: ConfigOnType,
 ): obj is ConfigOnFactoryType => {
   return (obj as ConfigOnFactoryType).onFactory !== undefined;
 };
 
 export const isConfigStyleInterpolation = (
-  obj: BaseConfigInterpolationType
+  obj: BaseConfigInterpolationType,
 ): obj is ConfigStyleInterpolationType => {
   return (obj as ConfigStyleInterpolationType).styleKey !== undefined;
 };
 
 export const isConfigPropInterpolation = (
-  obj: BaseConfigInterpolationType
+  obj: BaseConfigInterpolationType,
 ): obj is ConfigPropInterpolationType => {
   return (obj as ConfigPropInterpolationType).propName !== undefined;
 };

@@ -32,7 +32,7 @@ import {
 import * as Constants from "./src/Types/Constants";
 import { Easings } from "./src/Components/Types";
 import {
-  Metrics,
+  MetricsInfo,
   StateMounted,
   StateUnmounted,
   ValueDescriptorType,
@@ -75,7 +75,8 @@ export {
   useFluidState,
   createConfig,
   Easings,
-  Metrics,
+  // @ts-ignore
+  MetricsInfo,
   InterpolatorContext,
   StateContext,
   createFluidComponent,
