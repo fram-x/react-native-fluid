@@ -9,9 +9,17 @@
     "test": "jest"
   },
   "dependencies": {
+    "@react-native-community/masked-view": "^0.1.1",
+    "@react-navigation/core": "^5.0.0-alpha.8",
+    "@react-navigation/native": "^5.0.0-alpha.7",
+    "@react-navigation/stack": "^5.0.0-alpha.15",
     "react": "16.8.6",
     "react-native": "0.60.5",
-    "react-native-reanimated": "https://github.com/kmagiera/react-native-reanimated"
+    "react-native-gesture-handler": "^1.4.1",
+    "react-native-reanimated": "https://github.com/kmagiera/react-native-reanimated",
+    "react-native-screens": "^2.0.0-alpha.3",
+    "react-native-svg": "^9.9.3",
+    "react-native-vector-icons": "^6.6.0"
   },
   "devDependencies": {
     "@babel/core": "^7.5.0",
@@ -20,6 +28,7 @@
     "@types/jest": "^24.0.18",
     "@types/react": "^16.9.2",
     "@types/react-native": "^0.60.14",
+    "@types/react-native-vector-icons": "^6.4.2",
     "@types/react-test-renderer": "^16.9.0",
     "@typescript-eslint/eslint-plugin": "^2.2.0",
     "@typescript-eslint/parser": "^2.2.0",

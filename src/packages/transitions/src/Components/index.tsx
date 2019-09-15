@@ -11,14 +11,14 @@ import {
   Image,
   View,
   Text,
-  ScrollView
-} from "react-native";
-import { AnimationProvider } from "react-native-fluid-animations";
-import { withFluidTransitions } from "./FluidTransitions/withFluidTransitions";
-import { PartialInterpolatorInfo } from "./Types/InterpolatorContext";
-import { ValueDescriptorsType, ValueDescriptorType } from "../Types";
-import { SpringDefaultAnimationType } from "../Utilities";
-import { interpolateValue } from "../Animation/Runner/Functions";
+  ScrollView,
+} from 'react-native';
+import {AnimationProvider} from 'react-native-fluid-animations';
+import {withFluidTransitions} from './FluidTransitions/withFluidTransitions';
+import {PartialInterpolatorInfo} from './Types/InterpolatorContext';
+import {ValueDescriptorsType, ValueDescriptorType} from '../Types';
+import {SpringDefaultAnimationType} from '../Utilities';
+import {interpolateValue} from '../Animation/Runner/Functions';
 
 const DefaultGetValue = (p: any) => p;
 const DefaultDescriptor: ValueDescriptorType = {
@@ -26,27 +26,27 @@ const DefaultDescriptor: ValueDescriptorType = {
   getDisplayValue: AnimationProvider.getDisplayValue,
   getNumericValue: DefaultGetValue,
   defaultAnimation: SpringDefaultAnimationType,
-  extrapolate: "extend",
-  interpolate: interpolateValue
+  extrapolate: 'extend',
+  interpolate: interpolateValue,
 };
 
 const getDefaultDescriptors = () => ({
   width: DefaultDescriptor,
   height: DefaultDescriptor,
-  opacity: DefaultDescriptor
+  opacity: DefaultDescriptor,
 });
 
 function createFluidComponent<PropType, StyleType>(
   Component: any,
   hasChildren: boolean,
   setupInterpolators?: (props: PropType) => PartialInterpolatorInfo,
-  getAnimatedPropDescriptors?: () => ValueDescriptorsType
+  getAnimatedPropDescriptors?: () => ValueDescriptorsType,
 ) {
   return withFluidTransitions<PropType, StyleType>(
     AnimationProvider.createAnimatedComponent(Component),
     hasChildren,
     setupInterpolators,
-    getAnimatedPropDescriptors
+    getAnimatedPropDescriptors,
   );
 }
 
@@ -54,21 +54,21 @@ const TransitionView = createFluidComponent<ViewProps, ViewStyle>(
   View,
   true,
   undefined,
-  getDefaultDescriptors
+  getDefaultDescriptors,
 );
 
 const TransitionImage = createFluidComponent<ImageProps, ImageStyle>(
   Image,
   false,
   undefined,
-  getDefaultDescriptors
+  getDefaultDescriptors,
 );
 
 const TransitionText = createFluidComponent<TextProps, TextStyle>(
   Text,
   false,
   undefined,
-  getDefaultDescriptors
+  getDefaultDescriptors,
 );
 
 const TransitionScrollView = createFluidComponent<ScrollViewProps, ViewStyle>(
@@ -79,18 +79,18 @@ const TransitionScrollView = createFluidComponent<ScrollViewProps, ViewStyle>(
     const scrollX = AnimationProvider.createValue(0);
     const scrollY = AnimationProvider.createValue(0);
     return {
-      interpolators: { scrollX, scrollY },
+      interpolators: {scrollX, scrollY},
       props: {
         scrollEventThrottle: 4,
         onScroll: AnimationProvider.Animated.event([
           {
-            nativeEvent: { contentOffset: { x: scrollX, y: scrollY } }
-          }
-        ])
-      }
+            nativeEvent: {contentOffset: {x: scrollX, y: scrollY}},
+          },
+        ]),
+      },
     };
   },
-  getDefaultDescriptors
+  getDefaultDescriptors,
 );
 
 export {
@@ -98,7 +98,7 @@ export {
   TransitionImage,
   TransitionText,
   TransitionScrollView,
-  createFluidComponent
+  createFluidComponent,
 };
 
 // let nodeCallCount = 0;

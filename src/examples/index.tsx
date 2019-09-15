@@ -1,7 +1,6 @@
-import React, {useState, useCallback} from 'react';
-import {Image, View, StyleSheet} from 'react-native';
-import Fluid, {Easings} from 'react-native-fluid-transitions';
-import {createStackNavigator, createAppContainer} from 'react-navigation';
+import React from 'react';
+import {NavigationNativeContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
 
 import HomeScreen from './HomeScreen';
 import StylesExampleScreen from './Styles';
@@ -19,82 +18,32 @@ import InteractionsExampleScreen from './Interactions';
 import SvgExampleScreen from './SVG';
 import RepeatExampleScreen from './Repeating';
 
-const exampleStack = createStackNavigator(
-  {
-    home: HomeScreen,
-    styles: StylesExampleScreen,
-    text: TextExampleScreen,
-    appStore: AppStoreExampleScreen,
-    interpolate: InterpolateExampleScreen,
-    list: ListExampleScreen,
-    maze: MazeExampleScreen,
-    parallax: ParallaxExampleScreen,
-    children: ChildExampleScreen,
-    timeline: TimelineExampleScreen,
-    easings: EasingsExampleScreen,
-    style: StyleExampleScreen,
-    interactions: InteractionsExampleScreen,
-    svg: SvgExampleScreen,
-    repeat: RepeatExampleScreen,
-  },
-  {
-    initialRouteName: 'home',
-  },
-);
-
-const AppNavigator = createAppContainer(exampleStack);
-
-const styles = StyleSheet.create({
-  container: {backgroundColor: 'white'},
-  imageContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'white',
-  },
-  imageContainerHidden: {
-    transform: [{scale: 0.0009}],
-  },
-});
+const Stack = createStackNavigator();
 
 const App = () => {
-  const [loading, setLoading] = useState(true);
-  const toggleLoading = useCallback(() => setLoading(!loading), [loading]);
-
-  const loadingState = {name: 'loading', active: loading};
-  const config = Fluid.createConfig({
-    animation: {
-      type: 'timing',
-      duration: 500,
-      delay: 500,
-      easing: Easings.back(),
-    },
-    onEnter: {
-      state: 'loading',
-      onEnd: toggleLoading,
-      interpolation: {
-        styleKey: 'transform.scale',
-        outputRange: [1, 0.00009],
-      },
-    },
-  });
-
   return (
-    <View style={[StyleSheet.absoluteFill, styles.container]}>
-      {loading && (
-        <Fluid.View
-          label="loadingImage"
-          staticStyle={styles.imageContainer}
-          config={config}
-          states={loadingState}>
-          <Image
-            source={require('./Assets/logo-symbol-text.png')}
-            style={{width: 300, height: 249}}
-          />
-        </Fluid.View>
-      )}
-      {!loading && <AppNavigator />}
-    </View>
+    <NavigationNativeContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="styles" component={StylesExampleScreen} />
+        <Stack.Screen name="text" component={TextExampleScreen} />
+        <Stack.Screen name="appStore" component={AppStoreExampleScreen} />
+        <Stack.Screen name="interpolate" component={InterpolateExampleScreen} />
+        <Stack.Screen name="list" component={ListExampleScreen} />
+        <Stack.Screen name="maze" component={MazeExampleScreen} />
+        <Stack.Screen name="parallax" component={ParallaxExampleScreen} />
+        <Stack.Screen name="children" component={ChildExampleScreen} />
+        <Stack.Screen name="timeline" component={TimelineExampleScreen} />
+        <Stack.Screen name="easings" component={EasingsExampleScreen} />
+        <Stack.Screen name="style" component={StyleExampleScreen} />
+        <Stack.Screen
+          name="interactions"
+          component={InteractionsExampleScreen}
+        />
+        <Stack.Screen name="svg" component={SvgExampleScreen} />
+        <Stack.Screen name="repeat" component={RepeatExampleScreen} />
+      </Stack.Navigator>
+    </NavigationNativeContainer>
   );
 };
 

@@ -3,7 +3,7 @@ import {
   TransitionImage,
   TransitionText,
   TransitionScrollView,
-  createFluidComponent
+  createFluidComponent,
 } from "./src/Components";
 
 import { InterpolatorContext, StateContext } from "./src/Components/Types";
@@ -11,7 +11,7 @@ import { InterpolatorContext, StateContext } from "./src/Components/Types";
 import { createConfig } from "./src/Configuration";
 import {
   interpolateColor,
-  interpolateValue
+  interpolateValue,
 } from "./src/Animation/Runner/Functions";
 
 import {
@@ -20,13 +20,13 @@ import {
   SpringNoWobbleAnimationType,
   SpringStiffAnimationType,
   SpringWobblyAnimationType,
-  SpringWobblySlowAnimationType
+  SpringWobblySlowAnimationType,
 } from "./src/Utilities/Springs";
 
 import {
   TimingLongAnimationType,
   TimingMicroAnimationType,
-  TimingDefaultAnimationType
+  TimingDefaultAnimationType,
 } from "./src/Utilities/Timings";
 
 import * as Constants from "./src/Types/Constants";
@@ -35,14 +35,14 @@ import {
   Metrics,
   StateMounted,
   StateUnmounted,
-  ValueDescriptorType
+  ValueDescriptorType,
 } from "./src/Types";
 
 const Animations = {
   Timings: {
     Long: TimingLongAnimationType,
     Micro: TimingMicroAnimationType,
-    Default: TimingDefaultAnimationType
+    Default: TimingDefaultAnimationType,
   },
   Springs: {
     Default: SpringDefaultAnimationType,
@@ -50,13 +50,13 @@ const Animations = {
     NoWobble: SpringNoWobbleAnimationType,
     Stiff: SpringStiffAnimationType,
     Wobbly: SpringWobblyAnimationType,
-    WobblySlow: SpringWobblySlowAnimationType
-  }
+    WobblySlow: SpringWobblySlowAnimationType,
+  },
 };
 
 const States = {
   StateUnmounted,
-  StateMounted
+  StateMounted,
 };
 
 const Fluid = {
@@ -67,7 +67,7 @@ const Fluid = {
   States,
   Animations,
   Constants,
-  createConfig
+  createConfig,
 };
 
 export default Fluid;
@@ -80,5 +80,5 @@ export {
   // @ts-ignore
   ValueDescriptorType,
   interpolateColor,
-  interpolateValue
+  interpolateValue,
 };

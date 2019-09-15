@@ -1,10 +1,2 @@
-import React from 'react';
-import {View, Text} from 'react-native';
-
-const App = () => (
-  <View>
-    <Text>Fluid Transitions</Text>
-  </View>
-);
-
+import App from './examples';
 export default App;
