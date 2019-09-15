@@ -1,7 +1,8 @@
 import { Metrics } from "../../Types";
 import {
   ChildAnimationDirection,
-  ConfigAnimationType
+  ConfigAnimationType,
+  ConfigStaggerFunction,
 } from "../../Configuration";
 
 export type AnimationNode = {
@@ -17,6 +18,7 @@ export type AnimationNode = {
   subtreeDuration?: number;
   delay: number;
   stagger: number;
+  staggerFunc: ConfigStaggerFunction;
   animation?: ConfigAnimationType;
   label?: string;
 };
