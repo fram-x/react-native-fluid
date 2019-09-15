@@ -8,12 +8,12 @@ import {
   InterpolationInfo,
   Values,
   ValueTypeEntries,
-  getNextInterpolationInfoId
+  getNextInterpolationInfoId,
 } from "../Types";
 import {
   IAnimationNode,
   InterpolationConfig,
-  ExtrapolateType
+  ExtrapolateType,
 } from "react-native-fluid-animations";
 import { useLog } from "../../Hooks/useLog";
 import { getChangedKeys, addValues, createValue } from "../../Values";
@@ -32,7 +32,7 @@ export const useValueContext = (
   animationContext: AnimationContextType,
   valueDescriptors: ValueDescriptorsType,
   nextKeys: string[],
-  nextValues: Values
+  nextValues: Values,
 ) => {
   // Contains the previous keys
   const previousKeysRef = useRef<string[]>([]);
@@ -63,12 +63,12 @@ export const useValueContext = (
 
     // Update added/removed style values
     added.forEach(k =>
-      addValues(k, nextValues, valuesRef.current, valueDescriptors[k])
+      addValues(k, nextValues, valuesRef.current, valueDescriptors[k]),
     );
     // It looks like we don't need to do this:
     // removed.forEach(k => {
     //   // We mark as not set to be able to reuse
-    //   // valuesRef.current[k].isSet = false;
+    //   valuesRef.current[k].isSet = false;
     // });
 
     const markAsChanged = () => (isChanged.current = true);
@@ -86,7 +86,7 @@ export const useValueContext = (
       extrapolateRight?: ExtrapolateType,
       loop?: number,
       flip?: number,
-      yoyo?: number
+      yoyo?: number,
     ) => {
       // Check that we are allowed to interpolate this style - otherwise
       // We'll just skip it.
@@ -99,7 +99,7 @@ export const useValueContext = (
       if (outputValues !== undefined) {
         if (outputValues.length < 2) {
           throw fluidException(
-            "Output value must contain at least 2 elements."
+            "Output value must contain at least 2 elements.",
           );
         }
 
@@ -109,7 +109,7 @@ export const useValueContext = (
         if (!valuesRef.current[key]) {
           valuesRef.current[key] = createValue(
             outputValues[0],
-            valueDescriptors[key]
+            valueDescriptors[key],
           );
         }
 
@@ -118,7 +118,7 @@ export const useValueContext = (
         if (inputValues === undefined) {
           outputValues.forEach(
             (_, index) =>
-              (inputRange[index] = index * (1 / outputValues.length))
+              (inputRange[index] = index * (1 / outputValues.length)),
           );
         } else {
           inputValues.forEach((v, index) => (inputRange[index] = v));
@@ -128,8 +128,8 @@ export const useValueContext = (
         outputValues.forEach(
           (_, index) =>
             (outputRange[index] = valueDescriptors[key].getNumericValue(
-              outputValues[index]
-            ))
+              outputValues[index],
+            )),
         );
 
         // We should create an animation using interpolators
@@ -139,7 +139,7 @@ export const useValueContext = (
           outputRange,
           extrapolate,
           extrapolateLeft,
-          extrapolateRight
+          extrapolateRight,
         };
 
         const interpolationInfo: InterpolationInfo = {
@@ -152,13 +152,13 @@ export const useValueContext = (
           interpolate: valueDescriptors[key].interpolate,
           loop,
           flip,
-          yoyo
+          yoyo,
         };
 
         if (__DEV__) {
           logger(
             () => `Register interpolation for ${key}.`,
-            LoggerLevel.Verbose
+            LoggerLevel.Verbose,
           );
         }
 
@@ -197,7 +197,7 @@ export const useValueContext = (
       extrapolateRight?: ExtrapolateType,
       loop?: number,
       flip?: number,
-      yoyo?: number
+      yoyo?: number,
     ) => {
       // Check that we are allowed to interpolate this style - otherwise
       // We'll just skip it.
@@ -213,14 +213,14 @@ export const useValueContext = (
           outputRange[0] !== undefined
             ? outputRange[0]
             : valueDescriptors[key].defaultValue,
-          valueDescriptors[key]
+          valueDescriptors[key],
         );
       }
 
       // Get output range
       const outputRangeResolved = getOutputRange(
         outputRange,
-        valuesRef.current[key].interpolator
+        valuesRef.current[key].interpolator,
       ).map(v => valueDescriptors[key].getNumericValue(v));
 
       // get input range
@@ -236,7 +236,7 @@ export const useValueContext = (
         outputRange: outputRangeResolved,
         extrapolate: extrapolate || "extend",
         extrapolateLeft: extrapolateLeft || extrapolate || "extend",
-        extrapolateRight: extrapolateRight || extrapolate || "extend"
+        extrapolateRight: extrapolateRight || extrapolate || "extend",
       };
 
       const interpolationInfo: InterpolationInfo = {
@@ -252,14 +252,14 @@ export const useValueContext = (
         loop,
         flip,
         yoyo,
-        interpolate: valueDescriptors[key].interpolate
+        interpolate: valueDescriptors[key].interpolate,
       };
 
       if (__DEV__) {
         logger(() => "Register animation for " + key, LoggerLevel.Verbose);
         logger(
           () => `from/to ${interpolationConfig.outputRange.join(", ")}`,
-          LoggerLevel.Detailed
+          LoggerLevel.Detailed,
         );
       }
 
@@ -277,7 +277,7 @@ export const useValueContext = (
       descriptors: valueDescriptors,
       isChanged: isChanged.current,
       addAnimation,
-      addInterpolation
+      addInterpolation,
     };
 
     // Remember keys/styles

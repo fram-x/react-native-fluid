@@ -1,20 +1,20 @@
 import { ValueType } from "../Components/Types";
 import {
   AnimationProvider,
-  IAnimationValue
+  IAnimationValue,
 } from "react-native-fluid-animations";
 import { ValueDescriptorType } from "../Types/AnimatedValueType";
 
 export const createValue = (
   initialValue: any,
-  valueDescriptor?: ValueDescriptorType
+  valueDescriptor?: ValueDescriptorType,
 ): ValueType => {
   if (!valueDescriptor) {
     return {
       isSet: true,
       isInterpolatable: false,
       interpolator: initialValue,
-      display: initialValue
+      display: initialValue,
     };
   }
 
@@ -27,7 +27,7 @@ export const createValue = (
     interpolator = AnimationProvider.createValue(initialValue);
   } else {
     interpolator = AnimationProvider.createValue(
-      valueDescriptor.getNumericValue(initialValue)
+      valueDescriptor.getNumericValue(initialValue),
     );
   }
 
@@ -36,6 +36,6 @@ export const createValue = (
     isSet: true,
     isInterpolatable: true,
     interpolator,
-    display: valueDescriptor.getDisplayValue(interpolator)
+    display: valueDescriptor.getDisplayValue(interpolator),
   };
 };

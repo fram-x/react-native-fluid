@@ -1,26 +1,20 @@
-import React, {useState} from 'react';
-import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import React, { useState } from "react";
+import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-import EmailFolder from './EMailFolder';
-import MovingButton from './MovingButton';
-import {ProgressBar, ProgressItem} from './ProgressBar';
-import {Pager} from './Pager';
-import Fluid from 'react-native-fluid-transitions';
+import EmailFolder from "./EMailFolder";
+import MovingButton from "./MovingButton";
+import { ProgressBar, ProgressItem } from "./ProgressBar";
+import { Pager } from "./Pager";
+import Fluid from "react-native-fluid-transitions";
 
 const StyleExampleScreen = () => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   return (
-    <Fluid.View
-      style={styles.container}
-      label="container"
-      config={Fluid.createConfig({
-        childAnimation: {type: 'staggered'},
-      })}>
+    <Fluid.View style={styles.container} label="container">
       <Text style={styles.text}>Double-tap to tween</Text>
       <MovingButton />
-      {/* <MovingButton /> */}
 
       <Text style={styles.text}>Tap to update your inbox</Text>
       <EmailFolder />
@@ -29,22 +23,22 @@ const StyleExampleScreen = () => {
         <ProgressItem
           selected={activeIndex === 0}
           active={activeIndex >= 0}
-          label={'1'}
+          label={"1"}
         />
         <ProgressItem
           selected={activeIndex === 1}
           active={activeIndex >= 1}
-          label={'2'}
+          label={"2"}
         />
         <ProgressItem
           selected={activeIndex === 2}
           active={activeIndex >= 2}
-          label={'3'}
+          label={"3"}
         />
         <ProgressItem
           selected={activeIndex === 3}
           active={activeIndex >= 3}
-          label={'4'}
+          label={"4"}
         />
       </ProgressBar>
       <Pager activeIndex={activeIndex} count={4} />
@@ -66,23 +60,23 @@ const StyleExampleScreen = () => {
 };
 
 StyleExampleScreen.navigationOptions = {
-  title: 'Styles',
+  title: "Styles",
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   arrowButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginLeft: 20,
     marginRight: 20,
   },

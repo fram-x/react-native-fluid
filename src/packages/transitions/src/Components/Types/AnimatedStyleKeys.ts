@@ -1,11 +1,11 @@
 import { AnimationProvider } from "react-native-fluid-animations";
 import {
   TimingMicroAnimationType,
-  SpringGentleAnimationType
+  SpringGentleAnimationType,
 } from "../../Utilities";
 import {
   interpolateColor,
-  interpolateValue
+  interpolateValue,
 } from "../../Animation/Runner/Functions";
 import { ValueDescriptorType, ValueDescriptorsType } from "../../Types";
 
@@ -20,7 +20,7 @@ const RotateType: ValueDescriptorType = {
   interpolate: interpolateValue,
   defaultValue: "0rad",
   extrapolate: "extend",
-  defaultAnimation: defaultSpringAnimation
+  defaultAnimation: defaultSpringAnimation,
 };
 
 const NumericSpringType = (defaultValue: number): ValueDescriptorType => ({
@@ -29,7 +29,7 @@ const NumericSpringType = (defaultValue: number): ValueDescriptorType => ({
   interpolate: interpolateValue,
   defaultValue: defaultValue,
   extrapolate: "extend",
-  defaultAnimation: defaultSpringAnimation
+  defaultAnimation: defaultSpringAnimation,
 });
 
 const NumericTimingType = (defaultValue: number): ValueDescriptorType => ({
@@ -38,16 +38,16 @@ const NumericTimingType = (defaultValue: number): ValueDescriptorType => ({
   interpolate: interpolateValue,
   defaultValue: defaultValue,
   extrapolate: "extend",
-  defaultAnimation: defaultTimingAnimation
+  defaultAnimation: defaultTimingAnimation,
 });
 
 const ColorType: ValueDescriptorType = {
   getNumericValue: AnimationProvider.getNumericColor,
   getDisplayValue: AnimationProvider.getColorDisplayValue,
   interpolate: interpolateColor,
-  defaultValue: 0,
+  defaultValue: "transparent",
   extrapolate: "clamp",
-  defaultAnimation: defaultTimingAnimation
+  defaultAnimation: defaultTimingAnimation,
 };
 
 export const AnimatedStyleKeys: ValueDescriptorsType = {
@@ -96,5 +96,5 @@ export const AnimatedStyleKeys: ValueDescriptorsType = {
   borderTopColor: ColorType,
   borderLeftColor: ColorType,
   borderBottomColor: ColorType,
-  borderRightColor: ColorType
+  borderRightColor: ColorType,
 };

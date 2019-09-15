@@ -3,7 +3,7 @@ import { IAnimationNode } from "react-native-fluid-animations";
 
 export const getOutputRange = (
   outputRange: Array<number | string | undefined>,
-  currentValue?: IAnimationNode | number | string
+  currentValue?: IAnimationNode | number | string,
 ): Array<number | string | IAnimationNode> => {
   if (outputRange.length < 2) {
     throw fluidException("Output values must contain more than one element");
@@ -12,13 +12,13 @@ export const getOutputRange = (
   const outputValuesUndefined = outputRange.filter(s => s === undefined);
   if (outputValuesUndefined.length > 1) {
     throw fluidException(
-      "Output values must contain only one undefined element"
+      "Output values must contain only one undefined element",
     );
   }
 
   if (outputValuesUndefined.length === 1 && currentValue === undefined) {
     throw fluidException(
-      "currentValue must be set when outputvalues contain undefined element"
+      "currentValue must be set when outputvalues contain undefined element",
     );
   }
 

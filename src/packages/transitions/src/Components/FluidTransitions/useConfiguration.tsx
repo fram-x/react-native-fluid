@@ -3,7 +3,7 @@ import {
   StateContext,
   StateContextType,
   TransitionItem,
-  ConfigurationContext
+  ConfigurationContext,
 } from "../Types";
 import { useLog } from "../../Hooks";
 import { LoggerLevel, StateMounted, StateUnmounted } from "../../Types";
@@ -14,7 +14,7 @@ import {
   validateConfig,
   mergeConfigs,
   ChildAnimationDirection,
-  createConfig
+  createConfig,
 } from "../../Configuration";
 
 /**
@@ -26,7 +26,7 @@ import {
 export const useConfiguration = (
   transitionItem: TransitionItem,
   configs: ConfigType | ConfigType[] | undefined,
-  propStates?: ConfigStateType | Array<ConfigStateType>
+  propStates?: ConfigStateType | Array<ConfigStateType>,
 ) => {
   // Previous property value
   const prevConfigs = useRef(configs);
@@ -38,7 +38,7 @@ export const useConfiguration = (
   const shouldRefresh = !isSameConfig || !prevConfiguration.current;
 
   const logger = useLog(transitionItem.label, "confg");
-  if (shouldRefresh && true) {
+  if (shouldRefresh) {
     logger(() => "Refresh configuration", LoggerLevel.Detailed);
   }
 
@@ -47,7 +47,7 @@ export const useConfiguration = (
   if (configs && (shouldRefresh || !prevConfiguration.current)) {
     validateConfig(configs);
     configuration = mergeConfigs(
-      ...(configs ? (configs instanceof Array ? configs : [configs]) : [])
+      ...(configs ? (configs instanceof Array ? configs : [configs]) : []),
     );
   } else {
     configuration = prevConfiguration.current || mergeConfigs(createConfig({}));
@@ -82,24 +82,24 @@ export const useConfiguration = (
   return {
     configuration: {
       ...configuration,
-      states: resolvedStates
+      states: resolvedStates,
     },
     animationTypeContext: { getChildDirection },
     stateContext: { states: resolvedStates },
-    resolvedChildDirection: getChildDirection()
+    resolvedChildDirection: getChildDirection(),
   };
 };
 
 function getResolvedStates(
   states: Array<ConfigStateType>,
-  statesContext: StateContextType | null
+  statesContext: StateContextType | null,
 ) {
   return [
     ...states,
     ...(statesContext
       ? statesContext.states.filter(
-          s => s.name !== StateMounted && s.name !== StateUnmounted
+          s => s.name !== StateMounted && s.name !== StateUnmounted,
         )
-      : [])
+      : []),
   ];
 }

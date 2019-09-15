@@ -7,7 +7,7 @@ import {
 } from "./src/Components";
 
 import { InterpolatorContext, StateContext } from "./src/Components/Types";
-
+import { useFluidState } from "./src/Hooks";
 import { createConfig } from "./src/Configuration";
 import {
   interpolateColor,
@@ -72,6 +72,8 @@ const Fluid = {
 
 export default Fluid;
 export {
+  useFluidState,
+  createConfig,
   Easings,
   Metrics,
   InterpolatorContext,
