@@ -1,9 +1,16 @@
-import React, {useState, useRef} from 'react';
-import {Button, Text, View, Dimensions, StyleSheet} from 'react-native';
-import Fluid from 'react-native-fluid-transitions';
-import {Transitioning, Transition as TI} from 'react-native-reanimated';
-import {ColorC} from '../colors';
-import {generateImageUri} from '../helpers';
+import React, { useState, useRef } from "react";
+import {
+  Button,
+  Text,
+  View,
+  Image,
+  Dimensions,
+  StyleSheet,
+} from "react-native";
+import Fluid from "react-native-fluid-transitions";
+import { Transitioning, Transition as TI } from "react-native-reanimated";
+import { ColorC } from "../colors";
+import { generateImageUri } from "../helpers";
 
 interface DataItem {
   id: number;
@@ -19,22 +26,22 @@ const mapData = (data: DataItem[]) => {
 };
 
 const initialData = mapData([
-  {id: 1, value: 'Item 1'},
-  {id: 2, value: 'Item 2'},
-  {id: 3, value: 'Item 3'},
-  {id: 4, value: 'Item 4'},
-  {id: 5, value: 'Item 5'},
-  {id: 6, value: 'Item 6'},
+  { id: 1, value: "Item 1" },
+  { id: 2, value: "Item 2" },
+  { id: 3, value: "Item 3" },
+  { id: 4, value: "Item 4" },
+  { id: 5, value: "Item 5" },
+  { id: 6, value: "Item 6" },
 ]);
 
 const changedData = mapData([
-  {id: 3, value: 'Item 3'},
-  {id: 2, value: 'Item 2'},
-  {id: 8, value: 'Item 8'},
-  {id: 6, value: 'Item 6'},
-  {id: 9, value: 'Item 9'},
-  {id: 4, value: 'Item 4'},
-  {id: 7, value: 'Item 7'},
+  { id: 3, value: "Item 3" },
+  { id: 2, value: "Item 2" },
+  { id: 8, value: "Item 8" },
+  { id: 6, value: "Item 6" },
+  { id: 9, value: "Item 9" },
+  { id: 4, value: "Item 4" },
+  { id: 7, value: "Item 7" },
 ]);
 
 const transition = (
@@ -67,7 +74,7 @@ const ListExampleScreen = () => {
       interpolation: {
         inputRange: [0, 0.5, 1],
         outputRange: [0, 20, 0],
-        styleKey: 'transform.translateY',
+        styleKey: "transform.translateY",
       },
     },
   });
@@ -79,18 +86,18 @@ const ListExampleScreen = () => {
           style={styles.list}
           label="container"
           config={{
-            childAnimation: {type: 'staggered', staggerMs: 50},
+            childAnimation: { type: "staggered", staggerMs: 50 },
           }}>
           <Transitioning.View transition={transition} ref={ref}>
             {data.map(data => (
               <Fluid.View
-                label={'row' + data.id}
+                label={"row" + data.id}
                 key={data.id}
                 onPress={() => handleDeleteRow(data)}
                 initialStyle={styles.rowUnmounted}
                 style={styles.row}
                 config={itemConfig}>
-                <Image source={{uri: data.uri}} style={styles.image} />
+                <Image source={{ uri: data.uri }} style={styles.image} />
                 <Text>{data.value}</Text>
               </Fluid.View>
             ))}
@@ -98,29 +105,29 @@ const ListExampleScreen = () => {
         </Fluid.ScrollView>
       </View>
       <View style={styles.buttonContainer}>
-        <Button title={'Change'} onPress={handleChange} />
+        <Button title={"Change"} onPress={handleChange} />
       </View>
     </View>
   );
 };
 
 ListExampleScreen.navigationOptions = {
-  title: 'List',
+  title: "List",
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
   },
   listContainer: {
-    height: Dimensions.get('window').height * 0.6,
+    height: Dimensions.get("window").height * 0.6,
   },
   list: {
-    width: Dimensions.get('window').width * 0.85,
+    width: Dimensions.get("window").width * 0.85,
     backgroundColor: ColorC,
     borderRadius: 8,
   },
@@ -130,31 +137,31 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   rowUnmounted: {
-    transform: [{rotateX: '90deg'}],
+    transform: [{ rotateX: "90deg" }],
   },
   rowDetached: {
-    transform: [{translateX: Dimensions.get('window').width}],
+    transform: [{ translateX: Dimensions.get("window").width }],
   },
   row: {
     padding: 4,
     paddingRight: 14,
     borderRadius: 8,
-    backgroundColor: '#FFF',
+    backgroundColor: "#FFF",
     margin: 8,
     marginBottom: 0,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   button: {
     padding: 8,
     margin: 10,
   },
   buttonPressed: {
-    transform: [{scale: 0.95}],
+    transform: [{ scale: 0.95 }],
   },
   buttonContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
 });
 
