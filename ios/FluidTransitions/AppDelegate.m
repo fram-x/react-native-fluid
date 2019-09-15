@@ -20,7 +20,10 @@
                                                    moduleName:@"FluidTransitions"
                                             initialProperties:nil];
 
-  rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0f green:1.0f blue:1.0f alpha:1];
+  UIView* loadingView = (UIView*)[[[NSBundle mainBundle] loadNibNamed:@"LaunchScreen" owner:self options:nil] firstObject];
+  
+  rootView.backgroundColor = [UIColor whiteColor];
+  rootView.loadingView = loadingView;
 
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   UIViewController *rootViewController = [UIViewController new];
