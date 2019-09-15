@@ -61,3 +61,4 @@ buck-out/
 
 # CocoaPods
 /ios/Pods/
+/ios/budbuddy.xcworkspace/xcshareddata/

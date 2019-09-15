@@ -27,20 +27,5 @@ target 'FluidTransitions' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
-  target 'FluidTransitionsTests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-
   use_native_modules!
-end
-
-target 'FluidTransitions-tvOS' do
-  # Pods for FluidTransitions-tvOS
-
-  target 'FluidTransitions-tvOSTests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-
 end

@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "react": "16.8.6",
-    "react-native": "0.60.5"
+    "react-native": "0.60.5",
+    "react-native-reanimated": "https://github.com/kmagiera/react-native-reanimated"
   },
   "devDependencies": {
     "@babel/core": "^7.5.0",
@@ -23,6 +24,7 @@
     "@typescript-eslint/eslint-plugin": "^2.2.0",
     "@typescript-eslint/parser": "^2.2.0",
     "babel-jest": "^24.1.0",
+    "babel-plugin-module-resolver": "^3.2.0",
     "eslint": "5.16.0",
     "eslint-config-prettier": "^6.3.0",
     "eslint-plugin-prettier": "^2.6.2",
