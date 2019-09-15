@@ -15,7 +15,7 @@ import {
   useWhenConfig,
   useInitialStyle,
   useInterpolatorConfig,
-  useSharedInterpolation
+  useSharedInterpolation,
 } from "../FluidTransitions";
 import { TimingDefaultAnimationType } from "../../Utilities";
 import { useLog } from "../../Hooks";
@@ -28,7 +28,7 @@ import {
   AnimationContext,
   TransitionItemContext,
   ConfigurationContext,
-  StateContext
+  StateContext,
 } from "../Types";
 import { usePropContext } from "./usePropContext";
 import { getMergedStyles } from "../../Styles/getMergedStyles";
@@ -53,7 +53,7 @@ export function withFluidTransitions<BasePropType, StyleType>(
   >,
   hasChildren: boolean,
   setupInterpolators?: (props: BasePropType) => PartialInterpolatorInfo,
-  getAnimatedPropDescriptors?: () => T.ValueDescriptorsType
+  getAnimatedPropDescriptors?: () => T.ValueDescriptorsType,
 ) {
   // Resolve prop descriptors
   const propDescriptors = getAnimatedPropDescriptors
@@ -86,7 +86,7 @@ export function withFluidTransitions<BasePropType, StyleType>(
      ******************************************************/
     const transitionId = useMemo(
       () => (overriddenTransitionId ? overriddenTransitionId : TransitionId++),
-      []
+      [overriddenTransitionId],
     );
     const componentRef = useRef(null);
 
@@ -107,7 +107,7 @@ export function withFluidTransitions<BasePropType, StyleType>(
         getCalculatedStyles: () => getCalculatedStyles(),
         clone: (props: BasePropType) => cloneElement(props),
         onAnimationBegin: onAnimationBegin,
-        onAnimationDone: onAnimationDone
+        onAnimationDone: onAnimationDone,
       };
     } else {
       transitionItemRef.current.children = () => transitionItems;
@@ -136,7 +136,7 @@ export function withFluidTransitions<BasePropType, StyleType>(
     const { render: renderTouchable } = useTouchable(
       onPress,
       onPressIn,
-      onPressOut
+      onPressOut,
     );
 
     // Configuration
@@ -144,7 +144,7 @@ export function withFluidTransitions<BasePropType, StyleType>(
       configuration,
       resolvedChildDirection,
       animationTypeContext,
-      stateContext
+      stateContext,
     } = useConfiguration(transitionItem, config, states);
 
     // Resolved direction
@@ -155,14 +155,14 @@ export function withFluidTransitions<BasePropType, StyleType>(
     const { interpolatorContext, extraProps } = useInterpolatorContext(
       label,
       rest,
-      setupInterpolators
+      setupInterpolators,
     );
 
     // Transition items context
     const {
       transitionItems,
       transitionItemContext,
-      isAliveRef
+      isAliveRef,
     } = useTransitionItems(transitionItem);
 
     // Mounted context
@@ -172,14 +172,14 @@ export function withFluidTransitions<BasePropType, StyleType>(
     const animationContext = useAnimationContext(
       isMounted,
       transitionItem,
-      animation
+      animation,
     );
 
     // Interpolated styles
     const { getCalculatedStyles, styleContext } = useStyleContext(
       transitionItem,
       animationContext,
-      style as Style | Style[] | number | undefined
+      style as Style | Style[] | number | undefined,
     );
 
     // Interpolated properties
@@ -187,7 +187,7 @@ export function withFluidTransitions<BasePropType, StyleType>(
       transitionItem,
       animationContext,
       rest as BasePropType,
-      propDescriptors
+      propDescriptors,
     );
 
     // Unmounted/initial style
@@ -198,7 +198,7 @@ export function withFluidTransitions<BasePropType, StyleType>(
       styleContext,
       animation || configuration.animation,
       onAnimationBegin,
-      onAnimationDone
+      onAnimationDone,
     );
 
     // Style and prop changes
@@ -208,7 +208,7 @@ export function withFluidTransitions<BasePropType, StyleType>(
       propContext,
       animation || configuration.animation,
       onAnimationBegin,
-      onAnimationDone
+      onAnimationDone,
     );
 
     // Interpolator conig
@@ -218,20 +218,20 @@ export function withFluidTransitions<BasePropType, StyleType>(
       propContext,
       interpolatorContext,
       configuration,
-      isMounted
+      isMounted,
     );
 
     // Shared interpolation context
     const {
       renderSharedOverlay,
-      sharedInterpolationContext
+      sharedInterpolationContext,
     } = useSharedInterpolation(
       transitionItem,
       transitionItemContext,
       configuration,
       stateContext,
       animationContext,
-      currentDirection
+      currentDirection,
     );
 
     // State changes
@@ -244,7 +244,7 @@ export function withFluidTransitions<BasePropType, StyleType>(
       propContext,
       stateChanges,
       configuration,
-      animation || configuration.animation || TimingDefaultAnimationType
+      animation || configuration.animation || TimingDefaultAnimationType,
     );
 
     // On Configuration
@@ -255,7 +255,7 @@ export function withFluidTransitions<BasePropType, StyleType>(
       stateChanges,
       configuration,
       sharedInterpolationContext,
-      animation || configuration.animation || TimingDefaultAnimationType
+      animation || configuration.animation || TimingDefaultAnimationType,
     );
 
     /******************************************************
@@ -263,12 +263,12 @@ export function withFluidTransitions<BasePropType, StyleType>(
      ******************************************************/
 
     const cloneElement = (
-      p: BasePropType
+      p: BasePropType,
     ): React.ReactElement<BasePropType> => {
       const compType = withFluidTransitions<BasePropType, StyleType>(
         Component,
         hasChildren,
-        setupInterpolators
+        setupInterpolators,
       );
       return React.createElement(compType, { ...props, ...p });
     };
@@ -280,7 +280,7 @@ export function withFluidTransitions<BasePropType, StyleType>(
     const resolvedStaticStyle = getResolvedStyle(staticStyle || undefined);
     const styles = getMergedStyles([
       ...resolvedStaticStyle,
-      getCalculatedStyles()
+      getCalculatedStyles(),
     ]);
 
     const props = {
@@ -291,7 +291,7 @@ export function withFluidTransitions<BasePropType, StyleType>(
       onLayout: handleOnLayout,
       children,
       collapsable: false,
-      ref: componentRef
+      ref: componentRef,
     };
 
     return (
@@ -303,7 +303,7 @@ export function withFluidTransitions<BasePropType, StyleType>(
                 <StateContext.Provider value={stateContext}>
                   {renderTouchable(
                     renderSharedOverlay(Component, props, hasChildren),
-                    props
+                    props,
                   )}
                 </StateContext.Provider>
               </ConfigurationContext.Provider>
@@ -314,8 +314,7 @@ export function withFluidTransitions<BasePropType, StyleType>(
     );
   };
 
-  // return React.memo(AnimationContextComponent) as React.ComponentType<
-  //   BasePropType & T.TouchableComponentProps<StyleType> & TransitionIdProps
-  // >;
-  return AnimationContextComponent;
+  return React.memo(AnimationContextComponent) as React.ComponentType<
+    BasePropType & T.TouchableComponentProps<StyleType> & TransitionIdProps
+  >;
 }

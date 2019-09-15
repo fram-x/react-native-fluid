@@ -6,7 +6,7 @@ import { ConfigStateType, SafeStateConfigType } from "../../Configuration";
 
 export const useStateChanges = (
   transitionItem: TransitionItem,
-  configuration: SafeStateConfigType
+  configuration: SafeStateConfigType,
 ): StateChanges => {
   const logger = useLog(transitionItem.label, "state");
 
@@ -30,10 +30,11 @@ export const useStateChanges = (
             (removed.length > 0
               ? "r: [" + removed.map(s => s.name).join(", ") + "], "
               : ""),
-          LoggerLevel.Verbose
+          LoggerLevel.Verbose,
         );
       }
-      prevStates.current = nextStates;
+      // Make a copy
+      prevStates.current = nextStates.map(s => ({ ...s }));
       return { changed, added, removed };
     }
   }
@@ -42,7 +43,7 @@ export const useStateChanges = (
 
 function getStateChanges(
   prevStates: Array<ConfigStateType>,
-  nextStates: Array<ConfigStateType>
+  nextStates: Array<ConfigStateType>,
 ): StateChanges | undefined {
   const statesAdded = nextStates.filter(nextState => {
     const prevState = prevStates.find(s2 => s2.name === nextState.name);

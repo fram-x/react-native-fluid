@@ -1,5 +1,5 @@
-import {IAnimationProvider} from './src/Types/IAnimationProvider';
-import {NativeModules} from 'react-native';
+import { IAnimationProvider } from "./src/Types/IAnimationProvider";
+import { NativeModules } from "react-native";
 
 const _renimatedAvailable =
   // false &&
@@ -7,11 +7,11 @@ const _renimatedAvailable =
 
 console.log(
   `**** Render engine ${
-    _renimatedAvailable ? 'react-native-reanimated' : 'React Native Animated'
+    _renimatedAvailable ? "react-native-reanimated" : "React Native Animated"
   }`,
 );
 export const AnimationProvider: IAnimationProvider = _renimatedAvailable
-  ? require('./src/react-native-reanimated').ReanimatedAnimationProvider
-  : require('./src/react-native-animated').ReactNativeAnimationProvider;
+  ? require("./src/react-native-reanimated").ReanimatedAnimationProvider
+  : require("./src/react-native-animated").ReactNativeAnimationProvider;
 
-export * from './src/Types';
+export * from "./src/Types";
