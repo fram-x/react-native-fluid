@@ -1,29 +1,30 @@
-import React from 'react';
-import {NavigationNativeContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
+import React from "react";
+import { NavigationNativeContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 
-import HomeScreen from './HomeScreen';
-import StylesExampleScreen from './Styles';
-import TextExampleScreen from './Text';
-import AppStoreExampleScreen from './AppStore';
-import ListExampleScreen from './Lists';
-import MazeExampleScreen from './Maze';
-import ParallaxExampleScreen from './Parallax';
-import ChildExampleScreen from './Children';
-import InterpolateExampleScreen from './Interpolate';
-import TimelineExampleScreen from './Timeline';
-import EasingsExampleScreen from './Easings';
-import StyleExampleScreen from './Style';
-import InteractionsExampleScreen from './Interactions';
-import SvgExampleScreen from './SVG';
-import RepeatExampleScreen from './Repeating';
+import HomeScreen from "./HomeScreen";
+import StylesExampleScreen from "./Styles";
+import TextExampleScreen from "./Text";
+import AppStoreExampleScreen from "./AppStore";
+import ListExampleScreen from "./Lists";
+import MazeExampleScreen from "./Maze";
+import ParallaxExampleScreen from "./Parallax";
+import ChildExampleScreen from "./Children";
+import InterpolateExampleScreen from "./Interpolate";
+import TimelineExampleScreen from "./Timeline";
+import EasingsExampleScreen from "./Easings";
+import StyleExampleScreen from "./Style";
+import InteractionsExampleScreen from "./Interactions";
+import SvgExampleScreen from "./SVG";
+import RepeatExampleScreen from "./Repeating";
 
 const Stack = createStackNavigator();
 
 const App = () => {
   return (
     <NavigationNativeContainer>
-      <Stack.Navigator>
+      <Stack.Navigator
+        screenOptions={{ cardStyle: { backgroundColor: "#FFF" } }}>
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="styles" component={StylesExampleScreen} />
         <Stack.Screen name="text" component={TextExampleScreen} />
