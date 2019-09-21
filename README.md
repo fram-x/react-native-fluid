@@ -2,6 +2,7 @@
 
 ## Bugs
 
+[ ] Fix issue with removing a when interpolation. See Styles example and press on/off
 [ ] Shared transitions
   [ ] Fix running second shared transition while one is running
 
