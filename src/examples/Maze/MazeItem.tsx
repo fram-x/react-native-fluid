@@ -1,7 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 import { styles } from "./styles";
-import Fluid, { Easings } from "react-native-fluid-transitions";
+import Fluid from "react-native-fluid-transitions";
 
 interface MazeItemProps {
   size: number;
