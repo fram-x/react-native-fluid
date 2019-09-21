@@ -1,5 +1,5 @@
 import { AnimationNode } from "../types";
-import { getReducedInterpolationTree } from "../tree";
+import { getReducedInterpolationTree } from "../getInterpolationTree";
 import { Metrics } from "../../../Types";
 import * as Constants from "../../../Types/Constants";
 import { DefaultTime } from "../../../Utilities";
@@ -13,13 +13,13 @@ describe("getInterpolationTree / duration", () => {
       children: [
         { id: 2, duration: 100 },
         { id: 3, duration: 300 },
-        { id: 4, duration: 100 }
-      ]
+        { id: 4, duration: 100 },
+      ],
     });
     const valueToTest = getReducedInterpolationTree(tree, {
       [2]: true,
       [3]: true,
-      [4]: true
+      [4]: true,
     });
     expect(valueToTest).toBeDefined();
     if (valueToTest) {
@@ -31,11 +31,11 @@ describe("getInterpolationTree / duration", () => {
     const tree = createSimpleTree({
       id: 1,
       childAnimation: "parallel",
-      children: [{ id: 2, duration: 100 }, { id: 3, duration: 100 }]
+      children: [{ id: 2, duration: 100 }, { id: 3, duration: 100 }],
     });
     const valueToTest = getReducedInterpolationTree(tree, {
       [2]: true,
-      [3]: true
+      [3]: true,
     });
     expect(valueToTest).toBeDefined();
     if (valueToTest) {
@@ -47,11 +47,11 @@ describe("getInterpolationTree / duration", () => {
     const tree = createSimpleTree({
       id: 1,
       childAnimation: "sequential",
-      children: [{ id: 2, duration: 100 }, { id: 3, duration: 100 }]
+      children: [{ id: 2, duration: 100 }, { id: 3, duration: 100 }],
     });
     const valueToTest = getReducedInterpolationTree(tree, {
       [2]: true,
-      [3]: true
+      [3]: true,
     });
     expect(valueToTest).toBeDefined();
     if (valueToTest) {
@@ -64,12 +64,12 @@ describe("getInterpolationTree / duration", () => {
       id: 1,
       duration: 100,
       childAnimation: "sequential",
-      children: [{ id: 2, duration: 100 }, { id: 3, duration: 100 }]
+      children: [{ id: 2, duration: 100 }, { id: 3, duration: 100 }],
     });
     const valueToTest = getReducedInterpolationTree(tree, {
       [1]: true,
       [2]: true,
-      [3]: true
+      [3]: true,
     });
     expect(valueToTest).toBeDefined();
     if (valueToTest) {
@@ -82,12 +82,12 @@ describe("getInterpolationTree / duration", () => {
       id: 1,
       duration: 400,
       childAnimation: "sequential",
-      children: [{ id: 2, duration: 100 }, { id: 3, duration: 100 }]
+      children: [{ id: 2, duration: 100 }, { id: 3, duration: 100 }],
     });
     const valueToTest = getReducedInterpolationTree(tree, {
       [1]: true,
       [2]: true,
-      [3]: true
+      [3]: true,
     });
     expect(valueToTest).toBeDefined();
     if (valueToTest) {
@@ -101,12 +101,12 @@ describe("getInterpolationTree / duration", () => {
       childAnimation: "sequential",
       children: [
         { id: 2, duration: 100, delay: 100 },
-        { id: 3, duration: 100, delay: 100 }
-      ]
+        { id: 3, duration: 100, delay: 100 },
+      ],
     });
     const valueToTest = getReducedInterpolationTree(tree, {
       [2]: true,
-      [3]: true
+      [3]: true,
     });
     expect(valueToTest).toBeDefined();
     if (valueToTest) {
@@ -122,13 +122,13 @@ describe("getInterpolationTree / duration", () => {
       delay: 200,
       children: [
         { id: 2, duration: 100, delay: 100 },
-        { id: 3, duration: 100, delay: 100 }
-      ]
+        { id: 3, duration: 100, delay: 100 },
+      ],
     });
     const valueToTest = getReducedInterpolationTree(tree, {
       [1]: true,
       [2]: true,
-      [3]: true
+      [3]: true,
     });
     expect(valueToTest).toBeDefined();
     if (valueToTest) {
@@ -141,12 +141,12 @@ describe("getInterpolationTree / duration", () => {
       id: 1,
       children: [
         { id: 2, duration: 300 },
-        { id: 3, duration: Constants.AsGroup }
-      ]
+        { id: 3, duration: Constants.AsGroup },
+      ],
     });
     const valueToTest = getReducedInterpolationTree(tree, {
       [2]: true,
-      [3]: true
+      [3]: true,
     });
     expect(valueToTest).toBeDefined();
     if (valueToTest) {
@@ -162,15 +162,15 @@ describe("getInterpolationTree / duration", () => {
         {
           id: 2,
           duration: 300,
-          children: [{ id: 4, duration: 500 }, { id: 5, duration: 300 }]
-        }
-      ]
+          children: [{ id: 4, duration: 500 }, { id: 5, duration: 300 }],
+        },
+      ],
     });
     const valueToTest = getReducedInterpolationTree(tree, {
       [2]: true,
       [3]: true,
       [4]: true,
-      [5]: true
+      [5]: true,
     });
     expect(valueToTest).toBeDefined();
     if (valueToTest) {
@@ -183,12 +183,12 @@ describe("getInterpolationTree / duration", () => {
       id: 0,
       children: [
         { id: 1, duration: Constants.AsGroup },
-        { id: 2, duration: Constants.AsGroup }
-      ]
+        { id: 2, duration: Constants.AsGroup },
+      ],
     });
     const valueToTest = getReducedInterpolationTree(tree, {
       [1]: true,
-      [2]: true
+      [2]: true,
     });
     expect(valueToTest).toBeDefined();
     if (valueToTest) {
@@ -207,20 +207,20 @@ describe("getInterpolationTree / duration", () => {
           children: [
             { id: 4, duration: 600 },
             { id: 5, duration: 300 },
-            { id: 3, duration: Constants.AsGroup }
-          ]
+            { id: 3, duration: Constants.AsGroup },
+          ],
         },
         {
           id: 6,
-          duration: 800
-        }
-      ]
+          duration: 800,
+        },
+      ],
     });
     const valueToTest = getReducedInterpolationTree(tree, {
       [3]: true,
       [4]: true,
       [5]: true,
-      [6]: true
+      [6]: true,
     });
     expect(valueToTest).toBeDefined();
     if (valueToTest) {
@@ -238,20 +238,20 @@ describe("getInterpolationTree / duration", () => {
           children: [
             { id: 4, duration: 600 },
             { id: 5, duration: 300 },
-            { id: 3, duration: Constants.AsContext }
-          ]
+            { id: 3, duration: Constants.AsContext },
+          ],
         },
         {
           id: 6,
-          duration: 800
-        }
-      ]
+          duration: 800,
+        },
+      ],
     });
     const valueToTest = getReducedInterpolationTree(tree, {
       [3]: true,
       [4]: true,
       [5]: true,
-      [6]: true
+      [6]: true,
     });
     expect(valueToTest).toBeDefined();
     if (valueToTest) {
@@ -265,7 +265,7 @@ describe("getInterpolationTree / offset / root node", () => {
     const tree = createSimpleTree({
       id: 1,
       delay: 100,
-      children: []
+      children: [],
     });
     const valueToTest = getReducedInterpolationTree(tree, { [1]: true });
     expect(valueToTest).toBeDefined();
@@ -278,7 +278,7 @@ describe("getInterpolationTree / offset / root node", () => {
     const tree = createSimpleTree({
       id: 1,
       delay: 100,
-      children: [{ id: 2 }]
+      children: [{ id: 2 }],
     });
     const valueToTest = getReducedInterpolationTree(tree, { [2]: true });
     expect(valueToTest).toBeDefined();
@@ -294,7 +294,7 @@ describe("getInterpolationTree / offset / parallel", () => {
       id: 1,
       delay: 100,
       childAnimation: "parallel",
-      children: [{ id: 2, delay: 100 }]
+      children: [{ id: 2, delay: 100 }],
     });
     const valueToTest = getReducedInterpolationTree(tree, { [2]: true });
     expect(valueToTest).toBeDefined();
@@ -308,11 +308,11 @@ describe("getInterpolationTree / offset / parallel", () => {
       id: 1,
       delay: 100,
       childAnimation: "parallel",
-      children: [{ id: 2, delay: 100 }, { id: 3, delay: 50 }]
+      children: [{ id: 2, delay: 100 }, { id: 3, delay: 50 }],
     });
     const valueToTest = getReducedInterpolationTree(tree, {
       [2]: true,
-      [3]: true
+      [3]: true,
     });
     expect(valueToTest).toBeDefined();
     if (valueToTest) {
@@ -327,11 +327,11 @@ describe("getInterpolationTree / offset / sequential", () => {
       id: 1,
       delay: 0,
       childAnimation: "sequential",
-      children: [{ id: 2, duration: 100 }, { id: 2, duration: 100 }]
+      children: [{ id: 2, duration: 100 }, { id: 2, duration: 100 }],
     });
     const valueToTest = getReducedInterpolationTree(tree, {
       [2]: true,
-      [3]: true
+      [3]: true,
     });
     expect(valueToTest).toBeDefined();
     if (valueToTest) {
@@ -347,11 +347,11 @@ describe("getInterpolationTree / offset / stagger", () => {
       delay: 0,
       childAnimation: "staggered",
       stagger: 100,
-      children: [{ id: 2, duration: 100 }, { id: 2, duration: 100 }]
+      children: [{ id: 2, duration: 100 }, { id: 2, duration: 100 }],
     });
     const valueToTest = getReducedInterpolationTree(tree, {
       [2]: true,
-      [3]: true
+      [3]: true,
     });
     expect(valueToTest).toBeDefined();
     if (valueToTest) {
@@ -375,7 +375,7 @@ export type MockNode = {
 
 export const createSimpleTree = (
   mockNode: MockNode,
-  parent?: AnimationNode
+  parent?: AnimationNode,
 ): AnimationNode => {
   const node: AnimationNode = {
     id: mockNode.id,
@@ -388,7 +388,7 @@ export const createSimpleTree = (
     childDirection: "forward",
     metrics: new Metrics(-1, -1, -1, -1),
     children: [],
-    interpolationId: 0
+    interpolationId: 0,
   };
   node.children = mockNode.children
     ? mockNode.children.map(c => createSimpleTree(c, node))

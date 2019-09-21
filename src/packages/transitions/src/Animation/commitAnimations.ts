@@ -3,7 +3,7 @@ import {
   TransitionItem,
   Easings,
   getNextInterpolationInfoId,
-  OnAnimationFunction
+  OnAnimationFunction,
 } from "../Components/Types";
 import { fluidInternalException, LoggerLevel } from "../Types";
 import { AnimationProvider } from "react-native-fluid-animations";
@@ -12,8 +12,8 @@ import { getResolvedAnimation } from "./Functions/getResolvedAnimation";
 import { TimingDefaultAnimationType } from "../Utilities";
 import {
   getInterpolationTree,
-  findNodeByInterpolationId
-} from "./Builder/tree";
+  findNodeByInterpolationId,
+} from "./Builder/getInterpolationTree";
 import { getLogLevel, log } from "../Hooks";
 import { dumpTree } from "./Builder/dumpTree";
 import { addAnimations } from "./Runner";
@@ -24,7 +24,7 @@ import { IsAnimationRemoved } from "./Runner/Functions";
 export function commitAnimations(
   root: TransitionItem,
   interpolationInfos: Array<InterpolationInfo>,
-  waitForInteractions: boolean = false
+  waitForInteractions: boolean = false,
 ) {
   if (!root.isAlive()) {
     return;
@@ -39,7 +39,7 @@ export function commitAnimations(
       root.label,
       "animc",
       "Starting " + interpolationInfos.length + " animations.",
-      LoggerLevel.Verbose
+      LoggerLevel.Verbose,
     );
   }
 
@@ -51,7 +51,7 @@ export function commitAnimations(
     // Resolve animation - this is where we convert the spring
     // definition to a spring based easing.
     ii.animationType = getResolvedAnimation(
-      ii.animationType || TimingDefaultAnimationType
+      ii.animationType || TimingDefaultAnimationType,
     );
   });
 
@@ -88,7 +88,7 @@ export function commitAnimations(
   const loopInterpolations: InterpolationInfo[] = [];
   const checkForLoopedAnimations = (
     interpolationId: number,
-    onEnd?: OnAnimationFunction
+    onEnd?: OnAnimationFunction,
   ) => () => {
     loopInterpolations.push(loopAnimations[interpolationId]);
     delete loopAnimations[interpolationId];
@@ -97,12 +97,12 @@ export function commitAnimations(
         root.label,
         "commit",
         "restart" + interpolationId.toString(),
-        LoggerLevel.Always
+        LoggerLevel.Always,
       );
       // We have someone that needs to be looped
       if (loopInterpolations.length > 0) {
         const repeatAnimations = loopInterpolations.filter(
-          p => !IsAnimationRemoved(p.itemId, p.key)
+          p => !IsAnimationRemoved(p.itemId, p.key),
         );
         if (repeatAnimations.length > 0) {
           commitAnimations(root, repeatAnimations);
@@ -114,7 +114,7 @@ export function commitAnimations(
   };
 
   // Set up listeners
-  const animationInfos = new Array<AnimationInfo>();
+  const animationInfos: AnimationInfo[] = [];
   interpolationInfos.forEach(interpolationInfo => {
     // Mark as started
     const node = findNodeByInterpolationId(interpolationInfo.id, tree);
@@ -129,7 +129,7 @@ export function commitAnimations(
       outputRange,
       extrapolate,
       extrapolateLeft,
-      extrapolateRight
+      extrapolateRight,
     } = interpolationConfig;
 
     const easing = interpolationInfo.animationType
@@ -151,21 +151,21 @@ export function commitAnimations(
         "loop",
         interpolationInfo.loop,
         interpolationInfo,
-        loopAnimations
+        loopAnimations,
       );
     } else if (interpolationInfo.flip) {
       isRepeating = decorateWithRepeat(
         "flip",
         interpolationInfo.flip,
         interpolationInfo,
-        loopAnimations
+        loopAnimations,
       );
     } else if (interpolationInfo.yoyo) {
       isRepeating = decorateWithRepeat(
         "yoyo",
         interpolationInfo.yoyo,
         interpolationInfo,
-        loopAnimations
+        loopAnimations,
       );
     }
 
@@ -190,7 +190,7 @@ export function commitAnimations(
       easing,
       easingKey,
       onBegin,
-      onEnd: onAnimationEnd
+      onEnd: onAnimationEnd,
     });
   });
 
@@ -208,7 +208,7 @@ export function commitAnimations(
           "Master Animation finished for " +
             interpolationInfos.length +
             " animations.",
-          LoggerLevel.Verbose
+          LoggerLevel.Verbose,
         );
       }
     });
@@ -226,7 +226,7 @@ function decorateWithRepeat(
   repeatType: "flip" | "loop" | "yoyo",
   repeatValue: number,
   interpolationInfo: InterpolationInfo,
-  loopAnimations: { [key: string]: InterpolationInfo }
+  loopAnimations: { [key: string]: InterpolationInfo },
 ) {
   if (
     repeatValue === 0
@@ -242,7 +242,7 @@ function decorateWithRepeat(
   // Flip?
   const flipAnimation = (reverse: boolean) => {
     interpolationConfig.outputRange = [
-      ...interpolationConfig.outputRange
+      ...interpolationConfig.outputRange,
     ].reverse();
 
     if (
@@ -274,7 +274,7 @@ function decorateWithRepeat(
     interpolationConfig,
     animationType,
     id: getNextInterpolationInfoId(),
-    [repeatType]: repeatValue === Infinity ? repeatValue : repeatValue - 1
+    [repeatType]: repeatValue === Infinity ? repeatValue : repeatValue - 1,
   };
 
   return true;
