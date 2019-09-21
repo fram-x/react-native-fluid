@@ -1,56 +1,108 @@
-import React, { useState, useRef } from "react";
-import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
+import React, { useState, useCallback } from "react";
+import { View, StyleSheet } from "react-native";
 import * as Colors from "../colors";
-import Fluid from "react-native-fluid-transitions";
+import Fluid, { MetricsInfo } from "react-native-fluid-transitions";
 
-const config = Fluid.createConfig({
-  interpolation: [
-    {
-      value: {
-        ownerLabel: "scroller",
-        valueName: "scrollY"
-      },
-      inputRange: [0, 800],
-      outputRange: [Colors.ColorD, Colors.ColorA],
-      styleKey: "backgroundColor",
-      extrapolate: "clamp"
-    },
-    {
-      value: {
-        ownerLabel: "scroller",
-        valueName: "scrollY"
-      },
-      inputRange: [0, 800],
-      outputRange: ["0deg", "360deg"],
-      styleKey: "transform.rotate"
-    }
-  ]
-});
-
-const TimelineExampleScreen = () => {
+type BoxProps = {
+  active: boolean;
+  onPress: () => void;
+};
+const Box: React.FC<BoxProps> = ({ onPress, active }) => {
   return (
-    <Fluid.ScrollView style={styles.container} label={"scroller"}>
-      {new Array(50).fill(0.0, 0, 50).map((_, index) => (
-        <Fluid.View key={index} config={config} style={styles.row}>
-          <Text>{"row #" + index.toString()}</Text>
-        </Fluid.View>
-      ))}
-    </Fluid.ScrollView>
+    <Fluid.View
+      onPress={onPress}
+      animation={Fluid.Animations.Timings.Default}
+      staticStyle={styles.box}
+      style={active ? styles.activeBox : styles.inactiveBox}
+    />
   );
 };
 
-TimelineExampleScreen.navigationOptions = {
-  title: "Testing 1-2-3"
+const columns = 8;
+const boxSize = 20;
+const height = 200;
+const createItems = () => {
+  const nextMaze: boolean[] = [];
+  for (let y = 0; y < height / boxSize; y++) {
+    for (let x = 0; x < columns; x++) {
+      nextMaze.push(true);
+    }
+  }
+  return nextMaze;
+};
+
+const TimelineExampleScreen = () => {
+  const [items] = useState(() => createItems());
+  const [index, setIndex] = useState(-1);
+  const [toggled, setToggled] = useState(false);
+  const toggle = useCallback((i: number) => {
+    setIndex(i);
+    setToggled(p => !p);
+  }, []);
+
+  const customStaggerFunc = useCallback(
+    (
+      _index: number,
+      metrics: MetricsInfo,
+      _parentMetrics: MetricsInfo,
+      children: Array<MetricsInfo>,
+    ) => {
+      const cx = metrics.x + metrics.width / 2;
+      const cy = metrics.y + metrics.height / 2;
+      const px = children[index].x + children[index].width / 2;
+      const py = children[index].y + children[index].height / 2;
+      const c = Math.abs(Math.hypot(cx - px, cy - py)) * 1.5;
+      return c;
+    },
+    [index],
+  );
+
+  const config = Fluid.createConfig({
+    childAnimation: {
+      type: "staggered",
+      staggerFunc: customStaggerFunc,
+    },
+  });
+  return (
+    <View style={styles.container}>
+      <Fluid.View style={styles.boxContainer} config={config}>
+        {items.map((_, i) => (
+          <Box key={i} active={toggled} onPress={() => toggle(i)} />
+        ))}
+      </Fluid.View>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  row: {
-    padding: 10,
-    margin: 10
-  }
+  boxContainer: {
+    width: 250,
+    height: 250,
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    borderColor: "#000",
+    borderWidth: StyleSheet.hairlineWidth,
+    padding: 5,
+  },
+  box: {
+    width: boxSize,
+    height: boxSize,
+    backgroundColor: Colors.ColorA,
+    margin: 2,
+  },
+  inactiveBox: {
+    transform: [{ scale: 1 }],
+  },
+  activeBox: {
+    transform: [{ scale: 0.0009 }],
+  },
 });
 
 export default TimelineExampleScreen;
