@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { StyleSheet, View, Dimensions } from "react-native";
 import Fluid from "react-native-fluid-svg";
-import { ColorA, ColorC } from "../colors";
-import Svg, { Defs, LinearGradient, Stop } from "react-native-svg";
+import { ColorC } from "../colors";
+import Svg, { Defs, Stop } from "react-native-svg";
 
 const SvgExampleScreen = () => {
   const [isToggled, setIsToggled] = useState(false);
@@ -17,8 +17,7 @@ const SvgExampleScreen = () => {
             x1={isToggled ? "0" : "50"}
             y1="0"
             x2="200"
-            y2="0"
-          >
+            y2="0">
             <Stop offset="0" stopColor="yellow" stopOpacity="1" />
             <Stop offset="1" stopColor="red" stopOpacity="1" />
           </Fluid.Svg.LinearGradient>
@@ -39,7 +38,7 @@ const SvgExampleScreen = () => {
 };
 
 SvgExampleScreen.navigationOptions = {
-  title: "SVG"
+  title: "SVG",
 };
 
 const styles = StyleSheet.create({
@@ -47,8 +46,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 40,
-    flex: 1
-  }
+    flex: 1,
+  },
 });
 
 export default SvgExampleScreen;
