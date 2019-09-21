@@ -2,7 +2,7 @@ import {
   IAnimationValue,
   IAnimationNode,
   ExtrapolateType,
-} from "react-native-fluid-transitions";
+} from "react-native-fluid-animations";
 import { OnAnimationFunction } from "./InterpolationTypes";
 import { ConfigAnimationType } from "../../Configuration";
 import { ValueDescriptorsType } from "../../Types";
