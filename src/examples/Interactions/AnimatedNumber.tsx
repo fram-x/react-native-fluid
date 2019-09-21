@@ -11,7 +11,7 @@ const AnimatedNumber: React.FC<AnimatedNumberProps> = ({ value }) => {
   return (
     <Fluid.View style={styles.container}>
       {digits.map((s, index) => (
-        <Number key={index} value={parseInt(s)} />
+        <Number key={index} value={parseInt(s, 10)} />
       ))}
     </Fluid.View>
   );
@@ -22,13 +22,12 @@ type NumberProps = {
 };
 const Number: React.FC<NumberProps> = ({ value }) => {
   const style = {
-    transform: [{ translateY: -(value * boxHeight) }]
+    transform: [{ translateY: -(value * boxHeight) }],
   };
   return (
     <Fluid.View
       style={[styles.numberContainer, style]}
-      animation={Fluid.Animations.Springs.NoWobble}
-    >
+      animation={Fluid.Animations.Springs.NoWobble}>
       {[...Array(10).keys()].map((_, index) => (
         <Text style={styles.digit} key={index}>
           {index}
@@ -43,16 +42,16 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     height: boxHeight,
-    overflow: "hidden"
+    overflow: "hidden",
   },
   numberContainer: {
-    height: boxHeight
+    height: boxHeight,
   },
   digit: {
     height: boxHeight,
     fontFamily: "Arial",
-    fontSize: 24
-  }
+    fontSize: 24,
+  },
 });
 
 export { AnimatedNumber };
