@@ -54,6 +54,9 @@
       "jsx",
       "json",
       "node"
+    ],
+    "modulePathIgnorePatterns": [
+      "./src/web/*"
     ]
   }
 }
