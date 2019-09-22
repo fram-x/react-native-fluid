@@ -2,7 +2,8 @@ import {
   TransitionItem,
   StateChanges,
   ValueContextType,
-  Values
+  Values,
+  AnimatedStyleKeys,
 } from "../Types";
 import { getStyleInfo } from "../../Styles/getStyleInfo";
 import { useLog } from "../../Hooks";
@@ -14,7 +15,7 @@ import {
   SafeStateConfigType,
   isConfigWhenStyle,
   isConfigStyleInterpolation,
-  isConfigPropInterpolation
+  isConfigPropInterpolation,
 } from "../../Configuration";
 import { getAnimationOnEnd } from "../../Animation/Builder/getAnimationOnEnd";
 import { stopAnimation } from "../../Animation/Runner/Functions";
@@ -25,22 +26,22 @@ export const useWhenConfig = (
   propContext: ValueContextType,
   stateChanges: StateChanges,
   configuration: SafeStateConfigType,
-  animationType?: ConfigAnimationType
+  animationType?: ConfigAnimationType,
 ) => {
   const logger = useLog(transitionItem.label, "cwhen");
 
   const configs = configuration.when;
 
   const added = configs.filter(
-    o => stateChanges.added.find(s => s.name === o.state) !== undefined
+    o => stateChanges.added.find(s => s.name === o.state) !== undefined,
   );
 
   const changed = configs.filter(
-    o => stateChanges.changed.find(s => s.name === o.state) !== undefined
+    o => stateChanges.changed.find(s => s.name === o.state) !== undefined,
   );
 
   const removed = configs.filter(
-    o => stateChanges.removed.find(s => s.name === o.state) !== undefined
+    o => stateChanges.removed.find(s => s.name === o.state) !== undefined,
   );
 
   // Sort order?
@@ -52,7 +53,7 @@ export const useWhenConfig = (
   // Now we are ready to process the active when elements.
   // Lets loop through and find the unique ones
   const uniqueConfigs = allActiveConfigs.filter(
-    (v, i, a) => a.indexOf(v) === i
+    (v, i, a) => a.indexOf(v) === i,
   );
 
   uniqueConfigs.forEach(cf => {
@@ -69,7 +70,7 @@ export const useWhenConfig = (
         styleContext,
         propContext,
         isRemoved,
-        animationType
+        animationType,
       );
     }
   });
@@ -82,7 +83,7 @@ const registerWhenInterpolations = (
   styleContext: ValueContextType,
   propContext: ValueContextType,
   isRemoved: boolean,
-  animationType?: ConfigAnimationType
+  animationType?: ConfigAnimationType,
 ) => {
   // No need to do anything if we don't have any interpolations
   const interpolations =
@@ -101,14 +102,14 @@ const registerWhenInterpolations = (
         when.state +
         ") interpolation for " +
         Object.keys(interpolations).join(", "),
-      LoggerLevel.Verbose
+      LoggerLevel.Verbose,
     );
   }
 
   let onBegin = when.onBegin;
   const onEnd = getAnimationOnEnd(
     Object.keys(interpolations).length,
-    when.onEnd
+    when.onEnd,
   );
 
   interpolations.forEach(interpolation => {
@@ -127,7 +128,7 @@ const registerWhenInterpolations = (
           interpolation.extrapolateRight,
           when.loop,
           when.flip,
-          when.yoyo
+          when.yoyo,
         );
       } else if (isConfigPropInterpolation(interpolation)) {
         propContext.addAnimation(
@@ -142,7 +143,7 @@ const registerWhenInterpolations = (
           interpolation.extrapolateRight,
           when.loop,
           when.flip,
-          when.yoyo
+          when.yoyo,
         );
       }
     } else {
@@ -161,12 +162,12 @@ const registerWhenStyle = (
   when: ConfigWhenStyleType,
   styleContext: ValueContextType,
   isRemoved: boolean,
-  animationType?: ConfigAnimationType
+  animationType?: ConfigAnimationType,
 ) => {
   // Find all values that needs interpolation
   const {
     styleKeys: nextStyleKeys,
-    styleValues: nextStyleValues
+    styleValues: nextStyleValues,
   } = getStyleInfo(when.style);
 
   const interpolations: Values = {};
@@ -187,14 +188,14 @@ const registerWhenStyle = (
         when.state +
         ") style change for " +
         Object.keys(interpolations).join(", "),
-      LoggerLevel.Verbose
+      LoggerLevel.Verbose,
     );
   }
 
   let onBegin = when.onBegin;
   const onEnd = getAnimationOnEnd(
     Object.keys(interpolations).length,
-    when.onEnd
+    when.onEnd,
   );
 
   // Register interpolations
@@ -204,7 +205,7 @@ const registerWhenStyle = (
       key,
       undefined,
       isRemoved
-        ? [interpolations[key], undefined]
+        ? [interpolations[key], AnimatedStyleKeys[key].defaultValue]
         : [undefined, interpolations[key]],
       when.animation ||
         animationType ||
@@ -216,7 +217,7 @@ const registerWhenStyle = (
       undefined,
       when.loop,
       when.flip,
-      when.yoyo
+      when.yoyo,
     );
   });
 };
