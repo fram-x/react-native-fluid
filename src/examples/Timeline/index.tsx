@@ -18,15 +18,12 @@ const Box: React.FC<BoxProps> = ({ onPress, active }) => {
   );
 };
 
-const columns = 8;
+const columns = 12;
 const boxSize = 20;
-const height = 200;
 const createItems = () => {
   const nextMaze: boolean[] = [];
-  for (let y = 0; y < height / boxSize; y++) {
-    for (let x = 0; x < columns; x++) {
-      nextMaze.push(true);
-    }
+  for (let i = 0; i < columns * columns; i++) {
+    nextMaze.push(true);
   }
   return nextMaze;
 };
@@ -51,7 +48,7 @@ const TimelineExampleScreen = () => {
       const cy = metrics.y + metrics.height / 2;
       const px = children[index].x + children[index].width / 2;
       const py = children[index].y + children[index].height / 2;
-      const c = Math.abs(Math.hypot(cx - px, cy - py)) * 1.5;
+      const c = Math.abs(Math.hypot(cx - px, cy - py)) * 2.5;
       return c;
     },
     [index],
@@ -63,9 +60,13 @@ const TimelineExampleScreen = () => {
       staggerFunc: customStaggerFunc,
     },
   });
+
   return (
     <View style={styles.container}>
-      <Fluid.View style={styles.boxContainer} config={config}>
+      <Fluid.View
+        style={styles.boxContainer}
+        config={config}
+        onPress={() => toggle(0)}>
         {items.map((_, i) => (
           <Box key={i} active={toggled} onPress={() => toggle(i)} />
         ))}
@@ -82,7 +83,6 @@ const styles = StyleSheet.create({
   },
   boxContainer: {
     width: 250,
-    height: 250,
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",

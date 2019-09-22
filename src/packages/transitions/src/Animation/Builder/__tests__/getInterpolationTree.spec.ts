@@ -393,5 +393,6 @@ export const createSimpleTree = (
   node.children = mockNode.children
     ? mockNode.children.map(c => createSimpleTree(c, node))
     : [];
+  node.children.forEach(s => (s.stagger = node.stagger));
   return node;
 };

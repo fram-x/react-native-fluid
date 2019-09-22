@@ -197,8 +197,9 @@ function getNodeOffset(node: AnimationNode): number {
         return acc + (i < index ? c.subtreeDuration || 0 : 0);
       }, currentOffset);
     case "staggered":
+      if (parent.staggerFunction) return node.stagger;
       return parent.children.reduce((acc, _, i) => {
-        return i < index ? acc + parent.stagger : acc;
+        return i < index ? acc + node.stagger : acc;
       }, currentOffset);
   }
 }
@@ -218,7 +219,7 @@ function getSubtreeDuration(node: AnimationNode): number {
       return children.reduce(
         (accObj, c) => {
           return {
-            offset: accObj.offset + node.stagger,
+            offset: accObj.offset + (c.stagger > 0 ? c.stagger : node.stagger),
             value: Math.max(
               accObj.value,
               accObj.offset + (c.subtreeDuration || 0),
@@ -247,6 +248,7 @@ function createInterpolationNode(
   const resolvedChildAnimation = configuration.childAnimation || {
     type: "parallel",
   };
+
   const resolvedChildDirection =
     (configuration.childAnimation && configuration.childAnimation.direction) ||
     childDirection ||
@@ -258,6 +260,12 @@ function createInterpolationNode(
       configuration.childAnimation.staggerMs) ||
     Constants.DefaultStaggerMs;
 
+  const resolvedStaggerFunction =
+    configuration.childAnimation &&
+    configuration.childAnimation.type === "staggered"
+      ? configuration.childAnimation.staggerFunc
+      : undefined;
+
   const node: AnimationNode = {
     id: item.id,
     label: item.label,
@@ -268,6 +276,7 @@ function createInterpolationNode(
     stagger: resolvedStagger,
     childAnimation: resolvedChildAnimation.type,
     childDirection: resolvedChildDirection,
+    staggerFunction: resolvedStaggerFunction,
     duration:
       (singleInterpolation &&
         singleInterpolation.animationType &&
@@ -283,7 +292,7 @@ function createInterpolationNode(
       singleInterpolation !== undefined ? singleInterpolation.id : -1,
   };
 
-  const ipChildren = singleInterpolation
+  const children = singleInterpolation
     ? []
     : itemInterpolations.map(ip => ({
         id: item.id,
@@ -316,9 +325,25 @@ function createInterpolationNode(
           resolvedChildDirection,
         ),
       )
-      .concat(ipChildren as Array<AnimationNode>),
+      .concat(children as Array<AnimationNode>),
     resolvedChildDirection,
   );
+
+  // resolve stagger for children if necessary
+  if (configuration.childAnimation.type === "staggered") {
+    const { staggerFunc } = configuration.childAnimation;
+    if (staggerFunc) {
+      const childMetrics = node.children.map(c => c.metrics);
+      node.children.forEach((child, index) => {
+        child.stagger = staggerFunc(
+          index,
+          child.metrics,
+          child.metrics,
+          childMetrics,
+        );
+      });
+    }
+  }
 
   return node;
 }
