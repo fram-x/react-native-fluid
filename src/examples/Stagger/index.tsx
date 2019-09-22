@@ -28,7 +28,7 @@ const createItems = () => {
   return nextMaze;
 };
 
-const TimelineExampleScreen = () => {
+const StaggerExampleScreen = () => {
   const [items] = useState(() => createItems());
   const [index, setIndex] = useState(-1);
   const [toggled, setToggled] = useState(false);
@@ -105,4 +105,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TimelineExampleScreen;
+export default StaggerExampleScreen;

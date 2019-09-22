@@ -11,7 +11,7 @@ import MazeExampleScreen from "./Maze";
 import ParallaxExampleScreen from "./Parallax";
 import ChildExampleScreen from "./Children";
 import InterpolateExampleScreen from "./Interpolate";
-import TimelineExampleScreen from "./Timeline";
+import StaggerExampleScreen from "./Stagger";
 import EasingsExampleScreen from "./Easings";
 import StyleExampleScreen from "./Style";
 import InteractionsExampleScreen from "./Interactions";
@@ -34,7 +34,7 @@ const App = () => {
         <Stack.Screen name="maze" component={MazeExampleScreen} />
         <Stack.Screen name="parallax" component={ParallaxExampleScreen} />
         <Stack.Screen name="children" component={ChildExampleScreen} />
-        <Stack.Screen name="timeline" component={TimelineExampleScreen} />
+        <Stack.Screen name="stagger" component={StaggerExampleScreen} />
         <Stack.Screen name="easings" component={EasingsExampleScreen} />
         <Stack.Screen name="style" component={StyleExampleScreen} />
         <Stack.Screen

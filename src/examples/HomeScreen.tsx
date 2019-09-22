@@ -69,7 +69,7 @@ class HomeScreen extends React.PureComponent<any> {
           <HomeScreenButton
             text="Stagger"
             icon="altimeter"
-            onPress={() => this.openExample("timeline")}
+            onPress={() => this.openExample("stagger")}
           />
           <HomeScreenButton
             text="Style"
