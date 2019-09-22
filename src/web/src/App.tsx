@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Text, Image, StyleSheet } from "react-native";
 import Fluid from "react-native-fluid-transitions";
 import * as Colors from "./colors";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { generateImageUri } from "./helpers";
 
 const imageUri = generateImageUri(21, 150, 150);
