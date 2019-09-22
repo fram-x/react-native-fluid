@@ -1,107 +1,198 @@
-import React, { useState, useCallback } from "react";
-import { View, StyleSheet } from "react-native";
-import Fluid, { MetricsInfo } from "react-native-fluid-transitions";
+import React, { useState } from "react";
+import { Text, Image, StyleSheet } from "react-native";
+import Fluid from "react-native-fluid-transitions";
+import * as Colors from "./colors";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { generateImageUri } from "./helpers";
 
-type BoxProps = {
-  active: boolean;
-  onPress: () => void;
-};
-const Box: React.FC<BoxProps> = ({ onPress, active }) => {
-  return (
-    <Fluid.View
-      onPress={onPress}
-      animation={Fluid.Animations.Timings.Default}
-      staticStyle={styles.box}
-      style={active ? styles.activeBox : styles.inactiveBox}
-    />
-  );
-};
+const imageUri = generateImageUri(21, 150, 150);
 
-const columns = 12;
-const boxSize = 20;
-const createItems = () => {
-  const nextMaze: boolean[] = [];
-  for (let i = 0; i < columns * columns; i++) {
-    nextMaze.push(true);
-  }
-  return nextMaze;
-};
+const InterpolateExampleScreen = () => {
+  const [isInterpolatingImage, setIsInterpolatingImage] = useState(false);
+  const toggleImageInterpolation = () =>
+    setIsInterpolatingImage(!isInterpolatingImage);
 
-const StaggerExampleScreen = () => {
-  const [items] = useState(() => createItems());
-  const [index, setIndex] = useState(-1);
-  const [toggled, setToggled] = useState(false);
-  const toggle = useCallback((i: number) => {
-    setIndex(i);
-    setToggled(p => !p);
-  }, []);
+  const imageState = {
+    name: "isInterpolatingImage",
+    active: isInterpolatingImage,
+  };
 
-  const customStaggerFunc = useCallback(
-    (
-      _index: number,
-      metrics: MetricsInfo,
-      _parentMetrics: MetricsInfo,
-      children: Array<MetricsInfo>,
-    ) => {
-      const cx = metrics.x + metrics.width / 2;
-      const cy = metrics.y + metrics.height / 2;
-      const px = children[index].x + children[index].width / 2;
-      const py = children[index].y + children[index].height / 2;
-      const c = Math.abs(Math.hypot(cx - px, cy - py)) * 2.5;
-      return c;
+  const [isInterpolatingBoxes, setIsInterpolatingBoxes] = useState(false);
+
+  const toggleBoxesInterpolation = () =>
+    setIsInterpolatingBoxes(!isInterpolatingBoxes);
+
+  const boxState = {
+    name: "isInterpolatingBoxes",
+    active: isInterpolatingBoxes,
+  };
+  const states = [boxState, imageState];
+
+  const config = Fluid.createConfig({});
+
+  const ImageEnterInteprolation = Fluid.createConfig({
+    onEnter: {
+      state: "isInterpolatingImage",
+      fromLabel: "imageA",
     },
-    [index],
-  );
+  });
+  const ImageExitInteprolation = Fluid.createConfig({
+    onExit: {
+      state: "isInterpolatingImage",
+      fromLabel: "imageB",
+    },
+  });
 
-  const config = Fluid.createConfig({
-    childAnimation: {
-      type: "staggered",
-      staggerFunc: customStaggerFunc,
+  const BoxEnterInteprolation = Fluid.createConfig({
+    onEnter: {
+      state: "isInterpolatingBoxes",
+      fromLabel: "boxA",
+    },
+  });
+  const BoxExitInteprolation = Fluid.createConfig({
+    onExit: {
+      state: "isInterpolatingBoxes",
+      fromLabel: "boxB",
     },
   });
 
   return (
-    <View style={styles.container}>
-      <Fluid.View
-        style={styles.boxContainer}
-        config={config}
-        onPress={() => toggle(0)}>
-        {items.map((_, i) => (
-          <Box key={i} active={toggled} onPress={() => toggle(i)} />
-        ))}
+    <Fluid.View
+      label="container"
+      style={styles.container}
+      states={states}
+      config={config}>
+      <Fluid.View label={"interpolating-images"} style={styles.boxContainer}>
+        <Fluid.View
+          label={"imageA"}
+          animation={Fluid.Animations.Springs.WobblySlow}
+          style={styles.imageA}
+          config={ImageExitInteprolation}>
+          <Image source={{ uri: imageUri }} style={StyleSheet.absoluteFill} />
+        </Fluid.View>
+        <Fluid.View
+          label={"imageB"}
+          animation={Fluid.Animations.Springs.WobblySlow}
+          style={styles.imageB}
+          config={ImageEnterInteprolation}>
+          <Image source={{ uri: imageUri }} style={StyleSheet.absoluteFill} />
+        </Fluid.View>
       </Fluid.View>
-    </View>
+      {/* Swapper */}
+      <Fluid.View
+        label="arrow"
+        onPress={toggleImageInterpolation}
+        // config={
+        //   <Fluid.Configuration>
+        //     <Fluid.When
+        //       state="isInterpolatingImage"
+        //       style={styles.isInterpolating}
+        //     />
+        //   </Fluid.Configuration>
+        // }
+      >
+        <Text>-></Text>
+      </Fluid.View>
+      <Text style={styles.description}>
+        Tap the arrow to interpolate the images
+      </Text>
+      {/* Boxes */}
+      <Fluid.View label={"interpolating-boxes"} style={styles.boxContainer}>
+        <Fluid.View
+          label={"boxA"}
+          animation={{ type: "timing", duration: 1000 }}
+          style={styles.boxA}
+          config={BoxExitInteprolation}>
+          <Text>{"Box A"}</Text>
+        </Fluid.View>
+        <Fluid.View
+          label={"boxB"}
+          animation={{ type: "timing", duration: 1000 }}
+          style={styles.boxB}
+          config={BoxEnterInteprolation}>
+          <Text>{"Box B"}</Text>
+        </Fluid.View>
+      </Fluid.View>
+      {/* Swapper */}
+      <Fluid.View
+        label="arrow"
+        onPress={toggleBoxesInterpolation}
+        // config={
+        //   <Fluid.Configuration>
+        //     <Fluid.When
+        //       state="isInterpolatingBoxes"
+        //       style={styles.isInterpolating}
+        //     />
+        //   </Fluid.Configuration>
+        // }
+      >
+        <Text>-></Text>
+      </Fluid.View>
+      <Text style={styles.description}>
+        Tap the arrow to interpolate the boxes
+      </Text>
+    </Fluid.View>
   );
+};
+
+InterpolateExampleScreen.navigationOptions = {
+  title: "Interpolate",
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 20,
     alignItems: "center",
     justifyContent: "center",
   },
   boxContainer: {
-    width: 250,
+    alignSelf: "stretch",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around",
+    height: 140,
+  },
+  boxA: {
+    width: 100,
+    height: 100,
     alignItems: "center",
     justifyContent: "center",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    borderColor: "#000",
-    borderWidth: StyleSheet.hairlineWidth,
-    padding: 5,
+    borderColor: Colors.ColorD,
+    borderWidth: 4,
+    transform: [{ rotate: "45deg" }],
   },
-  box: {
-    width: boxSize,
-    height: boxSize,
-    backgroundColor: "#B52B38",
-    margin: 2,
+  boxB: {
+    width: 75,
+    height: 75,
+    alignItems: "center",
+    justifyContent: "center",
+    borderColor: Colors.ColorE,
+    borderWidth: 4,
+    borderRadius: 50,
   },
-  inactiveBox: {
-    transform: [{ scale: 1 }],
+  imageA: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    overflow: "hidden",
+    transform: [{ rotate: "45deg" }],
   },
-  activeBox: {
-    transform: [{ scale: 0.0009 }],
+  imageB: {
+    width: 100,
+    height: 100,
+    overflow: "hidden",
+  },
+  isInterpolating: {},
+  description: {
+    textAlign: "center",
+    padding: 20,
+  },
+  border: {
+    alignSelf: "stretch",
+    borderTopColor: "#333",
+    borderTopWidth: StyleSheet.hairlineWidth,
   },
 });
 
-export default StaggerExampleScreen;
+export default InterpolateExampleScreen;
