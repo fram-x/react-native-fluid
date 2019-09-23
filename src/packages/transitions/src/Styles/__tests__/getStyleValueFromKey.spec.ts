@@ -18,7 +18,7 @@ describe("getStyleValueFromKey", () => {
     expect(valueToTest).toBe(10);
   });
 
-  it("should return value from style for nested keys", () => {
+  it("should return value from style for nested keys 2", () => {
     const style = { transform: [{ translateX: 100 }] };
     const valueToTest = getStyleValueFromKey("transform.translateX", style);
     expect(valueToTest).toBe(100);

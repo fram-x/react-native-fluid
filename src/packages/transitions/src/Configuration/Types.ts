@@ -58,11 +58,9 @@ export type ConfigStateType = {
  * @returns Offset from start in milliseconds for staggering item with index
  */
 export type ConfigStaggerFunction = (
-  index: number,
-  metrics: MetricsInfo,
   parentMetrics: MetricsInfo,
   childMetrics: Array<MetricsInfo>,
-) => number;
+) => number[];
 
 type BaseConfigChildAnimationType = {
   direction?: ChildAnimationDirection;

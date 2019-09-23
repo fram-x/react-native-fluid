@@ -11,7 +11,7 @@ const Box: React.FC<BoxProps> = ({ onPress, active }) => {
   return (
     <Fluid.View
       onPress={onPress}
-      animation={Fluid.Animations.Timings.Micro}
+      animation={Fluid.Animations.Springs.NoWobble}
       staticStyle={styles.box}
       style={active ? styles.activeBox : styles.inactiveBox}
     />
@@ -40,18 +40,21 @@ const StaggerExampleScreen = () => {
   }, []);
 
   const customStaggerFunc = useCallback(
-    (
-      _index: number,
-      metrics: MetricsInfo,
-      _parentMetrics: MetricsInfo,
-      children: Array<MetricsInfo>,
-    ) => {
-      const cx = metrics.x + metrics.width / 2;
-      const cy = metrics.y + metrics.height / 2;
-      const px = children[index].x + children[index].width / 2;
-      const py = children[index].y + children[index].height / 2;
-      const c = Math.abs(Math.hypot(cx - px, cy - py)) * 2.5;
-      return c;
+    (_: MetricsInfo, childMetrics: Array<MetricsInfo>) => {
+      let maxValue = 0;
+      let retVal: number[] = new Array(childMetrics.length);
+      const px = childMetrics[index].x + childMetrics[index].width / 2;
+      const py = childMetrics[index].y + childMetrics[index].height / 2;
+      childMetrics.forEach((m, i) => {
+        const cx = m.x + m.width / 2;
+        const cy = m.y + m.height / 2;
+        const c = Math.abs(Math.hypot(cx - px, cy - py)) * 2.5;
+        maxValue = Math.max(maxValue, c);
+        retVal[i] = c;
+      });
+
+      const easing = (t: number) => t * t;
+      return retVal.map(val => easing(val / maxValue) * maxValue);
     },
     [index],
   );

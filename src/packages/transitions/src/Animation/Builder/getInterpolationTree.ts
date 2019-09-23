@@ -21,6 +21,9 @@ export function getInterpolationTree(
   // Build Tree
   const tree = createInterpolationNode(item, interpolations);
 
+  // Resolve stagger
+  resolveStagger(tree);
+
   // Get hash of items with interpolation
   const hash = getInterpolations(interpolationIds);
 
@@ -74,6 +77,21 @@ export const flattenTree = (nodes: Array<AnimationNode>) => {
 const flattenNode = (node: AnimationNode, nodeList: Array<AnimationNode>) => {
   nodeList.push(node);
   node.children.forEach(c => flattenNode(c, nodeList));
+};
+
+const resolveStagger = (node: AnimationNode) => {
+  // resolve stagger for children if necessary
+  if (node.childAnimation === "staggered") {
+    if (node.staggerFunction) {
+      const staggerFunc = node.staggerFunction;
+      const childMetrics = node.children.map(c => c.metrics);
+      const staggerValues = staggerFunc(node.metrics, childMetrics);
+      node.children.forEach((child, index) => {
+        child.stagger = staggerValues[index];
+        resolveStagger(child);
+      });
+    }
+  }
 };
 
 /**
@@ -328,22 +346,6 @@ function createInterpolationNode(
       .concat(children as Array<AnimationNode>),
     resolvedChildDirection,
   );
-
-  // resolve stagger for children if necessary
-  if (configuration.childAnimation.type === "staggered") {
-    const { staggerFunc } = configuration.childAnimation;
-    if (staggerFunc) {
-      const childMetrics = node.children.map(c => c.metrics);
-      node.children.forEach((child, index) => {
-        child.stagger = staggerFunc(
-          index,
-          child.metrics,
-          child.metrics,
-          childMetrics,
-        );
-      });
-    }
-  }
 
   return node;
 }
