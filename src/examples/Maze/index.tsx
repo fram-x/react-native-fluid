@@ -10,7 +10,7 @@ const { width, height } = Dimensions.get("window");
 const boxSize = width / columns;
 
 const createMaze = () => {
-  const nextMaze = new Array<boolean>();
+  const nextMaze: boolean[] = [];
   for (let y = 0; y < height / boxSize; y++) {
     for (let x = 0; x < columns; x++) {
       nextMaze.push(Math.random() < 0.5);
@@ -47,8 +47,7 @@ const MazeExampleScreen = () => {
       label="container"
       config={{ childAnimation: { type: "staggered", staggerMs: 25 } }}
       style={styles.container}
-      onPress={toggleLabyrinth}
-    >
+      onPress={toggleLabyrinth}>
       {/* <MazeItem key={0} isSet={maze[0]} index={0} size={boxSize} /> */}
       {maze.map((b, index) => (
         <MazeItem key={index} isSet={b} index={index} size={boxSize} />
@@ -58,7 +57,7 @@ const MazeExampleScreen = () => {
 };
 
 MazeExampleScreen.navigationOptions = {
-  title: "Maze"
+  title: "Maze",
 };
 
 export default MazeExampleScreen;
