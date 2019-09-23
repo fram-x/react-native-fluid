@@ -79,6 +79,7 @@ export function withFluidTransitions<BasePropType, StyleType>(
     onAnimationBegin,
     overriddenTransitionId,
     animation,
+    // @ts-ignore
     ...rest
   }) => {
     /******************************************************
@@ -270,6 +271,7 @@ export function withFluidTransitions<BasePropType, StyleType>(
         hasChildren,
         setupInterpolators,
       );
+      // @ts-ignore
       return React.createElement(compType, { ...props, ...p });
     };
 

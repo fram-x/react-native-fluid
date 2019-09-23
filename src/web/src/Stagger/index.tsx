@@ -33,7 +33,9 @@ const StaggerExampleScreen = () => {
   const [index, setIndex] = useState(-1);
   const [toggled, setToggled] = useState(false);
   const toggle = useCallback((i: number) => {
-    setIndex(i);
+    if (i > -1) {
+      setIndex(i);
+    }
     setToggled(p => !p);
   }, []);
 
@@ -66,7 +68,7 @@ const StaggerExampleScreen = () => {
       <Fluid.View
         style={styles.boxContainer}
         config={config}
-        onPress={() => toggle(0)}>
+        onPress={() => toggle(-1)}>
         {items.map((_, i) => (
           <Box key={i} active={toggled} onPress={() => toggle(i)} />
         ))}
@@ -83,7 +85,7 @@ const styles = StyleSheet.create({
   },
   boxContainer: {
     margin: 40,
-    width: 250,
+    width: 350,
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
