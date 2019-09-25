@@ -2,7 +2,6 @@ import React from "react";
 import { StyleSheet, Text } from "react-native";
 import Fluid, {
   useFluidState,
-  createConfig,
   useFluidConfig,
 } from "react-native-fluid-transitions";
 import * as Colors from "../colors";

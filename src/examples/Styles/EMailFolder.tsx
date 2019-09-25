@@ -8,7 +8,7 @@ import { createState } from "react-native-fluid-transitions";
 const EmailFolder: React.FunctionComponent<{}> = () => {
   const [counter, setCounter] = useState(0);
   const countState = createState("counter", counter > 0, counter);
-  const activeState = createState("active", true, counter > 0);
+  const activeState = createState("active", counter > 0);
   const inactiveState = createState("inactive", counter === 0);
   const states = [countState, activeState];
 
