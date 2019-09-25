@@ -20,11 +20,13 @@ const EmailFolder: React.FunctionComponent<{}> = () => {
     ],
     onEnter: {
       state: "counter",
-      interpolation: {
-        inputRange: [0, 0.5, 1],
-        outputRange: [1, 2, 1],
-        styleKey: "transform.scale",
-      },
+      onFactory: () => ({
+        interpolation: {
+          inputRange: [0, 0.5, 1],
+          outputRange: [1, 2, 1],
+          styleKey: "transform.scale",
+        },
+      }),
     },
   });
 
