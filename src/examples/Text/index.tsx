@@ -6,8 +6,8 @@ import Ticker from "./Ticker";
 import Fluid from "react-native-fluid-transitions";
 
 const config = Fluid.createConfig({
-  childAnimation: { type: "staggered", staggerMs: 250 },
-  animation: Fluid.Animations.Springs.Wobbly
+  childAnimation: { type: "staggered", stagger: 250 },
+  animation: Fluid.Animations.Springs.Wobbly,
 });
 
 const TextExampleScreen = () => {
@@ -18,8 +18,7 @@ const TextExampleScreen = () => {
       <Fluid.View
         label="container"
         config={config}
-        onPress={() => setCounter(counter + 1)}
-      >
+        onPress={() => setCounter(counter + 1)}>
         <AdCard
           key={"AdCard" + counter.toString()}
           icon="hospital"
@@ -30,22 +29,22 @@ const TextExampleScreen = () => {
           key={"Ticker1" + counter.toString()}
           text={"Aloha from Hawaii"}
           appear={{
-            transform: [{ translateY: -40 }],
-            opacity: 0
+            transform: [{ translateX: 200 }],
+            opacity: 0,
           }}
         />
         <Ticker
           key={"Ticker2" + counter.toString()}
           text={"Buenos Noches"}
           appear={{
-            transform: [{ scale: 0.009 }]
+            transform: [{ scale: 0.009 }],
           }}
         />
         <Ticker
           key={"Ticker3" + counter.toString()}
           text={"Hello from the US"}
           appear={{
-            transform: [{ rotateY: "90deg" }]
+            transform: [{ rotateY: "90deg" }],
           }}
         />
       </Fluid.View>
@@ -60,8 +59,8 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    padding: 10
-  }
+    padding: 10,
+  },
 });
 
 export default TextExampleScreen;

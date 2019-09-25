@@ -2,8 +2,9 @@ import { IAnimationProvider } from "./src/Types/IAnimationProvider";
 import { NativeModules } from "react-native";
 
 const _renimatedAvailable =
-  // false &&
-  NativeModules !== undefined && NativeModules.ReanimatedModule !== undefined;
+  false &&
+  NativeModules !== undefined &&
+  NativeModules.ReanimatedModule !== undefined;
 
 console.log(
   `**** Render engine ${

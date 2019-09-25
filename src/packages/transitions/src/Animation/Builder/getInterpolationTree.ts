@@ -3,7 +3,10 @@ import { DefaultTime } from "../../Utilities";
 import * as Constants from "../../Types/Constants";
 import { TransitionItem } from "../../Components/Types/TransitionItem";
 import { InterpolationInfo } from "../../Components/Types/InterpolationTypes";
-import { ChildAnimationDirection } from "../../Configuration";
+import {
+  ChildAnimationDirection,
+  ConfigStaggerFunction,
+} from "../../Configuration";
 
 /**
  *
@@ -273,15 +276,18 @@ function createInterpolationNode(
     "forward";
 
   const resolvedStagger =
-    (configuration.childAnimation &&
-      configuration.childAnimation.type === "staggered" &&
-      configuration.childAnimation.staggerMs) ||
-    Constants.DefaultStaggerMs;
+    configuration.childAnimation &&
+    configuration.childAnimation.type === "staggered" &&
+    configuration.childAnimation.stagger &&
+    !(typeof configuration.childAnimation.stagger === "function")
+      ? (configuration.childAnimation.stagger as number)
+      : Constants.DefaultStaggerMs;
 
   const resolvedStaggerFunction =
     configuration.childAnimation &&
-    configuration.childAnimation.type === "staggered"
-      ? configuration.childAnimation.staggerFunc
+    configuration.childAnimation.type === "staggered" &&
+    typeof configuration.childAnimation.stagger === "function"
+      ? (configuration.childAnimation.stagger as ConfigStaggerFunction)
       : undefined;
 
   const node: AnimationNode = {

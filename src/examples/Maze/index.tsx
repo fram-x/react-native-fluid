@@ -45,7 +45,7 @@ const MazeExampleScreen = () => {
   return (
     <Fluid.View
       label="container"
-      config={{ childAnimation: { type: "staggered", staggerMs: 25 } }}
+      config={{ childAnimation: { type: "staggered", stagger: 25 } }}
       style={styles.container}
       onPress={toggleLabyrinth}>
       {/* <MazeItem key={0} isSet={maze[0]} index={0} size={boxSize} /> */}

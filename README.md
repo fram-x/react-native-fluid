@@ -11,6 +11,7 @@
 ## TODO
 
 [ ] ConfigStateType should be accepted as state 
+[ ] StaggerMs & StaggerFunc => stagger
 [ ] Navigation with new Stack navigator
 [X] Test/implement stagger custom function
 [ ] Create dragging example
@@ -23,3 +24,25 @@
     animations and pass them to the spring function
 [ ] Optimize runner - find common interpolations and accept multiple set value nodes
 
+## Getting Started
+
+### Web:
+´´´
+cd ./src/packages/animated
+npm link
+´´´
+
+´´´
+cd ./src/web
+npm link react-native-fluid-animations
+´´´
+
+´´´
+cd ./src/packages/transitions
+npm link
+´´´
+
+´´´
+cd ./src/web
+npm link react-native-fluid-transitions
+´´´

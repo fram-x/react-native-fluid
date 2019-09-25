@@ -45,10 +45,9 @@ const MazeExampleScreen = () => {
   return (
     <Fluid.View
       label="container"
-      config={{ childAnimation: { type: "staggered", staggerMs: 25 } }}
+      config={{ childAnimation: { type: "staggered", stagger: 25 } }}
       style={styles.container}
-      onPress={toggleLabyrinth}
-    >
+      onPress={toggleLabyrinth}>
       {/* <MazeItem key={0} isSet={maze[0]} index={0} size={boxSize} /> */}
       {maze.map((b, index) => (
         <MazeItem key={index} isSet={b} index={index} size={boxSize} />
@@ -58,7 +57,7 @@ const MazeExampleScreen = () => {
 };
 
 MazeExampleScreen.navigationOptions = {
-  title: "Maze"
+  title: "Maze",
 };
 
 export default MazeExampleScreen;

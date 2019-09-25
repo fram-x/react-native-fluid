@@ -86,19 +86,19 @@ const ListExampleScreen = () => {
           style={styles.list}
           label="container"
           config={{
-            childAnimation: { type: "staggered", staggerMs: 50 },
+            childAnimation: { type: "staggered", stagger: 50 },
           }}>
           <Transitioning.View transition={transition} ref={ref}>
-            {data.map(data => (
+            {data.map(d => (
               <Fluid.View
-                label={"row" + data.id}
-                key={data.id}
-                onPress={() => handleDeleteRow(data)}
+                label={"row" + d.id}
+                key={d.id}
+                onPress={() => handleDeleteRow(d)}
                 initialStyle={styles.rowUnmounted}
                 style={styles.row}
                 config={itemConfig}>
-                <Image source={{ uri: data.uri }} style={styles.image} />
-                <Text>{data.value}</Text>
+                <Image source={{ uri: d.uri }} style={styles.image} />
+                <Text>{d.value}</Text>
               </Fluid.View>
             ))}
           </Transitioning.View>

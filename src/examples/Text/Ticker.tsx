@@ -17,11 +17,10 @@ const Ticker: React.FunctionComponent<{
           <Fluid.Text
             label={s}
             key={text + index.toString()}
-            initialStyle={appear}
-          >
+            initialStyle={appear}>
             {s}
           </Fluid.Text>
-        )
+        ),
       )}
     </Fluid.View>
   );
@@ -36,8 +35,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     marginTop: 20,
-    padding: 20
-  }
+    padding: 20,
+  },
 });
 
 export default Ticker;

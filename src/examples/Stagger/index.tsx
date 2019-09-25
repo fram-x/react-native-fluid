@@ -60,7 +60,7 @@ const StaggerExampleScreen = () => {
   const config = Fluid.createConfig({
     childAnimation: {
       type: "staggered",
-      staggerFunc: customStaggerFunc,
+      stagger: customStaggerFunc,
     },
   });
 
