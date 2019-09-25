@@ -2,7 +2,7 @@ import {
   TransitionItem,
   StateChanges,
   ValueContextType,
-  SharedInterpolationContextType
+  SharedInterpolationContextType,
 } from "../Types";
 import {
   SafeStateConfigType,
@@ -13,7 +13,8 @@ import {
   ConfigOnSharedType,
   BaseConfigInterpolationType,
   isConfigStyleInterpolation,
-  isConfigPropInterpolation
+  isConfigPropInterpolation,
+  getResolvedStateName,
 } from "../../Configuration";
 import { getAnimationOnEnd } from "../../Animation/Builder/getAnimationOnEnd";
 import { Dimensions } from "react-native";
@@ -26,7 +27,7 @@ export const useOnConfig = (
   stateChanges: StateChanges,
   configuration: SafeStateConfigType,
   sharedInterpolationContext: SharedInterpolationContextType,
-  animationType?: ConfigAnimationType
+  animationType?: ConfigAnimationType,
 ) => {
   const configEnter = configuration.onEnter;
   const configExit = configuration.onExit;
@@ -41,27 +42,27 @@ export const useOnConfig = (
     const state = configuration.states.find(s => s.name === p.state);
     if (!state) {
       throw fluidException(
-        `Could not find state ${p.state} for shared interpolation.`
+        `Could not find state ${p.state} for shared interpolation.`,
       );
     }
     sharedInterpolationContext.registerSharedInterpolationInfo(
       p.fromLabel,
       transitionItem.label || "unknown",
       // TODO: Find a way to see when a state is active
-      state.active || false
+      state.active || false,
     );
   });
 
   const added = configEnter.filter(
-    o => stateChanges.added.find(s => s.name === o.state) !== undefined
+    o => stateChanges.added.find(s => s.name === o.state) !== undefined,
   );
 
   const changed = configEnter.filter(
-    o => stateChanges.changed.find(s => s.name === o.state) !== undefined
+    o => stateChanges.changed.find(s => s.name === o.state) !== undefined,
   );
 
   const removed = configExit.filter(
-    o => stateChanges.removed.find(s => s.name === o.state) !== undefined
+    o => stateChanges.removed.find(s => s.name === o.state) !== undefined,
   );
 
   // Sort order?
@@ -73,7 +74,7 @@ export const useOnConfig = (
   // Now we are ready to process the active when elements.
   // Lets loop through and find the unique ones
   const uniqueConfigs = allActiveConfigs.filter(
-    (v, i, a) => a.indexOf(v) === i
+    (v, i, a) => a.indexOf(v) === i,
   );
 
   // Loop through configs
@@ -91,19 +92,19 @@ export const useOnConfig = (
       const factoryResults = onConfig.onFactory({
         screenSize: { width, height },
         metrics: transitionItem.metrics(),
-        state: onConfig.state,
-        type: "enter"
+        state: getResolvedStateName(onConfig.state),
+        type: "enter",
       });
       addInterpolation(
         { state: onConfig.state, interpolation: factoryResults.interpolation },
-        factoryResults.animation
+        factoryResults.animation,
       );
     }
   });
 
   function addInterpolation(
     onConfig: ConfigOnInterpolationType,
-    animationType?: ConfigAnimationType
+    animationType?: ConfigAnimationType,
   ) {
     if (
       onConfig.loop === Infinity ||
@@ -112,7 +113,7 @@ export const useOnConfig = (
     ) {
       throw fluidException(
         "Infinity loops not allowed on onEnter/onExit " +
-          "because there is no way to stop them."
+          "because there is no way to stop them.",
       );
     }
     const interpolations: BaseConfigInterpolationType[] =
@@ -123,7 +124,7 @@ export const useOnConfig = (
     let onBegin = onConfig.onBegin;
     const onEnd = getAnimationOnEnd(
       Object.keys(interpolations).length,
-      onConfig.onEnd
+      onConfig.onEnd,
     );
 
     // Loop through interpolations
@@ -134,7 +135,7 @@ export const useOnConfig = (
         : undefined;
       const outputValues = new Array<number | string>();
       interpolation.outputRange.forEach((v: string | number) =>
-        outputValues.push(v)
+        outputValues.push(v),
       );
 
       // Check type of interpolation
@@ -151,7 +152,7 @@ export const useOnConfig = (
           interpolation.extrapolateRight,
           onConfig.loop,
           onConfig.flip,
-          onConfig.yoyo
+          onConfig.yoyo,
         );
       } else if (isConfigPropInterpolation(interpolation)) {
         propContext.addAnimation(
@@ -166,7 +167,7 @@ export const useOnConfig = (
           interpolation.extrapolateRight,
           onConfig.loop,
           onConfig.flip,
-          onConfig.yoyo
+          onConfig.yoyo,
         );
       }
     });
@@ -174,7 +175,7 @@ export const useOnConfig = (
 
   function addSharedInterpolation(
     onConfig: ConfigOnSharedType,
-    animationType?: ConfigAnimationType
+    animationType?: ConfigAnimationType,
   ) {
     sharedInterpolationContext.registerSharedInterpolation(
       transitionItem,
@@ -182,7 +183,7 @@ export const useOnConfig = (
       transitionItem.label || "unknown",
       onConfig.animation || animationType,
       onConfig.onBegin,
-      onConfig.onEnd
+      onConfig.onEnd,
     );
   }
 };

@@ -8,7 +8,7 @@ import {
 
 import { InterpolatorContext, StateContext } from "./src/Components/Types";
 import { useFluidState, useFluidConfig } from "./src/Hooks";
-import { createConfig } from "./src/Configuration";
+import { createConfig, createState } from "./src/Configuration";
 import {
   interpolateColor,
   interpolateValue,
@@ -74,14 +74,13 @@ export default Fluid;
 export {
   useFluidState,
   createConfig,
+  createState,
   useFluidConfig,
   Easings,
-  // @ts-ignore
   MetricsInfo,
   InterpolatorContext,
   StateContext,
   createFluidComponent,
-  // @ts-ignore
   ValueDescriptorType,
   interpolateColor,
   interpolateValue,

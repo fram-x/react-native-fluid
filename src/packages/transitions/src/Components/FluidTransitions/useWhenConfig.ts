@@ -16,6 +16,7 @@ import {
   isConfigWhenStyle,
   isConfigStyleInterpolation,
   isConfigPropInterpolation,
+  getResolvedStateName,
 } from "../../Configuration";
 import { getAnimationOnEnd } from "../../Animation/Builder/getAnimationOnEnd";
 import { stopAnimation } from "../../Animation/Runner/Functions";
@@ -33,15 +34,23 @@ export const useWhenConfig = (
   const configs = configuration.when;
 
   const added = configs.filter(
-    o => stateChanges.added.find(s => s.name === o.state) !== undefined,
+    o =>
+      stateChanges.added.find(s => s.name === getResolvedStateName(o.state)) !==
+      undefined,
   );
 
   const changed = configs.filter(
-    o => stateChanges.changed.find(s => s.name === o.state) !== undefined,
+    o =>
+      stateChanges.changed.find(
+        s => s.name === getResolvedStateName(o.state),
+      ) !== undefined,
   );
 
   const removed = configs.filter(
-    o => stateChanges.removed.find(s => s.name === o.state) !== undefined,
+    o =>
+      stateChanges.removed.find(
+        s => s.name === getResolvedStateName(o.state),
+      ) !== undefined,
   );
 
   // Sort order?

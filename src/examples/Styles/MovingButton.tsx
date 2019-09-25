@@ -21,11 +21,11 @@ const MovingButton: React.FunctionComponent<{}> = () => {
     animation: Fluid.Animations.Springs.WobblySlow,
     when: [
       {
-        state: pressedState.name,
+        state: pressedState,
         style: styles.pressed,
         animation: Fluid.Animations.Timings.Default,
       },
-      { state: activeState.name, style: styles.activeButton },
+      { state: activeState, style: styles.activeButton },
       { state: "nottoggled", style: styles.inactiveButton },
     ],
   });

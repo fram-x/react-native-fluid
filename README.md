@@ -10,8 +10,8 @@
 
 ## TODO
 
-[ ] ConfigStateType should be accepted as state 
-[ ] StaggerMs & StaggerFunc => stagger
+[X] ConfigStateType should be accepted as state 
+[X] StaggerMs & StaggerFunc => stagger
 [ ] Navigation with new Stack navigator
 [X] Test/implement stagger custom function
 [ ] Create dragging example

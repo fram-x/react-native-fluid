@@ -175,12 +175,12 @@ type BaseConfigType = {
  * when a given state is active.
  */
 export type ConfigWhenStyleType = BaseConfigType & {
-  state: string;
+  state: string | ConfigStateType;
   style: StyleProp<any>;
 };
 
 export type ConfigWhenInterpolationType = BaseConfigType & {
-  state: string;
+  state: string | ConfigStateType;
   interpolation:
     | ConfigPropInterpolationType
     | ConfigPropInterpolationType[]
@@ -206,13 +206,20 @@ export const isConfigWhenInterpolation = (
  * @type Defines an interpolation that will be added when a given state enters or exits.
  */
 export type BaseConfigOnType = {
-  state: string;
+  state: string | ConfigStateType;
   animation?: ConfigAnimationType;
   onBegin?: OnAnimationFunction;
   onEnd?: OnAnimationFunction;
   loop?: number;
   flip?: number;
   yoyo?: number;
+};
+
+export const getResolvedStateName = (state: string | ConfigStateType) => {
+  if (typeof state === "string") {
+    return state;
+  }
+  return (state as ConfigStateType).name;
 };
 
 export type ConfigOnInterpolationType = BaseConfigOnType & {
