@@ -93,7 +93,8 @@ export const useOnConfig = (
         screenSize: { width, height },
         metrics: transitionItem.metrics(),
         state: getResolvedStateName(onConfig.state),
-        type: "enter",
+        type:
+          removed.find(p => p === onConfig) !== undefined ? "exit" : "enter",
       });
       addInterpolation(
         { state: onConfig.state, interpolation: factoryResults.interpolation },
