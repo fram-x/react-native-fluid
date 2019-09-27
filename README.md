@@ -5,9 +5,20 @@
 [X] Fix issue with removing a when interpolation. See Styles example and press on/off
 [ ] Shared transitions
   [ ] Fix running second shared transition while one is running
-[ ] Fix measure of rotated elements on Web
-[ ] Test examples on Android and fix issues found (list them below)
 
+### Web
+[ ] Fix measure of rotated elements on Web
+
+### Android
+[ ] Parallax example, abrubt change of header color
+[ ] SVG - ValueNode cannot be cast to a number
+[ ] Interpolation 
+  [ ] "Error while updating transform"
+  [ ] Rotated image is not displayed correctly
+[ ] Stagger is really slow
+[ ] Interactions - some alignment issue
+[ ] Repeat is really slow
+ 
 ## TODO
 
 [X] ConfigStateType should be accepted as state 
