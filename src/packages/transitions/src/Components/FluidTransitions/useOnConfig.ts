@@ -105,7 +105,7 @@ export const useOnConfig = (
 
   function addInterpolation(
     onConfig: ConfigOnInterpolationType,
-    animationType?: ConfigAnimationType,
+    animation?: ConfigAnimationType,
   ) {
     if (
       onConfig.loop === Infinity ||
@@ -134,7 +134,7 @@ export const useOnConfig = (
       const inputValues = interpolation.inputRange
         ? interpolation.inputRange.map(v => v)
         : undefined;
-      const outputValues = new Array<number | string>();
+      const outputValues: Array<number | string> = [];
       interpolation.outputRange.forEach((v: string | number) =>
         outputValues.push(v),
       );
@@ -145,7 +145,7 @@ export const useOnConfig = (
           interpolation.styleKey,
           inputValues,
           outputValues,
-          interpolation.animation || onConfig.animation || animationType,
+          interpolation.animation || onConfig.animation || animation,
           onBegin,
           onEnd,
           interpolation.extrapolate,
@@ -160,7 +160,7 @@ export const useOnConfig = (
           interpolation.propName,
           inputValues,
           outputValues,
-          interpolation.animation || onConfig.animation || animationType,
+          interpolation.animation || onConfig.animation || animation,
           onBegin,
           onEnd,
           interpolation.extrapolate,
@@ -176,13 +176,13 @@ export const useOnConfig = (
 
   function addSharedInterpolation(
     onConfig: ConfigOnSharedType,
-    animationType?: ConfigAnimationType,
+    animation?: ConfigAnimationType,
   ) {
     sharedInterpolationContext.registerSharedInterpolation(
       transitionItem,
       onConfig.fromLabel,
       transitionItem.label || "unknown",
-      onConfig.animation || animationType,
+      onConfig.animation || animation,
       onConfig.onBegin,
       onConfig.onEnd,
     );

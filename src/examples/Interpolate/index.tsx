@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
-import {Text, Image, StyleSheet} from 'react-native';
-import Fluid from 'react-native-fluid-transitions';
-import * as Colors from '../colors';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {generateImageUri} from '../helpers';
+import React, { useState } from "react";
+import { Text, Image, StyleSheet } from "react-native";
+import Fluid from "react-native-fluid-transitions";
+import * as Colors from "../colors";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { generateImageUri } from "../helpers";
 
 const imageUri = generateImageUri(21, 150, 150);
 
@@ -13,7 +13,7 @@ const InterpolateExampleScreen = () => {
     setIsInterpolatingImage(!isInterpolatingImage);
 
   const imageState = {
-    name: 'isInterpolatingImage',
+    name: "isInterpolatingImage",
     active: isInterpolatingImage,
   };
 
@@ -23,7 +23,7 @@ const InterpolateExampleScreen = () => {
     setIsInterpolatingBoxes(!isInterpolatingBoxes);
 
   const boxState = {
-    name: 'isInterpolatingBoxes',
+    name: "isInterpolatingBoxes",
     active: isInterpolatingBoxes,
   };
   const states = [boxState, imageState];
@@ -32,27 +32,27 @@ const InterpolateExampleScreen = () => {
 
   const ImageEnterInteprolation = Fluid.createConfig({
     onEnter: {
-      state: 'isInterpolatingImage',
-      fromLabel: 'imageA',
+      state: "isInterpolatingImage",
+      fromLabel: "imageA",
     },
   });
   const ImageExitInteprolation = Fluid.createConfig({
     onExit: {
-      state: 'isInterpolatingImage',
-      fromLabel: 'imageB',
+      state: "isInterpolatingImage",
+      fromLabel: "imageB",
     },
   });
 
   const BoxEnterInteprolation = Fluid.createConfig({
     onEnter: {
-      state: 'isInterpolatingBoxes',
-      fromLabel: 'boxA',
+      state: "isInterpolatingBoxes",
+      fromLabel: "boxA",
     },
   });
   const BoxExitInteprolation = Fluid.createConfig({
     onExit: {
-      state: 'isInterpolatingBoxes',
-      fromLabel: 'boxB',
+      state: "isInterpolatingBoxes",
+      fromLabel: "boxB",
     },
   });
 
@@ -62,20 +62,20 @@ const InterpolateExampleScreen = () => {
       style={styles.container}
       states={states}
       config={config}>
-      <Fluid.View label={'interpolating-images'} style={styles.boxContainer}>
+      <Fluid.View label={"interpolating-images"} style={styles.boxContainer}>
         <Fluid.View
-          label={'imageA'}
+          label={"imageA"}
           animation={Fluid.Animations.Springs.WobblySlow}
           style={styles.imageA}
           config={ImageExitInteprolation}>
-          <Image source={{uri: imageUri}} style={StyleSheet.absoluteFill} />
+          <Image source={{ uri: imageUri }} style={StyleSheet.absoluteFill} />
         </Fluid.View>
         <Fluid.View
-          label={'imageB'}
+          label={"imageB"}
           animation={Fluid.Animations.Springs.WobblySlow}
           style={styles.imageB}
           config={ImageEnterInteprolation}>
-          <Image source={{uri: imageUri}} style={StyleSheet.absoluteFill} />
+          <Image source={{ uri: imageUri }} style={StyleSheet.absoluteFill} />
         </Fluid.View>
       </Fluid.View>
       {/* Swapper */}
@@ -91,26 +91,26 @@ const InterpolateExampleScreen = () => {
         //   </Fluid.Configuration>
         // }
       >
-        <Icon name="arrow-right" size={28} color={'black'} />
+        <Icon name="arrow-right" size={28} color={"black"} />
       </Fluid.View>
       <Text style={styles.description}>
         Tap the arrow to interpolate the images
       </Text>
       {/* Boxes */}
-      <Fluid.View label={'interpolating-boxes'} style={styles.boxContainer}>
+      <Fluid.View label={"interpolating-boxes"} style={styles.boxContainer}>
         <Fluid.View
-          label={'boxA'}
-          animation={{type: 'timing', duration: 1000}}
+          label={"boxA"}
+          animation={{ type: "timing", duration: 4000 }}
           style={styles.boxA}
           config={BoxExitInteprolation}>
-          <Text>{'Box A'}</Text>
+          <Text>{"Box A"}</Text>
         </Fluid.View>
         <Fluid.View
-          label={'boxB'}
-          animation={{type: 'timing', duration: 1000}}
+          label={"boxB"}
+          animation={{ type: "timing", duration: 4000 }}
           style={styles.boxB}
           config={BoxEnterInteprolation}>
-          <Text>{'Box B'}</Text>
+          <Text>{"Box B"}</Text>
         </Fluid.View>
       </Fluid.View>
       {/* Swapper */}
@@ -126,7 +126,7 @@ const InterpolateExampleScreen = () => {
         //   </Fluid.Configuration>
         // }
       >
-        <Icon name="arrow-right" size={28} color={'black'} />
+        <Icon name="arrow-right" size={28} color={"black"} />
       </Fluid.View>
       <Text style={styles.description}>
         Tap the arrow to interpolate the boxes
@@ -136,37 +136,37 @@ const InterpolateExampleScreen = () => {
 };
 
 InterpolateExampleScreen.navigationOptions = {
-  title: 'Interpolate',
+  title: "Interpolate",
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   boxContainer: {
-    alignSelf: 'stretch',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
+    alignSelf: "stretch",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around",
     height: 140,
   },
   boxA: {
     width: 100,
     height: 100,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     borderColor: Colors.ColorD,
     borderWidth: 4,
-    transform: [{rotate: '45deg'}],
+    transform: [{ rotate: "45deg" }],
   },
   boxB: {
     width: 75,
     height: 75,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     borderColor: Colors.ColorE,
     borderWidth: 4,
     borderRadius: 50,
@@ -175,22 +175,22 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    overflow: 'hidden',
-    transform: [{rotate: '45deg'}],
+    overflow: "hidden",
+    transform: [{ rotate: "45deg" }],
   },
   imageB: {
     width: 100,
     height: 100,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   isInterpolating: {},
   description: {
-    textAlign: 'center',
+    textAlign: "center",
     padding: 20,
   },
   border: {
-    alignSelf: 'stretch',
-    borderTopColor: '#333',
+    alignSelf: "stretch",
+    borderTopColor: "#333",
     borderTopWidth: StyleSheet.hairlineWidth,
   },
 });

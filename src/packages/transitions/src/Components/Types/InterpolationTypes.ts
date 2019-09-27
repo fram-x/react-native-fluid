@@ -1,18 +1,18 @@
 import {
   ExtrapolateType,
-  InterpolateFunction
+  InterpolateFunction,
 } from "react-native-fluid-animations";
 import { MetricsInfo } from "../../Types";
 import {
   IAnimationValue,
-  InterpolationConfig
+  InterpolationConfig,
 } from "react-native-fluid-animations";
 import { TransitionItem } from "./TransitionItem";
 import { Style } from "./StyleTypes";
 import {
   ConfigAnimationType,
   ConfigInterpolatorType,
-  ChildAnimationDirection
+  ChildAnimationDirection,
 } from "../../Configuration";
 
 export enum SharedInterpolationStatus {
@@ -20,7 +20,7 @@ export enum SharedInterpolationStatus {
   Preparing = "Preparing",
   Prepared = "Prepared",
   Active = "Active",
-  Done = "Done"
+  Done = "Done",
 }
 
 let InterpolationInfoId = 0;
@@ -70,6 +70,8 @@ export type SharedInterpolationType = {
   stateName: string;
   fromLabel: string;
   toLabel: string;
+  fromCloneLabel: string;
+  toCloneLabel: string;
   fromId: number;
   toId: number;
   fromItem: TransitionItem;
@@ -82,8 +84,8 @@ export type SharedInterpolationType = {
   toStyles?: Style;
   fromMetrics?: MetricsInfo;
   toMetrics?: MetricsInfo;
-  fromClone?: any;
-  toClone?: any;
+  fromClone?: React.ReactElement;
+  toClone?: React.ReactElement;
   onAnimationDone?: OnAnimationFunction;
   onAnimationBegin?: OnAnimationFunction;
 };

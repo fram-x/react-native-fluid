@@ -36,10 +36,6 @@ import { getResolvedStyle } from "../../Styles/getResolvedStyle";
 
 let TransitionId = 1;
 
-type TransitionIdProps = {
-  overriddenTransitionId?: number;
-};
-
 /**
  * @description Creates a Higher order component that wraps the animated
  * component and builds a Fluid Transition component
@@ -49,7 +45,7 @@ type TransitionIdProps = {
  */
 export function withFluidTransitions<BasePropType, StyleType>(
   Component: React.ComponentType<
-    BasePropType & T.TouchableComponentProps<StyleType> & TransitionIdProps
+    BasePropType & T.TouchableComponentProps<StyleType>
   >,
   hasChildren: boolean,
   setupInterpolators?: (props: BasePropType) => PartialInterpolatorInfo,
@@ -77,7 +73,6 @@ export function withFluidTransitions<BasePropType, StyleType>(
     config,
     onAnimationDone,
     onAnimationBegin,
-    overriddenTransitionId,
     animation,
     // @ts-ignore
     ...rest
@@ -85,10 +80,7 @@ export function withFluidTransitions<BasePropType, StyleType>(
     /******************************************************
      * Setup
      ******************************************************/
-    const transitionId = useMemo(
-      () => (overriddenTransitionId ? overriddenTransitionId : TransitionId++),
-      [overriddenTransitionId],
-    );
+    const transitionId = useMemo(() => TransitionId++, []);
     const componentRef = useRef(null);
 
     // @ts-ignore
@@ -107,8 +99,6 @@ export function withFluidTransitions<BasePropType, StyleType>(
         ref: () => componentRef.current,
         getCalculatedStyles: () => getCalculatedStyles(),
         clone: (props: BasePropType) => cloneElement(props),
-        onAnimationBegin: onAnimationBegin,
-        onAnimationDone: onAnimationDone,
       };
     } else {
       transitionItemRef.current.children = () => transitionItems;
@@ -120,8 +110,6 @@ export function withFluidTransitions<BasePropType, StyleType>(
       transitionItemRef.current.clone = (props: BasePropType) =>
         cloneElement(props);
       transitionItemRef.current.isAlive = () => isAliveRef.current;
-      transitionItemRef.current.onAnimationBegin = onAnimationBegin;
-      transitionItemRef.current.onAnimationDone = onAnimationDone;
     }
 
     const transitionItem = transitionItemRef.current;
