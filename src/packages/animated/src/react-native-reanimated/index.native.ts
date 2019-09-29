@@ -51,8 +51,8 @@ const ReanimatedAnimationProvider: IAnimationProvider = {
   isAnimatedNode,
   createAnimatedComponent: Animated.createAnimatedComponent,
   getColorDisplayValue: (input: IAnimationValue) => input,
-  getRadianDisplayValue: (input: IAnimationValue) =>
-    concat(input as Animated.Value<number>, "rad"),
+  getRadianDisplayValue: (input: IAnimationValue) => input,
+  //concat(input as Animated.Value<number>, "rad"),
   getDisplayValue: (input: IAnimationValue) => input,
   configuration: {
     gestureConfiguration: { useNativeDriver: true },

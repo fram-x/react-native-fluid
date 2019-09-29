@@ -2,7 +2,7 @@ import {
   ValueContextType,
   TransitionItem,
   Values,
-  OnAnimationFunction
+  OnAnimationFunction,
 } from "../Types";
 import { ConfigAnimationType } from "../../Configuration";
 
@@ -12,14 +12,14 @@ export const useValueInterpolation = (
   propContext: ValueContextType,
   animationType?: ConfigAnimationType,
   onAnimationDone?: OnAnimationFunction,
-  onAnimationBegin?: OnAnimationFunction
+  onAnimationBegin?: OnAnimationFunction,
 ) => {
   if (styleContext.isChanged) {
     createInterpolations(
       styleContext,
       animationType,
       onAnimationBegin,
-      onAnimationDone
+      onAnimationDone,
     );
   }
   if (propContext.isChanged) {
@@ -27,7 +27,7 @@ export const useValueInterpolation = (
       propContext,
       animationType,
       onAnimationBegin,
-      onAnimationDone
+      onAnimationDone,
     );
   }
 };
@@ -36,7 +36,7 @@ const createInterpolations = (
   context: ValueContextType,
   animationType?: ConfigAnimationType,
   onAnimationBegin?: OnAnimationFunction,
-  onAnimationDone?: OnAnimationFunction
+  onAnimationDone?: OnAnimationFunction,
 ) => {
   const interpolations: Values = {};
   // Find all prop values that needs interpolation
@@ -49,19 +49,21 @@ const createInterpolations = (
   if (Object.keys(interpolations).length === 0) return;
 
   Object.keys(interpolations).forEach(key => {
-    context.addAnimation(
-      key,
-      undefined,
-      [
-        context.previousValues[key] !== undefined
-          ? undefined
-          : context.descriptors[key].defaultValue,
-        context.nextValues[key]
-      ],
-      animationType || context.descriptors[key].defaultAnimation,
-      onAnimationBegin,
-      onAnimationDone,
-      context.descriptors[key].extrapolate
-    );
+    if (context.descriptors[key]) {
+      context.addAnimation(
+        key,
+        undefined,
+        [
+          context.previousValues[key] !== undefined
+            ? undefined
+            : context.descriptors[key].defaultValue,
+          context.nextValues[key],
+        ],
+        animationType || context.descriptors[key].defaultAnimation,
+        onAnimationBegin,
+        onAnimationDone,
+        context.descriptors[key].extrapolate,
+      );
+    }
   });
 };

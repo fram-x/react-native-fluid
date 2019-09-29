@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, Image, StyleSheet } from "react-native";
+import { View, Text, Image, StyleSheet } from "react-native";
 import Fluid, { Easings } from "react-native-fluid-transitions";
 import * as Colors from "../colors";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -30,26 +30,26 @@ const InterpolateExampleScreen = () => {
 
   const config = Fluid.createConfig({});
 
-  const ImageEnterInteprolation = Fluid.createConfig({
+  const ImageEnterInterpolation = Fluid.createConfig({
     onEnter: {
       state: "isInterpolatingImage",
       fromLabel: "imageA",
     },
   });
-  const ImageExitInteprolation = Fluid.createConfig({
+  const ImageExitInterpolation = Fluid.createConfig({
     onExit: {
       state: "isInterpolatingImage",
       fromLabel: "imageB",
     },
   });
 
-  const BoxEnterInteprolation = Fluid.createConfig({
+  const BoxEnterInterpolation = Fluid.createConfig({
     onEnter: {
       state: "isInterpolatingBoxes",
       fromLabel: "boxA",
     },
   });
-  const BoxExitInteprolation = Fluid.createConfig({
+  const BoxExitInterpolation = Fluid.createConfig({
     onExit: {
       state: "isInterpolatingBoxes",
       fromLabel: "boxB",
@@ -63,34 +63,23 @@ const InterpolateExampleScreen = () => {
       states={states}
       config={config}>
       <Fluid.View label={"interpolating-images"} style={styles.boxContainer}>
-        <Fluid.View
+        <Fluid.Image
           label={"imageA"}
           animation={Fluid.Animations.Timings.timing(Easings.sin, 2000)}
           style={styles.imageA}
-          config={ImageExitInteprolation}>
-          <Image source={{ uri: imageUri }} style={StyleSheet.absoluteFill} />
-        </Fluid.View>
-        <Fluid.View
+          config={ImageExitInterpolation}
+          source={{ uri: imageUri }}
+        />
+        <Fluid.Image
           label={"imageB"}
           animation={Fluid.Animations.Timings.timing(Easings.sin, 2000)}
           style={styles.imageB}
-          config={ImageEnterInteprolation}>
-          <Image source={{ uri: imageUri }} style={StyleSheet.absoluteFill} />
-        </Fluid.View>
+          config={ImageEnterInterpolation}
+          source={{ uri: imageUri }}
+        />
       </Fluid.View>
       {/* Swapper */}
-      <Fluid.View
-        label="arrow"
-        onPress={toggleImageInterpolation}
-        // config={
-        //   <Fluid.Configuration>
-        //     <Fluid.When
-        //       state="isInterpolatingImage"
-        //       style={styles.isInterpolating}
-        //     />
-        //   </Fluid.Configuration>
-        // }
-      >
+      <Fluid.View label="arrow" onPress={toggleImageInterpolation}>
         <Icon name="arrow-right" size={28} color={"black"} />
       </Fluid.View>
       <Text style={styles.description}>
@@ -102,14 +91,14 @@ const InterpolateExampleScreen = () => {
           label={"boxA"}
           animation={{ type: "timing", duration: 4000 }}
           style={styles.boxA}
-          config={BoxExitInteprolation}>
+          config={BoxExitInterpolation}>
           <Text>{"Box A"}</Text>
         </Fluid.View>
         <Fluid.View
           label={"boxB"}
           animation={{ type: "timing", duration: 4000 }}
           style={styles.boxB}
-          config={BoxEnterInteprolation}>
+          config={BoxEnterInterpolation}>
           <Text>{"Box B"}</Text>
         </Fluid.View>
       </Fluid.View>
@@ -175,13 +164,11 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    overflow: "hidden",
     transform: [{ rotate: "45deg" }],
   },
   imageB: {
     width: 100,
     height: 100,
-    overflow: "hidden",
   },
   isInterpolating: {},
   description: {

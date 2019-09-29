@@ -3,6 +3,7 @@
 ## Bugs
 
 [X] Fix issue with removing a when interpolation. See Styles example and press on/off
+[ ] Flash in Styles example - press button and while it is animating, press inbox-button
 [ ] Shared transitions
   [ ] Fix running second shared transition while one is running
       Should we skip providing shared transitions in first version?
@@ -88,6 +89,7 @@ statisStyle
 animation
 config
 states
+onPress
 
 ### Events
 onAnimationBegin
@@ -96,11 +98,40 @@ onAnimationDone
 ### Configuration and States
 
 If you want more control over how animations are played, you can build your own
-animation definitions using configuration and state. 
+animation definitions using the configuration and state and properties of a Fluid Component.
 
-A state is ....
+A simple example illustrates how states and configuration can be used to build transitions:
 
-Configuration is....
+```js
+import React from 'react';
+import { StyleSheet } from 'react-native';
+import Fluid, { useFluidState, useFluidConfig } from 'react-native-fluid-transitions';
+
+const styles = StyleSheet.create({
+  active: { width: 100, height: 100, backgroundColor: 'aqua' },
+  inactive: { width: 50, height: 50, backgroundColor: 'gold' },
+});
+
+const MyComponent = () => (
+  const [activeState, setActiveState] = useFluidState(false);
+  const toggle = () => setActiveState(s => !s);
+
+  const config = useFluidConfig({
+    when: {
+      state: activeState,
+      style: styles.active
+    }
+  });
+
+  <Fluid.View 
+    onPress={toggle}
+    config={config}
+    states={activeState}
+    style={styles.inactive}
+  />  
+)
+```
+
 
 #### Hooks
 
