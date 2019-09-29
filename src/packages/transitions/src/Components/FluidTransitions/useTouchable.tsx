@@ -31,7 +31,7 @@ export const useTouchable = (
     child: React.ReactChild,
     props: any,
     touchable: boolean,
-  ): React.ReactChild => {
+  ): React.ReactElement => {
     if (touchable) {
       let onLayout: any;
       if (React.isValidElement(child)) {

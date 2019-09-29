@@ -6,7 +6,7 @@ let _functionCache: {
 
 export const createProc = (
   key: string,
-  cb: () => (...args: IAnimationNode[]) => IAnimationNode
+  cb: () => (...args: IAnimationNode[]) => IAnimationNode,
 ): ((...args: IAnimationNode[]) => IAnimationNode) => {
   if (!_functionCache[key]) {
     _functionCache[key] = cb();

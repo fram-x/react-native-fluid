@@ -56,6 +56,7 @@ export function withFluidTransitions<BasePropType, StyleType>(
     : {};
 
   // Component
+  // @ts-ignore
   const AnimationContextComponent: React.FC<
     BasePropType & T.TouchableComponentProps<StyleType>
   > = ({
@@ -282,6 +283,13 @@ export function withFluidTransitions<BasePropType, StyleType>(
       collapsable: false,
       ref: componentRef,
     };
+
+    if (React.Children.count(children) === 0) {
+      return renderTouchable(
+        renderSharedOverlay(Component, props, hasChildren),
+        props,
+      );
+    }
 
     return (
       <SharedInterpolationContext.Provider value={sharedInterpolationContext}>
