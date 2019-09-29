@@ -11,7 +11,7 @@ const Box: React.FC<BoxProps> = ({ onPress, active }) => {
   return (
     <Fluid.View
       onPress={onPress}
-      animation={Fluid.Animations.Timings.Micro}
+      animation={Fluid.Animations.Timings.Long}
       staticStyle={styles.box}
       style={active ? styles.activeBox : styles.inactiveBox}
     />
