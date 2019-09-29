@@ -14,10 +14,10 @@ const SvgExampleScreen = () => {
         <Defs>
           <Fluid.Svg.LinearGradient
             id="grad"
-            x1={isToggled ? "0" : "50"}
-            y1="0"
-            x2="200"
-            y2="0">
+            x1={isToggled ? 0 : 50}
+            y1={0}
+            x2={200}
+            y2={0}>
             <Stop offset="0" stopColor="yellow" stopOpacity="1" />
             <Stop offset="1" stopColor="red" stopOpacity="1" />
           </Fluid.Svg.LinearGradient>

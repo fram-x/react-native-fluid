@@ -13,7 +13,7 @@
 
 ### Android
 [ ] Parallax example, abrubt change of header color
-[ ] SVG - ValueNode cannot be cast to a number
+[X] SVG - ValueNode cannot be cast to a number
 [X] Interpolation 
   [X] "Error while updating transform"
   [X] Rotated image is not displayed correctly
