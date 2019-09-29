@@ -19,6 +19,7 @@ export enum SharedInterpolationStatus {
   Created = "Created",
   Preparing = "Preparing",
   Active = "Active",
+  Removing = "Removing",
   Done = "Done",
 }
 

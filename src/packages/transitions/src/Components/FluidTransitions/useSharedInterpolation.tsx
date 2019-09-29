@@ -12,7 +12,7 @@ import {
   SharedInterpolationInfo,
   Style,
 } from "../Types";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Share } from "react-native";
 import { useForceUpdate } from "../../Hooks";
 import { useLog } from "../../Hooks/useLog";
 import {
@@ -166,7 +166,7 @@ export const useSharedInterpolation = (
           si => si.id === sharedInterpolation.id,
         );
         if (s && s.status === SharedInterpolationStatus.Active) {
-          s.status = SharedInterpolationStatus.Done;
+          s.status = SharedInterpolationStatus.Removing;
           forceUpdate();
           // TODO: Callback to user-land?
         }
@@ -270,7 +270,9 @@ export const useSharedInterpolation = (
 
   // Find elements to render
   let sharedElementsToRender = sharedInterpolations.current.filter(
-    p => p.status === SharedInterpolationStatus.Active,
+    p =>
+      p.status === SharedInterpolationStatus.Active ||
+      p.status === SharedInterpolationStatus.Removing,
   );
 
   // Set up states
@@ -282,7 +284,21 @@ export const useSharedInterpolation = (
           p2 =>
             ((p.fromLabel === p2.fromLabel && p.toLabel === p2.toLabel) ||
               (p.toLabel === p2.fromLabel && p.fromLabel === p2.toLabel)) &&
-            p2.status !== SharedInterpolationStatus.Done,
+            p2.status !== SharedInterpolationStatus.Done &&
+            p2.status !== SharedInterpolationStatus.Removing,
+        ) !== undefined,
+    }),
+  );
+
+  const mainSharedStates: ConfigStateType[] = sharedInterpolationInfos.map(
+    p => ({
+      name: SharedStateName + "-" + p.fromLabel + "->" + p.toLabel,
+      active:
+        sharedInterpolations.current.find(
+          p2 =>
+            p.fromLabel === p2.fromLabel &&
+            p.toLabel === p2.toLabel &&
+            p2.status !== SharedInterpolationStatus.Removing,
         ) !== undefined,
     }),
   );
@@ -291,7 +307,11 @@ export const useSharedInterpolation = (
   removeDeadTransitions();
 
   // Add states
-  stateContext.states = [...stateContext.states, ...sharedTransitionStates];
+  stateContext.states = [
+    ...stateContext.states,
+    ...sharedTransitionStates,
+    ...mainSharedStates,
+  ];
 
   const renderSharedOverlay = (
     Component: any,

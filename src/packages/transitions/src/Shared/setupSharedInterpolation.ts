@@ -1,9 +1,10 @@
 import {
-  SharedInterpolationStatus,
   TransitionItem,
   SharedInterpolationType,
   AnimatedStyleKeys,
   Style,
+  Easings,
+  SharedInterpolationStatus,
 } from "../Components/Types";
 import { ConfigStyleInterpolationType, ConfigType } from "../Configuration";
 import { getStyleInfo } from "../Styles/getStyleInfo";
@@ -25,7 +26,6 @@ export const setupSharedInterpolation = async (
   // Create clone configuration to enable swapping
   const fromOpacityInterpolation = createOpacityOverlapConfig([0, 0, 1, 1]);
   const toOpacityInterpolation = createOpacityOverlapConfig([1, 1, 0, 0]);
-  const states = [{ name: stateName, active: true }];
 
   // Get style information from / to
   const {
@@ -65,7 +65,6 @@ export const setupSharedInterpolation = async (
 
   const fromConfig: ConfigType = {
     onEnter: {
-      onEnd: sharedInterpolation.onAnimationDone,
       state: stateName,
       interpolation: [...interpolations, fromOpacityInterpolation],
     },
@@ -73,8 +72,29 @@ export const setupSharedInterpolation = async (
 
   const toConfig: ConfigType = {
     onEnter: {
+      onEnd: () => {
+        console.log("Done with interpolation");
+        sharedInterpolation.onAnimationDone &&
+          sharedInterpolation.onAnimationDone();
+      },
       state: stateName,
       interpolation: [...interpolations, toOpacityInterpolation],
+    },
+    onExit: {
+      onEnd: () => {
+        sharedInterpolation.status = SharedInterpolationStatus.Done;
+      },
+      state: stateName,
+      interpolation: {
+        styleKey: "opacity",
+        animation: {
+          type: "timing",
+          easing: Easings.linear,
+          duration: 100,
+        },
+        inputRange: [0, 0.5, 1],
+        outputRange: [1, 1, 0],
+      },
     },
   };
 
@@ -84,7 +104,6 @@ export const setupSharedInterpolation = async (
     label: sharedInterpolation.fromCloneLabel,
     style: [fromStyles, { opacity: 0 }],
     config: fromConfig,
-    states,
     animation: sharedInterpolation.animation,
   });
 
@@ -93,7 +112,6 @@ export const setupSharedInterpolation = async (
     label: sharedInterpolation.toCloneLabel,
     style: [fromStyles, { opacity: 0 }],
     config: toConfig,
-    states,
     animation: sharedInterpolation.animation,
   });
 };

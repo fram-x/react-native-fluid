@@ -25,7 +25,7 @@ export const createSharedInterpolation = (
     id: sharedTransitionId,
     orgFromId: fromItem.id,
     orgToId: toItem.id,
-    stateName: SharedStateName + sharedTransitionId.toString(),
+    stateName: SharedStateName + "-" + fromItem.label + "->" + toItem.label,
     status: SharedInterpolationStatus.Created,
     direction,
     animation,
