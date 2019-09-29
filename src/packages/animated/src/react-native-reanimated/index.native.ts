@@ -35,7 +35,7 @@ const {
   cos,
   sin,
   exp,
-  sqrt
+  sqrt,
 } = Animated;
 
 export interface Animation {
@@ -55,15 +55,16 @@ const ReanimatedAnimationProvider: IAnimationProvider = {
     concat(input as Animated.Value<number>, "rad"),
   getDisplayValue: (input: IAnimationValue) => input,
   configuration: {
-    gestureConfiguration: { useNativeDriver: true }
+    gestureConfiguration: { useNativeDriver: true },
   },
   Types: {
     View: Animated.View,
     Image: Animated.Image,
     ScrollView: Animated.ScrollView,
-    Text: Animated.Text
+    Text: Animated.Text,
   },
   Animated: {
+    // @ts-ignore
     event,
     round: (a: IAnimationNode) => round(a as Animated.Adaptable<number>),
     multiply: (
@@ -74,27 +75,29 @@ const ReanimatedAnimationProvider: IAnimationProvider = {
       multiply(
         a as Animated.Adaptable<number>,
         b as Animated.Adaptable<number>,
-        ...(others as Animated.Adaptable<number>[])
+        ...(others as Animated.Adaptable<number>[]),
       ),
     add: (a: IAnimationNode, b: IAnimationNode, ...others: IAnimationNode[]) =>
       add(
         a as Animated.Adaptable<number>,
         b as Animated.Adaptable<number>,
-        ...(others as Animated.Adaptable<number>[])
+        ...(others as Animated.Adaptable<number>[]),
       ),
     sub: (a: IAnimationNode, b: IAnimationNode) =>
       sub(a as Animated.Adaptable<number>, b as Animated.Adaptable<number>),
     debug: (message: string, a: IAnimationNode) =>
-      call([a], (args: any) => console.log(message, args[0])),
+      __DEV__
+        ? call([a], (args: any) => console.log(message, args[0]))
+        : Animated.debug(message, a),
     cond: (
       condNode: IAnimationNode,
       ifNode: IAnimationNode,
-      elseNode?: IAnimationNode
+      elseNode?: IAnimationNode,
     ) =>
       cond(
         condNode as Animated.Adaptable<number>,
         ifNode as Animated.Node<number>,
-        elseNode as Animated.Node<number>
+        elseNode as Animated.Node<number>,
       ),
     set: (a: IAnimationNode, b: IAnimationNode) =>
       set(a as Animated.Value<number>, b as Animated.Adaptable<number>),
@@ -111,27 +114,29 @@ const ReanimatedAnimationProvider: IAnimationProvider = {
       and(
         a as Animated.Adaptable<number>,
         b as Animated.Adaptable<number>,
-        ...(others as Animated.Adaptable<number>[])
+        ...(others as Animated.Adaptable<number>[]),
       ),
     proc: (
       _: string,
-      cb: (...params: Array<IAnimationNode | IAnimationValue>) => IAnimationNode
+      cb: (
+        ...params: Array<IAnimationNode | IAnimationValue>
+      ) => IAnimationNode,
       // @ts-ignore
     ) => proc(cb),
     greaterOrEq: (a: IAnimationNode, b: IAnimationNode) =>
       greaterOrEq(
         a as Animated.Adaptable<number>,
-        b as Animated.Adaptable<number>
+        b as Animated.Adaptable<number>,
       ),
     lessThan: (a: IAnimationNode, b: IAnimationNode) =>
       lessThan(
         a as Animated.Adaptable<number>,
-        b as Animated.Adaptable<number>
+        b as Animated.Adaptable<number>,
       ),
     greaterThan: (a: IAnimationNode, b: IAnimationNode) =>
       greaterThan(
         a as Animated.Adaptable<number>,
-        b as Animated.Adaptable<number>
+        b as Animated.Adaptable<number>,
       ),
     pow: (a: IAnimationNode, b: IAnimationNode) =>
       pow(a as Animated.Adaptable<number>, b as Animated.Adaptable<number>),
@@ -142,7 +147,7 @@ const ReanimatedAnimationProvider: IAnimationProvider = {
     lessOrEq: (left: IAnimationNode, right: IAnimationNode) =>
       lessOrEq(
         left as Animated.Adaptable<number>,
-        right as Animated.Adaptable<number>
+        right as Animated.Adaptable<number>,
       ),
     exp: (a: IAnimationNode) => exp(a as Animated.Node<number>),
     always: (cb: () => IAnimationNode) => always(cb()),
@@ -157,8 +162,8 @@ const ReanimatedAnimationProvider: IAnimationProvider = {
 
     // @ts-ignore
     bezier: (x1: number, y1: number, x2: number, y2: number) =>
-      Easing.bezier(x1, y1, x2, y2)
-  }
+      Easing.bezier(x1, y1, x2, y2),
+  },
 };
 
 export { ReanimatedAnimationProvider };

@@ -5,6 +5,7 @@
 [X] Fix issue with removing a when interpolation. See Styles example and press on/off
 [ ] Shared transitions
   [ ] Fix running second shared transition while one is running
+      Should we skip providing shared transitions in first version?
 
 ### Web
 [ ] Fix measure of rotated elements on Web
@@ -35,25 +36,73 @@
     animations and pass them to the spring function
 [ ] Optimize runner - find common interpolations and accept multiple set value nodes
 
+# Documentation
+
 ## Getting Started
 
-### Web:
-´´´
-cd ./src/packages/animated
-npm link
-´´´
+Installing react-native-fluid-transitions is simple, both in React Native Web and in React Native.
 
-´´´
-cd ./src/web
-npm link react-native-fluid-animations
-´´´
+### React Native Web
 
-´´´
-cd ./src/packages/transitions
-npm link
-´´´
+```
+yarn add react-native-fluid-animations
+yarn add react-native-fluid-transitions
+```
 
-´´´
-cd ./src/web
-npm link react-native-fluid-transitions
-´´´
+### React Native
+
+```
+yarn add react-native-reanimated
+yarn add react-native-fluid-animations
+yarn add react-native-fluid-transitions
+```
+
+Getting your first transitions set up is also really easy and should be the same for React Native and React Native Web:
+
+```js
+import React from 'react';
+import { StyleSheet } from 'react-native';
+import Fluid from 'react-native-fluid-transitions';
+
+const styles = StyleSheet.create({
+  active: { width: 100, height: 100, backgroundColor: 'aqua' },
+  inactive: { width: 50, height: 50, backgroundColor: 'gold' },
+});
+
+const MyComponent = ({active}) => (
+  <Fluid.View style={active ? styles.active : styles.inactive}/>
+)
+```
+
+Try using this component in your view and toggle the active property. 
+The component should automatically interpolate between the two styles with
+default values that should work for the different style properties.
+
+## Api
+
+### Properties
+
+style
+initialStyle
+statisStyle
+animation
+config
+states
+
+### Events
+onAnimationBegin
+onAnimationDone
+
+### Configuration and States
+
+If you want more control over how animations are played, you can build your own
+animation definitions using configuration and state. 
+
+A state is ....
+
+Configuration is....
+
+#### Hooks
+
+useFluidState
+useFluidConfig

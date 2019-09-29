@@ -2,7 +2,7 @@ import { createProc } from "../../Functions/createProc";
 import {
   AnimationProvider,
   IAnimationNode,
-  IAnimationValue
+  IAnimationValue,
 } from "react-native-fluid-animations";
 import { normalize } from "./normalize";
 
@@ -15,14 +15,14 @@ const {
   cond,
   eq,
   and,
-  greaterOrEq
+  greaterOrEq,
 } = AnimationProvider.Animated;
 
 // const debug = (_: string, a: any) => a;
 
 export enum StopReason {
   DurationEnd = 0,
-  Removed = 1
+  Removed = 1,
 }
 
 const getAnimationKey = (ownerId: number, key: string) => `${key}(${ownerId})`;
@@ -50,7 +50,7 @@ export const getLifecycleFunc = (
   duration: number,
   onBegin: (id: number) => void,
   onEnd: (id: number, stopReason: StopReason) => void,
-  updateValue: IAnimationNode
+  updateValue: IAnimationNode,
 ) => {
   const animationKey = getAnimationKey(ownerId, key);
 
@@ -81,7 +81,7 @@ export const getLifecycleFunc = (
     started,
     stopped,
     previousStopFlag,
-    updateValue
+    updateValue,
   );
 
   return () => f;
@@ -97,17 +97,17 @@ const _endListeners: {
 
 const registerBeginListener = (id: number, callback: (id: number) => void) => {
   if (!_beginListeners[id]) {
-    _beginListeners[id] = new Array();
+    _beginListeners[id] = [];
   }
   _beginListeners[id].push(callback);
 };
 
 const registerEndListener = (
   id: number,
-  callback: (id: number, stopReason: StopReason) => void
+  callback: (id: number, stopReason: StopReason) => void,
 ) => {
   if (!_endListeners[id]) {
-    _endListeners[id] = new Array();
+    _endListeners[id] = [];
   }
   _endListeners[id].push(callback);
 };
@@ -119,6 +119,9 @@ const onAnimationBegin = (args: ReadonlyArray<number>) => {
     _beginListeners[animationId].length > 0
   ) {
     const listener = _beginListeners[animationId].pop();
+    if (_beginListeners[animationId].length === 0) {
+      delete _beginListeners[animationId];
+    }
     listener && listener(animationId);
   }
 };
@@ -128,6 +131,9 @@ const onAnimationEnd = (args: ReadonlyArray<number>) => {
   const stopReason = args[2];
   while (_endListeners[animationId] && _endListeners[animationId].length > 0) {
     const listener = _endListeners[animationId].pop();
+    if (_endListeners[animationId].length === 0) {
+      delete _endListeners[animationId];
+    }
     listener && listener(animationId, stopReason);
   }
 };
@@ -143,20 +149,20 @@ const lifecycleFunc = createProc("lifecycle", () =>
           cond(eq(started, 0), [
             // Stop previous animation
             cond(neq(previousStopFlag, -1), [
-              set(previousStopFlag as IAnimationValue, 1)
+              set(previousStopFlag as IAnimationValue, 1),
             ]),
             // Mark as started
             set(started as IAnimationValue, 1),
             // Call on begin
-            call([animationId, ownerId], onAnimationBegin)
-          ])
+            call([animationId, ownerId], onAnimationBegin),
+          ]),
         ),
 
         // Check if stopped value has been changed
         cond(and(eq(started, 1), eq(stopped, 1)), [
           // We are stopped from the outside
           call([animationId, ownerId, stopped], onAnimationEnd),
-          set(started as IAnimationValue, 0)
+          set(started as IAnimationValue, 0),
         ]),
         // Now we can evaluate wether or not we should update
         // the value with the setValue call proc node
@@ -166,8 +172,8 @@ const lifecycleFunc = createProc("lifecycle", () =>
           // Callback when done
           call([animationId, ownerId, stopped], onAnimationEnd),
           // Mark as stopped
-          set(stopped as IAnimationValue, 1)
-        ])
-      ])
-  )
+          set(stopped as IAnimationValue, 1),
+        ]),
+      ]),
+  ),
 );

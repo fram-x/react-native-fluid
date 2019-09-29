@@ -4,7 +4,7 @@ import { isAnimatedNode } from "./utils";
 // @ts-ignore
 import { always } from "react-native-reanimated/src/base";
 
-const { call, set, eq, cond, debug } = Animated;
+const { set, eq, cond, call } = Animated;
 
 export const createValue = (v: number | IAnimationNode): IAnimationValue => {
   if (isAnimatedNode(v)) {
@@ -13,12 +13,13 @@ export const createValue = (v: number | IAnimationNode): IAnimationValue => {
 
     const evaluateOnce = cond(eq(flag, 0), [
       set(flag, 1),
-      debug("updating", set(retVal, v as Animated.Node<number>)),
+      set(retVal, v as Animated.Node<number>),
       call([], () => {
         // @ts-ignore
         alwaysNode.__detach();
-      })
+      }),
     ]);
+
     const alwaysNode = always(evaluateOnce);
     // @ts-ignore
     alwaysNode.__attach();

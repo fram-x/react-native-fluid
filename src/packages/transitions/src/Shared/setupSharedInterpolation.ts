@@ -1,68 +1,40 @@
 import {
-  SharedInterpolationStatus,
   TransitionItem,
   SharedInterpolationType,
-  AnimatedStyleKeys
+  AnimatedStyleKeys,
+  Style,
+  Easings,
+  SharedInterpolationStatus,
 } from "../Components/Types";
-import { getSharedInterpolationMetrics } from "./getSharedInterpolationMetrics";
-import { createOpacityOverlapConfig } from "./createOpacityOverlapConfig";
-import {
-  ConfigStyleInterpolationType,
-  ConfigType
-} from "../Configuration";
+import { ConfigStyleInterpolationType, ConfigType } from "../Configuration";
 import { getStyleInfo } from "../Styles/getStyleInfo";
+import { getSharedInterpolationStyles } from "./getSharedInterpolationStyles";
 
 export const setupSharedInterpolation = async (
   sharedInterpolation: SharedInterpolationType,
-  ownerItem: TransitionItem
+  ownerItem: TransitionItem,
+  overriddenFromStyle?: Style,
 ) => {
-  const { fromItem, toItem, stateName } = sharedInterpolation;
+  const { stateName } = sharedInterpolation;
 
-  // Get interpolation metrics
-  const { fromMetrics, toMetrics } = await getSharedInterpolationMetrics(
+  const { fromStyles, toStyles } = await getSharedInterpolationStyles(
+    sharedInterpolation,
     ownerItem,
-    fromItem,
-    toItem
+    overriddenFromStyle,
   );
 
-  // Get style contexts
-  const fromStyles = fromItem.getCalculatedStyles();
-  const toStyles = toItem.getCalculatedStyles();
-  delete fromStyles.opacity;
-  delete toStyles.opacity;
-
-  // Add position diff
-  fromStyles.left = fromMetrics.x;
-  fromStyles.top = fromMetrics.y;
-  fromStyles.width = fromMetrics.width;
-  fromStyles.height = fromMetrics.height;
-  fromStyles.position = "absolute";
-
-  toStyles.left = toMetrics.x;
-  toStyles.top = toMetrics.y;
-  toStyles.width = toMetrics.width;
-  toStyles.height = toMetrics.height;
-  toStyles.position = "absolute";
-
-  // Update shared info
-  sharedInterpolation.fromStyles = fromStyles;
-  sharedInterpolation.toStyles = toStyles;
-  sharedInterpolation.fromMetrics = fromMetrics;
-  sharedInterpolation.toMetrics = toMetrics;
-
   // Create clone configuration to enable swapping
-  const fromOpacityInterpolation = createOpacityOverlapConfig([0, 0, 1, 1]);
-  const toOpacityInterpolation = createOpacityOverlapConfig([1, 1, 0, 0]);
-  const states = [{ name: stateName, active: true }];
+  const fromOpacityInterpolation = createOpacityOverlapConfig([1, 1, 0, 0]);
+  const toOpacityInterpolation = createOpacityOverlapConfig([0, 0, 1, 1]);
 
-  // Set up style interpolations
+  // Get style information from / to
   const {
     styleKeys: fromStyleKeys,
-    styleValues: fromStyleValues
+    styleValues: fromStyleValues,
   } = getStyleInfo(fromStyles);
 
   const { styleKeys: toStyleKeys, styleValues: toStyleValues } = getStyleInfo(
-    toStyles
+    toStyles,
   );
 
   const interpolations: ConfigStyleInterpolationType[] = [];
@@ -84,50 +56,73 @@ export const setupSharedInterpolation = async (
             : fromStyleValues[key],
           toStyleValues[key] === undefined
             ? AnimatedStyleKeys[key].defaultValue
-            : toStyleValues[key]
+            : toStyleValues[key],
         ],
-        extrapolate: AnimatedStyleKeys[key].extrapolate
+        extrapolate: AnimatedStyleKeys[key].extrapolate,
       });
     }
   });
 
   const fromConfig: ConfigType = {
     onEnter: {
-      onEnd: sharedInterpolation.onAnimationDone,
       state: stateName,
-      interpolation: [...interpolations, fromOpacityInterpolation]
-    }
+      interpolation: [...interpolations, fromOpacityInterpolation],
+    },
   };
 
   const toConfig: ConfigType = {
     onEnter: {
+      onEnd: () => {
+        console.log("Done with interpolation");
+        sharedInterpolation.onAnimationDone &&
+          sharedInterpolation.onAnimationDone();
+      },
       state: stateName,
-      interpolation: [...interpolations, toOpacityInterpolation]
-    }
+      interpolation: [...interpolations, toOpacityInterpolation],
+    },
+    onExit: {
+      onEnd: () => {
+        sharedInterpolation.status = SharedInterpolationStatus.Done;
+      },
+      state: stateName,
+      interpolation: {
+        styleKey: "opacity",
+        animation: {
+          type: "timing",
+          easing: Easings.linear,
+          duration: 100,
+        },
+        inputRange: [0, 0.5, 1],
+        outputRange: [1, 1, 0],
+      },
+    },
   };
 
   // Create clones
-  sharedInterpolation.fromClone = sharedInterpolation.toItem.clone({
+  sharedInterpolation.fromClone = sharedInterpolation.fromItem.clone({
     key: sharedInterpolation.fromId,
-    overriddenTransitionId: sharedInterpolation.fromId,
-    label: sharedInterpolation.fromLabel,
-    style: [toStyles, { opacity: 0 }],
-    ref: null,
+    label: sharedInterpolation.fromCloneLabel,
+    style: [fromStyles, { opacity: 0 }],
     config: fromConfig,
-    states,
-    animation: sharedInterpolation.animation
+    animation: sharedInterpolation.animation,
   });
 
-  sharedInterpolation.toClone = sharedInterpolation.fromItem.clone({
+  sharedInterpolation.toClone = sharedInterpolation.toItem.clone({
     key: sharedInterpolation.toId,
-    overriddenTransitionId: sharedInterpolation.toId,
-    label: sharedInterpolation.toLabel,
-    style: [toStyles, { opacity: 0 }],
-    ref: null,
+    label: sharedInterpolation.toCloneLabel,
+    style: [fromStyles, { opacity: 0 }],
     config: toConfig,
-    states,
-    animation: sharedInterpolation.animation
+    animation: sharedInterpolation.animation,
   });
+};
 
-  sharedInterpolation.status = SharedInterpolationStatus.Prepared;
+const createOpacityOverlapConfig = (
+  output: Array<number>,
+): ConfigStyleInterpolationType => {
+  return {
+    styleKey: "opacity",
+    inputRange: [0, 0.49, 0.51, 1],
+    outputRange: output,
+    extrapolate: "clamp",
+  };
 };

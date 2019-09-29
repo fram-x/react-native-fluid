@@ -13,6 +13,4 @@ export type TransitionItem = {
   configuration: () => SafeStateConfigType;
   clone: (props: any) => React.ReactElement;
   isAlive: () => boolean;
-  onAnimationDone?: OnAnimationFunction;
-  onAnimationBegin?: OnAnimationFunction;
 };

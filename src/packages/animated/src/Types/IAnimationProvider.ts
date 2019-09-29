@@ -6,7 +6,7 @@ export type InterpolateFunction = (
   inputMin: any,
   inputMax: any,
   outputMin: any,
-  outputMax: any
+  outputMax: any,
 ) => any;
 
 export interface IAnimationProvider {
@@ -31,7 +31,7 @@ export interface IAnimationProvider {
   runTiming: (
     master: IAnimationValue,
     duration: number,
-    callback?: () => void
+    callback?: () => void,
   ) => void;
 
   /**
@@ -44,7 +44,7 @@ export interface IAnimationProvider {
    * @param value Original value from stylesheet
    */
   getNumericColor: (
-    value: IAnimationNode | string | number
+    value: IAnimationNode | string | number,
   ) => IAnimationNode | number;
 
   /**
@@ -52,7 +52,7 @@ export interface IAnimationProvider {
    * @param value Original value from stylesheet
    */
   getNumericRotation: (
-    value: IAnimationNode | string
+    value: IAnimationNode | string,
   ) => IAnimationNode | number;
 
   /**
@@ -96,11 +96,11 @@ export interface IAnimationProvider {
     cond: (
       conditionNode: IAnimationNode,
       ifNode: IAnimationNode,
-      elseNode?: IAnimationNode
+      elseNode?: IAnimationNode,
     ) => IAnimationNode;
     set: (
       valueToBeUpdated: IAnimationValue,
-      sourceNode: IAnimationNode
+      sourceNode: IAnimationNode,
     ) => IAnimationNode;
     eq: (left: IAnimationNode, right: IAnimationNode) => IAnimationNode;
     neq: (left: IAnimationNode, right: IAnimationNode) => IAnimationNode;
@@ -111,22 +111,24 @@ export interface IAnimationProvider {
     ) => IAnimationNode;
     greaterOrEq: (
       left: IAnimationNode,
-      right: IAnimationNode
+      right: IAnimationNode,
     ) => IAnimationNode;
     lessThan: (left: IAnimationNode, right: IAnimationNode) => IAnimationNode;
     greaterThan: (
       left: IAnimationNode,
-      right: IAnimationNode
+      right: IAnimationNode,
     ) => IAnimationNode;
     lessOrEq: (left: IAnimationNode, right: IAnimationNode) => IAnimationNode;
     call: (
       args: ReadonlyArray<IAnimationNode>,
-      callback: (args: ReadonlyArray<number>) => void
+      callback: (args: ReadonlyArray<number>) => void,
     ) => void;
     block: (items: ReadonlyArray<IAnimationNode>) => IAnimationNode;
     proc: (
       name: string,
-      cb: (...params: Array<IAnimationNode | IAnimationValue>) => IAnimationNode
+      cb: (
+        ...params: Array<IAnimationNode | IAnimationValue>
+      ) => IAnimationNode,
     ) => (...args: Array<IAnimationNode>) => IAnimationNode;
     always: (cb: () => IAnimationNode) => IAnimationNode;
     attach: (source: IAnimationValue, node: IAnimationNode) => void;
@@ -136,7 +138,7 @@ export interface IAnimationProvider {
       x1: number,
       y1: number,
       x2: number,
-      y2: number
+      y2: number,
     ) => (t: IAnimationNode) => IAnimationNode;
   };
 }

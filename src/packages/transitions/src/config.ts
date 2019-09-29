@@ -1,3 +1,3 @@
 import { LoggerLevel } from "./Types/LogTypes";
 
-export const CurrentLogLevel = LoggerLevel.Always;
+export const CurrentLogLevel = LoggerLevel.None;

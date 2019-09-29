@@ -5,7 +5,7 @@ import { TransitionItem, TransitionItemContext } from "../Types";
  * @description Maintains a list of transition items
  */
 export const useTransitionItems = (transitionItem: TransitionItem) => {
-  const transitionItems = useRef(new Array<TransitionItem>());
+  const transitionItems = useRef<Array<TransitionItem>>([]);
   const isRegistered = useRef(false);
   const isAliveRef = useRef(true);
   const context = useContext(TransitionItemContext);
@@ -31,16 +31,16 @@ export const useTransitionItems = (transitionItem: TransitionItem) => {
   const getTransitionItemByLabel = (label: string) => {
     // Enum func
     const getChild = (
-      label: string,
-      ti: TransitionItem
+      childLabel: string,
+      ti: TransitionItem,
     ): TransitionItem | undefined => {
-      if (ti.label === label) return ti;
+      if (ti.label === childLabel) return ti;
       const children = ti.children();
       for (let n = 0; n < children.length; n++) {
-        if (children[n].label === label) {
+        if (children[n].label === childLabel) {
           return children[n];
         }
-        const c = getChild(label, children[n]);
+        const c = getChild(childLabel, children[n]);
         if (c) {
           return c;
         }
@@ -68,6 +68,7 @@ export const useTransitionItems = (transitionItem: TransitionItem) => {
         context.unregisterTransitionItem(transitionItem.id);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {
@@ -75,9 +76,9 @@ export const useTransitionItems = (transitionItem: TransitionItem) => {
       registerTransitionItem,
       unregisterTransitionItem,
       getTransitionItemByLabel,
-      getOwner
+      getOwner,
     },
     isAliveRef: isAliveRef,
-    transitionItems: transitionItems.current
+    transitionItems: transitionItems.current,
   };
 };
