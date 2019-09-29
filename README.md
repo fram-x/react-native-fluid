@@ -14,9 +14,9 @@
 ### Android
 [ ] Parallax example, abrubt change of header color
 [ ] SVG - ValueNode cannot be cast to a number
-[ ] Interpolation 
-  [ ] "Error while updating transform"
-  [ ] Rotated image is not displayed correctly
+[X] Interpolation 
+  [X] "Error while updating transform"
+  [X] Rotated image is not displayed correctly
 [ ] Stagger is really slow
 [ ] Interactions - some alignment issue
 [ ] Repeat is really slow
