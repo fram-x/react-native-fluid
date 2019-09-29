@@ -245,7 +245,7 @@ export const useSharedInterpolation = (
         si.status === SharedInterpolationStatus.Active &&
         hasOverwrittenTransition(si)
       ) {
-        si.status = SharedInterpolationStatus.Removing;
+        si.status = SharedInterpolationStatus.Done;
         shouldForceUpdate = true;
       }
     });
