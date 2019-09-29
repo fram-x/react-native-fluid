@@ -3,8 +3,9 @@
 ## Bugs
 
 [X] Fix issue with removing a when interpolation. See Styles example and press on/off
-[ ] Flash in Styles example - press button and while it is animating, press inbox-button
-[ ] Shared transitions
+[ ] Style-flash in Styles example - press button and while it is animating, press inbox-button
+
+[ ] Shared transitions (WIP)
   [ ] Fix running second shared transition while one is running
       Should we skip providing shared transitions in first version?
 
@@ -12,14 +13,16 @@
 [ ] Fix measure of rotated elements on Web
 
 ### Android
-[ ] Parallax example, abrubt change of header color
+[ ] Parallax example, not interpolating change of header color correctly
+[ ] Performance
+  [ ] General slow in debug mode, fast enough under hermes.
+  [ ] Repeat is really slow
+  [ ] Stagger is really slow
 [X] SVG - ValueNode cannot be cast to a number
 [X] Interpolation 
   [X] "Error while updating transform"
   [X] Rotated image is not displayed correctly
-[ ] Stagger is really slow
-[ ] Interactions - some alignment issue
-[ ] Repeat is really slow
+[X] Interactions - some alignment issue
  
 ## TODO
 

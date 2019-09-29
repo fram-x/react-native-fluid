@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet, Text, Platform } from "react-native";
 import Fluid from "react-native-fluid-transitions";
 
 type AnimatedNumberProps = {
@@ -37,7 +37,7 @@ const Number: React.FC<NumberProps> = ({ value }) => {
   );
 };
 
-const boxHeight = 24;
+const boxHeight = Platform.select({ default: 24, android: 28 });
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",

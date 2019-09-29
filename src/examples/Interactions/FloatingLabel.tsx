@@ -1,13 +1,13 @@
-import React, {useState} from 'react';
-import {TextInput, StyleSheet, View} from 'react-native';
-import Fluid from 'react-native-fluid-transitions';
-import {ColorA} from '../colors';
+import React, { useState } from "react";
+import { Platform, TextInput, StyleSheet, View } from "react-native";
+import Fluid from "react-native-fluid-transitions";
+import { ColorA } from "../colors";
 
 type Props = {
   placeholder?: string;
 };
-const FloatingLabel: React.FC<Props> = ({placeholder}) => {
-  const [value, setValue] = useState('');
+const FloatingLabel: React.FC<Props> = ({ placeholder }) => {
+  const [value, setValue] = useState("");
   const onChangeText = (t: string) => setValue(t);
   return (
     <View style={styles.container}>
@@ -18,7 +18,7 @@ const FloatingLabel: React.FC<Props> = ({placeholder}) => {
       {/* Input */}
       <TextInput
         style={styles.input}
-        underlineColorAndroid={'transparent'}
+        underlineColorAndroid={"transparent"}
         value={value}
         onChangeText={onChangeText}
       />
@@ -29,28 +29,30 @@ const FloatingLabel: React.FC<Props> = ({placeholder}) => {
 const styles = StyleSheet.create({
   container: {
     paddingTop: 8,
-    justifyContent: 'center',
-    borderBottomColor: '#333',
+    justifyContent: "center",
+    borderBottomColor: "#333",
     borderBottomWidth: StyleSheet.hairlineWidth,
     minWidth: 130,
   },
   placeholderEmpty: {
     ...StyleSheet.absoluteFillObject,
     marginVertical: 3,
-    transform: [{translateY: 4}],
-    color: '#555',
+    transform: [{ translateY: Platform.select({ default: 4, android: 8 }) }],
+    color: "#555",
     fontSize: 14,
   },
   placeholder: {
     ...StyleSheet.absoluteFillObject,
     marginVertical: 3,
-    transform: [{translateY: -10}],
+    transform: [{ translateY: -10 }],
     color: ColorA,
     fontSize: 10,
   },
   input: {
-    alignSelf: 'stretch',
+    alignSelf: "stretch",
+    padding: 0,
+    margin: 0,
   },
 });
 
-export {FloatingLabel};
+export { FloatingLabel };
