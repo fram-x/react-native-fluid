@@ -226,20 +226,27 @@ export const useSharedInterpolation = (
     }
   };
 
+  const hasOverwrittenTransition = (si: SharedInterpolationType): boolean => {
+    return (
+      sharedInterpolations.current.find(
+        p =>
+          p !== si &&
+          p.status === SharedInterpolationStatus.Active &&
+          ((p.fromLabel === si.fromLabel && p.toLabel === si.toLabel) ||
+            (p.fromLabel === si.toLabel && p.toLabel === si.fromLabel)),
+      ) !== undefined
+    );
+  };
+
   const removeOverwrittenTransitions = () => {
     let shouldForceUpdate = false;
     sharedInterpolations.current.forEach(si => {
-      if (si.status === SharedInterpolationStatus.Active) {
-        const overwritten = sharedInterpolations.current.find(
-          p =>
-            (p !== si &&
-              (p.fromLabel === si.fromLabel && p.toLabel === si.toLabel)) ||
-            (p.fromLabel === si.toLabel && p.toLabel === si.fromLabel),
-        );
-        if (overwritten) {
-          si.status = SharedInterpolationStatus.Done;
-          shouldForceUpdate = true;
-        }
+      if (
+        si.status === SharedInterpolationStatus.Active &&
+        hasOverwrittenTransition(si)
+      ) {
+        si.status = SharedInterpolationStatus.Removing;
+        shouldForceUpdate = true;
       }
     });
     if (shouldForceUpdate) {
@@ -254,6 +261,7 @@ export const useSharedInterpolation = (
   };
 
   useEffect(() => {
+    removeOverwrittenTransitions();
     // Lets skip out here to avoid setting up async contexts in functions below
     if (
       sharedInterpolations.current.filter(
@@ -264,7 +272,6 @@ export const useSharedInterpolation = (
     }
     // Otherwise lets start setting up shared transitions
     setupPendingTransitions();
-    removeOverwrittenTransitions();
   });
 
   // Find elements to render
