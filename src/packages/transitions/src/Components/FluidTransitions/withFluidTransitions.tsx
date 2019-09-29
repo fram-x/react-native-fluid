@@ -219,7 +219,6 @@ export function withFluidTransitions<BasePropType, StyleType>(
       transitionItemContext,
       configuration,
       stateContext,
-      animationContext,
       currentDirection,
     );
 

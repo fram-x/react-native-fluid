@@ -65,14 +65,14 @@ const InterpolateExampleScreen = () => {
       <Fluid.View label={"interpolating-images"} style={styles.boxContainer}>
         <Fluid.View
           label={"imageA"}
-          animation={Fluid.Animations.Timings.timing(Easings.elastic(), 1000)}
+          animation={Fluid.Animations.Timings.timing(Easings.sin, 2000)}
           style={styles.imageA}
           config={ImageExitInteprolation}>
           <Image source={{ uri: imageUri }} style={StyleSheet.absoluteFill} />
         </Fluid.View>
         <Fluid.View
           label={"imageB"}
-          animation={Fluid.Animations.Timings.timing(Easings.elastic(), 1000)}
+          animation={Fluid.Animations.Timings.timing(Easings.sin, 2000)}
           style={styles.imageB}
           config={ImageEnterInteprolation}>
           <Image source={{ uri: imageUri }} style={StyleSheet.absoluteFill} />

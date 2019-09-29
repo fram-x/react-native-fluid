@@ -12,7 +12,7 @@ import {
   SharedInterpolationInfo,
   Style,
 } from "../Types";
-import { StyleSheet, Share } from "react-native";
+import { StyleSheet } from "react-native";
 import { useForceUpdate } from "../../Hooks";
 import { useLog } from "../../Hooks/useLog";
 import {
@@ -36,7 +36,6 @@ export const useSharedInterpolation = (
   transitionItemContext: TransitionItemContextType,
   configuration: SafeStateConfigType,
   stateContext: StateContextType,
-  animationContext: AnimationContextType,
   currentDirection?: ChildAnimationDirection,
 ) => {
   const sharedInterpolations = useRef<Array<SharedInterpolationType>>([]);
@@ -356,7 +355,7 @@ const getParentOpacityInterpolation = (
       easing: Easings.linear,
       duration: 100,
     },
-    inputRange: [0, 0.1, 1],
+    inputRange: [0, 0.6, 1],
     outputRange,
     styleKey: "opacity",
   },
