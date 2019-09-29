@@ -24,8 +24,8 @@ export const setupSharedInterpolation = async (
   );
 
   // Create clone configuration to enable swapping
-  const fromOpacityInterpolation = createOpacityOverlapConfig([0, 0, 1, 1]);
-  const toOpacityInterpolation = createOpacityOverlapConfig([1, 1, 0, 0]);
+  const fromOpacityInterpolation = createOpacityOverlapConfig([1, 1, 0, 0]);
+  const toOpacityInterpolation = createOpacityOverlapConfig([0, 0, 1, 1]);
 
   // Get style information from / to
   const {
@@ -99,7 +99,7 @@ export const setupSharedInterpolation = async (
   };
 
   // Create clones
-  sharedInterpolation.fromClone = sharedInterpolation.toItem.clone({
+  sharedInterpolation.fromClone = sharedInterpolation.fromItem.clone({
     key: sharedInterpolation.fromId,
     label: sharedInterpolation.fromCloneLabel,
     style: [fromStyles, { opacity: 0 }],
@@ -107,7 +107,7 @@ export const setupSharedInterpolation = async (
     animation: sharedInterpolation.animation,
   });
 
-  sharedInterpolation.toClone = sharedInterpolation.fromItem.clone({
+  sharedInterpolation.toClone = sharedInterpolation.toItem.clone({
     key: sharedInterpolation.toId,
     label: sharedInterpolation.toCloneLabel,
     style: [fromStyles, { opacity: 0 }],
