@@ -7,20 +7,20 @@ import Fluid from "react-native-fluid-transitions";
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
   },
   content: {
     alignItems: "center",
     justifyContent: "center",
-    flex: 1
+    flex: 1,
   },
   separator: {
     height: 1,
     borderTopColor: "#444",
-    borderTopWidth: StyleSheet.hairlineWidth
+    borderTopWidth: StyleSheet.hairlineWidth,
   },
   text: {
-    margin: 20
+    margin: 20,
   },
   styleText: {
     margin: 10,
@@ -28,8 +28,8 @@ const styles = StyleSheet.create({
     borderColor: "#666",
     borderWidth: StyleSheet.hairlineWidth,
     fontFamily: "Courier New",
-    fontSize: 11
-  }
+    fontSize: 11,
+  },
 });
 
 const RepeatExampleScreen = () => {

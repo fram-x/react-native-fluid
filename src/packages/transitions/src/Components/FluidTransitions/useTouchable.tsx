@@ -4,7 +4,7 @@ import { TouchableWithoutFeedback } from "react-native";
 export const useTouchable = (
   onPress?: () => void,
   onPressIn?: () => void,
-  onPressOut?: () => void
+  onPressOut?: () => void,
 ) => {
   const handleOnPress = () => {
     onPress && onPress();
@@ -30,9 +30,9 @@ export const useTouchable = (
   const renderTouchable = (
     child: React.ReactChild,
     props: any,
-    isTouchable: boolean
+    touchable: boolean,
   ): React.ReactChild => {
-    if (isTouchable) {
+    if (touchable) {
       let onLayout: any;
       if (React.isValidElement(child)) {
         // @ts-ignore
@@ -43,8 +43,7 @@ export const useTouchable = (
           onPress={handleOnPress}
           onPressIn={handleOnPressIn}
           onPressOut={handleOnPressOut}
-          onLayout={onLayout}
-        >
+          onLayout={onLayout}>
           {child}
         </TouchableWithoutFeedback>
       );
@@ -56,6 +55,6 @@ export const useTouchable = (
     renderTouchable(child, props, isTouchable);
 
   return {
-    render
+    render,
   };
 };
