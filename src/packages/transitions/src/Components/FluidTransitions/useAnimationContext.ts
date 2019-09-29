@@ -18,12 +18,12 @@ type AnimationContextStatus = {
 export const useAnimationContext = (
   isMounted: boolean,
   transitionItem: T.TransitionItem,
-  _resolvedAnimationType?: ConfigAnimationType
+  _resolvedAnimationType?: ConfigAnimationType,
 ) => {
   const animationStatus = useRef<AnimationContextStatus>({
-    isInAnimationContext: false
+    isInAnimationContext: false,
   });
-  const interpolationInfos = useRef(new Array<T.InterpolationInfo>());
+  const interpolationInfos = useRef<Array<T.InterpolationInfo>>([]);
   const isInitialAnimation = useRef(true);
   const startTime = Date.now();
 
@@ -64,7 +64,7 @@ export const useAnimationContext = (
 
   const registerInterpolation = (
     interpolator: IAnimationNode,
-    interpolationInfo: T.InterpolationInfo
+    interpolationInfo: T.InterpolationInfo,
   ) => {
     // We don't care about the context we're in - just register
     commitInterpolations([{ interpolator, interpolationInfo }]);
@@ -85,14 +85,14 @@ export const useAnimationContext = (
       if (__DEV__) {
         logger(
           () =>
-            "Setting up " + interpolationInfos.current.length + " animations."
+            "Setting up " + interpolationInfos.current.length + " animations.",
         );
       }
       // Now lets create animations from all interpolations waiting
       commitAnimations(
         transitionItem,
         interpolationInfos.current,
-        isInitialAnimation.current
+        isInitialAnimation.current,
       );
 
       // Turn off first animation indicator
@@ -138,7 +138,7 @@ export const useAnimationContext = (
         () =>
           "<----------  context end " +
           getFormattedTimeNum(Date.now() - startTime),
-        LoggerLevel.Always
+        LoggerLevel.Always,
       );
     }
   });
@@ -147,7 +147,7 @@ export const useAnimationContext = (
   const animationContext: T.AnimationContextType = {
     isInAnimationContext,
     registerAnimation,
-    registerInterpolation
+    registerInterpolation,
   };
 
   return animationContext;

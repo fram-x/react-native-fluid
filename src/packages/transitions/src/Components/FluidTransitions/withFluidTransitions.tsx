@@ -18,7 +18,6 @@ import {
   useSharedInterpolation,
 } from "../FluidTransitions";
 import { TimingDefaultAnimationType } from "../../Utilities";
-import { useLog } from "../../Hooks";
 import {
   PartialInterpolatorInfo,
   TransitionItem,
@@ -82,9 +81,6 @@ export function withFluidTransitions<BasePropType, StyleType>(
      ******************************************************/
     const transitionId = useMemo(() => TransitionId++, []);
     const componentRef = useRef(null);
-
-    // @ts-ignore
-    const logger = useLog(label, "compo");
 
     // Create transition item
     const transitionItemRef = useRef<TransitionItem>();
