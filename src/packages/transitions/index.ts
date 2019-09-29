@@ -14,20 +14,8 @@ import {
   interpolateValue,
 } from "./src/Animation/Runner/Functions";
 
-import {
-  SpringDefaultAnimationType,
-  SpringGentleAnimationType,
-  SpringNoWobbleAnimationType,
-  SpringStiffAnimationType,
-  SpringWobblyAnimationType,
-  SpringWobblySlowAnimationType,
-} from "./src/Utilities/Springs";
-
-import {
-  TimingLongAnimationType,
-  TimingMicroAnimationType,
-  TimingDefaultAnimationType,
-} from "./src/Utilities/Timings";
+import { Springs } from "./src/Utilities/Springs";
+import { Timings } from "./src/Utilities/Timings";
 
 import * as Constants from "./src/Types/Constants";
 import { Easings } from "./src/Components/Types";
@@ -39,19 +27,8 @@ import {
 } from "./src/Types";
 
 const Animations = {
-  Timings: {
-    Long: TimingLongAnimationType,
-    Micro: TimingMicroAnimationType,
-    Default: TimingDefaultAnimationType,
-  },
-  Springs: {
-    Default: SpringDefaultAnimationType,
-    Gentle: SpringGentleAnimationType,
-    NoWobble: SpringNoWobbleAnimationType,
-    Stiff: SpringStiffAnimationType,
-    Wobbly: SpringWobblyAnimationType,
-    WobblySlow: SpringWobblySlowAnimationType,
-  },
+  Timings,
+  Springs,
 };
 
 const States = {

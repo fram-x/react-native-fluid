@@ -18,7 +18,6 @@ import {
 export enum SharedInterpolationStatus {
   Created = "Created",
   Preparing = "Preparing",
-  Prepared = "Prepared",
   Active = "Active",
   Done = "Done",
 }
@@ -80,10 +79,6 @@ export type SharedInterpolationType = {
   direction?: ChildAnimationDirection;
   animation?: ConfigAnimationType;
   setupPromise?: Promise<void>;
-  fromStyles?: Style;
-  toStyles?: Style;
-  fromMetrics?: MetricsInfo;
-  toMetrics?: MetricsInfo;
   fromClone?: React.ReactElement;
   toClone?: React.ReactElement;
   onAnimationDone?: OnAnimationFunction;

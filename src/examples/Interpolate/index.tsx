@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Text, Image, StyleSheet } from "react-native";
-import Fluid from "react-native-fluid-transitions";
+import Fluid, { Easings } from "react-native-fluid-transitions";
 import * as Colors from "../colors";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { generateImageUri } from "../helpers";
@@ -65,14 +65,14 @@ const InterpolateExampleScreen = () => {
       <Fluid.View label={"interpolating-images"} style={styles.boxContainer}>
         <Fluid.View
           label={"imageA"}
-          animation={Fluid.Animations.Springs.WobblySlow}
+          animation={Fluid.Animations.Timings.timing(Easings.elastic(), 1000)}
           style={styles.imageA}
           config={ImageExitInteprolation}>
           <Image source={{ uri: imageUri }} style={StyleSheet.absoluteFill} />
         </Fluid.View>
         <Fluid.View
           label={"imageB"}
-          animation={Fluid.Animations.Springs.WobblySlow}
+          animation={Fluid.Animations.Timings.timing(Easings.elastic(), 1000)}
           style={styles.imageB}
           config={ImageEnterInteprolation}>
           <Image source={{ uri: imageUri }} style={StyleSheet.absoluteFill} />

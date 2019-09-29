@@ -58,7 +58,7 @@ export function withFluidTransitions<BasePropType, StyleType>(
 
   // Component
   const AnimationContextComponent: React.FC<
-    BasePropType & T.TouchableComponentProps<StyleType> & TransitionIdProps
+    BasePropType & T.TouchableComponentProps<StyleType>
   > = ({
     label,
     style,
@@ -251,16 +251,20 @@ export function withFluidTransitions<BasePropType, StyleType>(
      * Functions
      ******************************************************/
 
+    const FluidComponent = useMemo(
+      () =>
+        withFluidTransitions<BasePropType, StyleType>(
+          Component,
+          hasChildren,
+          setupInterpolators,
+        ),
+      [],
+    );
+
     const cloneElement = (
       p: BasePropType,
     ): React.ReactElement<BasePropType> => {
-      const compType = withFluidTransitions<BasePropType, StyleType>(
-        Component,
-        hasChildren,
-        setupInterpolators,
-      );
-      // @ts-ignore
-      return React.createElement(compType, { ...props, ...p });
+      return <FluidComponent {...props} {...p} ref={null} />;
     };
 
     /******************************************************
@@ -305,6 +309,6 @@ export function withFluidTransitions<BasePropType, StyleType>(
   };
 
   return React.memo(AnimationContextComponent) as React.ComponentType<
-    BasePropType & T.TouchableComponentProps<StyleType> & TransitionIdProps
+    BasePropType & T.TouchableComponentProps<StyleType>
   >;
 }

@@ -40,5 +40,5 @@ export const getSharedInterpolationStyles = async (
   toStyles.height = toMetrics.height;
   toStyles.position = "absolute";
 
-  return { fromStyles, toStyles, fromMetrics, toMetrics };
+  return { fromStyles, toStyles };
 };
