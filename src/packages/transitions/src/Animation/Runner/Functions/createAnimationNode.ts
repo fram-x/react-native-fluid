@@ -6,7 +6,7 @@ import {
   IAnimationNode,
   ExtrapolateType,
   IAnimationValue,
-  InterpolateFunction
+  InterpolateFunction,
 } from "react-native-fluid-animations";
 import { getExtrapolationValue } from "./getExtrapolationValue";
 import { EasingFunction } from "../../../Components/Types/Easing";
@@ -18,7 +18,7 @@ const {
   always,
   attach,
   detach,
-  cond
+  cond,
 } = AnimationProvider.Animated;
 
 export const createAnimationNode = (
@@ -38,22 +38,22 @@ export const createAnimationNode = (
   extrapolateRight: ExtrapolateType | undefined,
   onBegin: (() => void) | undefined,
   onEnd: (() => void) | undefined,
-  interpolate: InterpolateFunction
+  interpolate: InterpolateFunction,
 ) => {
   // Build interpolations if range has more items than two
-  const elements = new Array<IAnimationNode>();
+  const elements: Array<IAnimationNode> = [];
 
   // Start value - need to be copied
   const outputStart = AnimationProvider.createValue(Number.MIN_VALUE);
 
   // Resolve extrapolate left
   const extrapolateLeftValue = AnimationProvider.createValue(
-    getExtrapolationValue(extrapolateLeft || extrapolate || "extend")
+    getExtrapolationValue(extrapolateLeft || extrapolate || "extend"),
   );
 
   // Resolve extrapolate right
   const extrapolateRightValue = AnimationProvider.createValue(
-    getExtrapolationValue(extrapolateRight || extrapolate || "extend")
+    getExtrapolationValue(extrapolateRight || extrapolate || "extend"),
   );
 
   // Get set function
@@ -61,7 +61,7 @@ export const createAnimationNode = (
     interpolate,
     key,
     easingFunction,
-    easingKey
+    easingKey,
   );
 
   if (inputRange.length === 2) {
@@ -78,8 +78,8 @@ export const createAnimationNode = (
         outputRange[1],
         extrapolateLeftValue,
         extrapolateRightValue,
-        outputStart
-      )
+        outputStart,
+      ),
     );
   } else {
     // Push the rest (if any)
@@ -94,7 +94,7 @@ export const createAnimationNode = (
               : greaterOrEq(easingFunction(normalizeFunc), inputRange[i]),
             i === inputRange.length - 2
               ? true
-              : lessThan(easingFunction(normalizeFunc), inputRange[i + 1])
+              : lessThan(easingFunction(normalizeFunc), inputRange[i + 1]),
           ),
           setAnimationValueFunc(
             source,
@@ -107,9 +107,9 @@ export const createAnimationNode = (
             outputRange[i + 1],
             extrapolateLeftValue,
             extrapolateRightValue,
-            i === 0 ? outputStart : outputRange[i]
-          )
-        )
+            i === 0 ? outputStart : outputRange[i],
+          ),
+        ),
       );
     }
   }
@@ -132,7 +132,7 @@ export const createAnimationNode = (
     },
     // Now let's update the target node with the results from the
     // interpolation (including easing)
-    interpolateNode
+    interpolateNode,
   );
 
   const animationFrameNode = always(lifecycleFunc);

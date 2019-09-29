@@ -57,7 +57,7 @@ const createBlockFunc = (items: ReadonlyArray<IAnimationNode>) =>
       const last = nodes[nodes.length - 1];
       return last;
     },
-    items
+    items,
   );
 
 const createProxyNode = () => {
@@ -91,7 +91,7 @@ const createProxyNode = () => {
         }
       }
       return evalNode(cache[_argStack.length]);
-    }
+    },
   };
 };
 
@@ -116,7 +116,7 @@ const createNode = (
       stackTrace.pop();
       return retVal;
     },
-    children: children || []
+    children: children || [],
   };
 };
 
@@ -136,13 +136,13 @@ const ReactNativeAnimationProvider: IAnimationProvider = {
   getNumericColor: getProcessedColor,
   getNumericRotation: getProcessedRotation,
   configuration: {
-    gestureConfiguration
+    gestureConfiguration,
   },
   Types: {
     View: Animated.View,
     Image: Animated.Image,
     ScrollView: Animated.ScrollView,
-    Text: Animated.Text
+    Text: Animated.Text,
   },
   Animated: {
     event,
@@ -155,14 +155,14 @@ const ReactNativeAnimationProvider: IAnimationProvider = {
         () => {
           return args.reduce((a, b) => evalNode(a) + evalNode(b), 0);
         },
-        ...args
+        ...args,
       ),
 
     multiply: (...args: IAnimationNode[]): IAnimationNode =>
       createNode(
         "multiply",
         () => args.reduce((a, b) => evalNode(a) * evalNode(b), 1),
-        ...args
+        ...args,
       ),
 
     divide: (a: IAnimationNode, b: IAnimationNode): IAnimationNode =>
@@ -213,7 +213,7 @@ const ReactNativeAnimationProvider: IAnimationProvider = {
           }
           return retVal;
         },
-        ...[left, right, ...others]
+        ...[left, right, ...others],
       ),
 
     greaterOrEq: (left: IAnimationNode, right: IAnimationNode) =>
@@ -221,7 +221,7 @@ const ReactNativeAnimationProvider: IAnimationProvider = {
         "greaterOrEq",
         () => evalNode(left) >= evalNode(right),
         left,
-        right
+        right,
       ),
 
     lessThan: (left: IAnimationNode, right: IAnimationNode) =>
@@ -229,7 +229,7 @@ const ReactNativeAnimationProvider: IAnimationProvider = {
         "lessThan",
         () => evalNode(left) < evalNode(right),
         left,
-        right
+        right,
       ),
 
     greaterThan: (left: IAnimationNode, right: IAnimationNode) =>
@@ -237,7 +237,7 @@ const ReactNativeAnimationProvider: IAnimationProvider = {
         "greaterThan",
         () => evalNode(left) > evalNode(right),
         left,
-        right
+        right,
       ),
 
     lessOrEq: (left: IAnimationNode, right: IAnimationNode) =>
@@ -245,7 +245,7 @@ const ReactNativeAnimationProvider: IAnimationProvider = {
         "lessOrEq",
         () => evalNode(left) <= evalNode(right),
         left,
-        right
+        right,
       ),
 
     /* Statements */
@@ -257,14 +257,14 @@ const ReactNativeAnimationProvider: IAnimationProvider = {
           if (Number.isNaN(v)) {
             const s = stackTrace;
             throw new Error(
-              "Value is not a number\n" + stackTraceToString() + "\n" + s
+              "Value is not a number\n" + stackTraceToString() + "\n" + s,
             );
           }
           target.setValue(v);
           return v;
         },
         target,
-        source
+        source,
       ),
 
     block: (items: ReadonlyArray<IAnimationNode>) => createBlockFunc(items),
@@ -272,7 +272,7 @@ const ReactNativeAnimationProvider: IAnimationProvider = {
     cond: (
       expression: IAnimationNode,
       ifNode: IAnimationNode,
-      elseNode?: IAnimationNode
+      elseNode?: IAnimationNode,
     ) => {
       const ifNodeResolved =
         ifNode instanceof Array ? createBlockFunc(ifNode) : ifNode;
@@ -287,13 +287,13 @@ const ReactNativeAnimationProvider: IAnimationProvider = {
           const retVal = evalNode(exec);
           return retVal;
         },
-        ...(elseNode ? [expression, ifNode, elseNode] : [expression, ifNode])
+        ...(elseNode ? [expression, ifNode, elseNode] : [expression, ifNode]),
       );
     },
 
     call: (
       args: ReadonlyArray<IAnimationNode>,
-      callback: (args: ReadonlyArray<number>) => void
+      callback: (args: ReadonlyArray<number>) => void,
     ) =>
       createNode(
         "call",
@@ -301,13 +301,13 @@ const ReactNativeAnimationProvider: IAnimationProvider = {
           callback(args.map(a => evalNode(a)));
           return 0;
         },
-        ...args
+        ...args,
       ),
 
     /* Helpers */
     proc: (
       name: string,
-      callback: (...params: Array<IAnimationNode>) => IAnimationNode
+      callback: (...params: Array<IAnimationNode>) => IAnimationNode,
     ) => {
       // Create argument nodes
       const params = new Array(callback.length);
@@ -321,7 +321,7 @@ const ReactNativeAnimationProvider: IAnimationProvider = {
           () => {
             if (args.length !== params.length) {
               throw Error(
-                `Expected ${params.length} arguments, got ${args.length}.`
+                `Expected ${params.length} arguments, got ${args.length}.`,
               );
             }
 
@@ -330,7 +330,7 @@ const ReactNativeAnimationProvider: IAnimationProvider = {
             params.forEach(p => p.endCall());
             return retVal;
           },
-          ...args
+          ...args,
         );
     },
 
@@ -371,10 +371,10 @@ const ReactNativeAnimationProvider: IAnimationProvider = {
           () => {
             return bezierFunc(evalNode(t));
           },
-          t
+          t,
         );
-    }
-  }
+    },
+  },
 };
 
 const listeners: { [key: string]: IAnimationNode } = {};

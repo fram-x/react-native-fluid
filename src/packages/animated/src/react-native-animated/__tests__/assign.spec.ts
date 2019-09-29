@@ -14,7 +14,7 @@ describe("assign", () => {
     const b = P.createValue(2);
     const statement = Animated.set(a, b);
     const valueToTest = (statement as AnimatedNode).evaluate();
-    expect(valueToTest).toBe(2);
+    expect(valueToTest).toEqual(2);
   });
 
   it("should assign expression", () => {
@@ -23,6 +23,6 @@ describe("assign", () => {
     const expression = Animated.add(a, b);
     const statement = Animated.set(a, expression);
     const valueToTest = (statement as AnimatedNode).evaluate();
-    expect(valueToTest).toBe(3);
+    expect(valueToTest).toEqual(3);
   });
 });
