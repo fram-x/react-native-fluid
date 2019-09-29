@@ -228,11 +228,7 @@ function decorateWithRepeat(
   interpolationInfo: InterpolationInfo,
   loopAnimations: { [key: string]: InterpolationInfo },
 ) {
-  if (
-    repeatValue === 0
-    // ||
-    //!IsAnimationRunning(interpolationInfo.itemId, interpolationInfo.key)
-  ) {
+  if (repeatValue === 0) {
     return false;
   }
 
