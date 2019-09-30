@@ -48,8 +48,6 @@ export const useOnConfig = (
     sharedInterpolationContext.registerSharedInterpolationInfo(
       p.fromLabel,
       transitionItem.label || "unknown",
-      // TODO: Find a way to see when a state is active
-      state.active || false,
     );
   });
 

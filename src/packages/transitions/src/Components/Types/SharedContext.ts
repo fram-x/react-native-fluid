@@ -10,15 +10,11 @@ export interface SharedInterpolationContextType {
     toLabel: string,
     animation?: ConfigAnimationType,
     onBegin?: OnAnimationFunction,
-    onEnd?: OnAnimationFunction
+    onEnd?: OnAnimationFunction,
   ) => void;
-  registerSharedInterpolationInfo: (
-    fromLabel: string,
-    toLabel: string,
-    active: boolean
-  ) => void;
+  registerSharedInterpolationInfo: (fromLabel: string, toLabel: string) => void;
 }
 
 export const SharedInterpolationContext: Context<SharedInterpolationContextType | null> = React.createContext<SharedInterpolationContextType | null>(
-  null
+  null,
 );

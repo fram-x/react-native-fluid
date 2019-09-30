@@ -60,14 +60,12 @@ export type OnAnimationFunction = () => void;
 export type SharedInterpolationInfo = {
   fromLabel: string;
   toLabel: string;
-  active: boolean;
 };
 
 export type SharedInterpolationType = {
   id: number;
   orgFromId: number;
   orgToId: number;
-  stateName: string;
   fromLabel: string;
   toLabel: string;
   fromCloneLabel: string;

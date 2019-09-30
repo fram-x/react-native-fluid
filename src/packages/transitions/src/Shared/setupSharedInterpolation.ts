@@ -9,14 +9,13 @@ import {
 import { ConfigStyleInterpolationType, ConfigType } from "../Configuration";
 import { getStyleInfo } from "../Styles/getStyleInfo";
 import { getSharedInterpolationStyles } from "./getSharedInterpolationStyles";
+import { getStateNameForTransition } from "./getStates";
 
 export const setupSharedInterpolation = async (
   sharedInterpolation: SharedInterpolationType,
   ownerItem: TransitionItem,
   overriddenFromStyle?: Style,
 ) => {
-  const { stateName } = sharedInterpolation;
-
   const { fromStyles, toStyles } = await getSharedInterpolationStyles(
     sharedInterpolation,
     ownerItem,
@@ -65,7 +64,7 @@ export const setupSharedInterpolation = async (
 
   const fromConfig: ConfigType = {
     onEnter: {
-      state: stateName,
+      state: getStateNameForTransition(sharedInterpolation),
       interpolation: [...interpolations, fromOpacityInterpolation],
     },
   };
@@ -77,14 +76,14 @@ export const setupSharedInterpolation = async (
         sharedInterpolation.onAnimationDone &&
           sharedInterpolation.onAnimationDone();
       },
-      state: stateName,
+      state: getStateNameForTransition(sharedInterpolation),
       interpolation: [...interpolations, toOpacityInterpolation],
     },
     onExit: {
       onEnd: () => {
         sharedInterpolation.status = SharedInterpolationStatus.Done;
       },
-      state: stateName,
+      state: getStateNameForTransition(sharedInterpolation),
       interpolation: {
         styleKey: "opacity",
         animation: {

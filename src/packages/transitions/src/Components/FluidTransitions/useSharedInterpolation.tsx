@@ -4,7 +4,6 @@ import {
   TransitionItem,
   TransitionItemContextType,
   SharedInterpolationType,
-  AnimationContextType,
   SharedInterpolationStatus,
   OnAnimationFunction,
   StateContextType,
@@ -17,18 +16,19 @@ import { useForceUpdate } from "../../Hooks";
 import { useLog } from "../../Hooks/useLog";
 import {
   createSharedInterpolation,
-  SharedStateName,
   setupSharedInterpolation,
+  getStates,
+  getStateNameForLabel,
 } from "../../Shared";
 import { TransitionView } from "../index";
-import { fluidException, fluidInternalException } from "../../Types";
+import { fluidException, fluidInternalException, AsGroup } from "../../Types";
 import {
   ConfigAnimationType,
   createConfig,
   ChildAnimationDirection,
   SafeStateConfigType,
-  ConfigStateType,
   ConfigOnType,
+  ConfigType,
 } from "../../Configuration";
 
 export const useSharedInterpolation = (
@@ -46,30 +46,18 @@ export const useSharedInterpolation = (
   const forceUpdate = useForceUpdate();
   const logger = useLog(transitionItem.label, "shared");
 
-  // set up config for interpolation
-  const stateName = useMemo(
-    () => SharedStateName + (transitionItem.label || "unknown"),
-    [transitionItem.label],
-  );
-
-  configuration.onEnter = configuration.onEnter.concat([
-    getParentOpacityInterpolation(stateName, [1, 0, 0]),
-  ]);
-
-  configuration.onExit = configuration.onExit.concat([
-    getParentOpacityInterpolation(stateName, [0, 1, 1]),
-  ]);
+  // State name for this transition item's shared element transition
+  const sharedTransitionStateName = getStateNameForLabel(transitionItem.label);
+  decorateConfiguration(sharedTransitionStateName, configuration);
 
   const registerSharedInterpolationInfo = (
     fromLabel: string,
     toLabel: string,
-    active: boolean,
   ) => {
     const exinstingInfo = sharedInterpolationInfos.find(
       p => p.fromLabel === fromLabel && p.toLabel === toLabel,
     );
     if (exinstingInfo) {
-      exinstingInfo.active = active;
       return;
     }
 
@@ -84,7 +72,6 @@ export const useSharedInterpolation = (
         {
           fromLabel,
           toLabel,
-          active,
         },
       ]);
     } else if (sharedInterpolatorContext) {
@@ -92,7 +79,6 @@ export const useSharedInterpolation = (
       sharedInterpolatorContext.registerSharedInterpolationInfo(
         fromLabel,
         toLabel,
-        active,
       );
     }
   };
@@ -281,43 +267,22 @@ export const useSharedInterpolation = (
       p.status === SharedInterpolationStatus.Removing,
   );
 
-  // Set up states
-  const sharedTransitionStates: ConfigStateType[] = sharedInterpolationInfos.map(
-    p => ({
-      name: SharedStateName + p.fromLabel,
-      active:
-        sharedInterpolations.current.find(
-          p2 =>
-            ((p.fromLabel === p2.fromLabel && p.toLabel === p2.toLabel) ||
-              (p.toLabel === p2.fromLabel && p.fromLabel === p2.toLabel)) &&
-            p2.status !== SharedInterpolationStatus.Done &&
-            p2.status !== SharedInterpolationStatus.Removing,
-        ) !== undefined,
-    }),
-  );
-
-  const mainSharedStates: ConfigStateType[] = sharedInterpolationInfos.map(
-    p => ({
-      name: SharedStateName + "-" + p.fromLabel + "->" + p.toLabel,
-      active:
-        sharedInterpolations.current.find(
-          p2 =>
-            p.fromLabel === p2.fromLabel &&
-            p.toLabel === p2.toLabel &&
-            p2.status !== SharedInterpolationStatus.Removing,
-        ) !== undefined,
-    }),
-  );
-
   // Remove elements that have status Died
   removeDeadTransitions();
 
   // Add states
-  stateContext.states = [
-    ...stateContext.states,
-    ...sharedTransitionStates,
-    ...mainSharedStates,
-  ];
+  const transitionStates = getStates(
+    sharedInterpolationInfos,
+    sharedInterpolations.current,
+  );
+
+  if (transitionStates.length > 0) {
+    console.log(
+      transitionStates.map(s => `${s.name} (${s.active ? 1 : 0})`).join(", "),
+    );
+  }
+
+  stateContext.states = [...stateContext.states, ...transitionStates];
 
   const renderSharedOverlay = (
     Component: any,
@@ -351,27 +316,42 @@ export const useSharedInterpolation = (
   };
 };
 
-const getParentOpacityInterpolation = (
-  state: string,
-  outputRange: number[],
-): ConfigOnType => ({
-  state,
-  interpolation: {
-    animation: {
-      type: "timing",
-      easing: Easings.linear,
-      duration: 100,
-    },
-    inputRange: [0, 0.6, 1],
-    outputRange,
-    styleKey: "opacity",
-  },
-});
-
 const styles = StyleSheet.create({
   overlayContainer: {
     ...StyleSheet.absoluteFillObject,
     // overflow: "hidden"
-    // backgroundColor: "#00FF0044"
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "#00FF0044",
+    backgroundColor: "#00FF0022",
   },
 });
+
+const decorateConfiguration = (
+  sharedTransitionStateName: string,
+  configuration: SafeStateConfigType,
+) => {
+  configuration.onEnter.push({
+    state: sharedTransitionStateName,
+    animation: {
+      type: "timing",
+      duration: 100,
+    },
+    interpolation: {
+      styleKey: "opacity",
+      inputRange: [0, 0.001, 1],
+      outputRange: [1, 0, 0],
+    },
+  });
+  configuration.onExit.push({
+    state: sharedTransitionStateName,
+    animation: {
+      type: "timing",
+      duration: 100,
+    },
+    interpolation: {
+      styleKey: "opacity",
+      inputRange: [0, 0.001, 1],
+      outputRange: [0, 1, 1],
+    },
+  });
+};
