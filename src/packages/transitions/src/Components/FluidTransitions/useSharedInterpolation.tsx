@@ -7,7 +7,6 @@ import {
   SharedInterpolationStatus,
   OnAnimationFunction,
   StateContextType,
-  Easings,
   SharedInterpolationInfo,
   Style,
 } from "../Types";
@@ -152,6 +151,17 @@ export const useSharedInterpolation = (
         );
         if (s && s.status === SharedInterpolationStatus.Active) {
           s.status = SharedInterpolationStatus.Removing;
+          forceUpdate();
+          // TODO: Callback to user-land?
+        }
+      };
+
+      sharedInterpolation.onAnimationFinished = () => {
+        const s = sharedInterpolations.current.find(
+          si => si.id === sharedInterpolation.id,
+        );
+        if (s && s.status === SharedInterpolationStatus.Removing) {
+          s.status = SharedInterpolationStatus.Done;
           forceUpdate();
           // TODO: Callback to user-land?
         }
@@ -320,9 +330,9 @@ const styles = StyleSheet.create({
   overlayContainer: {
     ...StyleSheet.absoluteFillObject,
     // overflow: "hidden"
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "#00FF0044",
-    backgroundColor: "#00FF0022",
+    // borderWidth: StyleSheet.hairlineWidth,
+    // borderColor: "#00FF0044",
+    // backgroundColor: "#00FF0022",
   },
 });
 
@@ -338,7 +348,7 @@ const decorateConfiguration = (
     },
     interpolation: {
       styleKey: "opacity",
-      inputRange: [0, 0.001, 1],
+      inputRange: [0, 0.999, 1],
       outputRange: [1, 0, 0],
     },
   });

@@ -81,5 +81,6 @@ export type SharedInterpolationType = {
   fromClone?: React.ReactElement;
   toClone?: React.ReactElement;
   onAnimationDone?: OnAnimationFunction;
+  onAnimationFinished?: OnAnimationFunction;
   onAnimationBegin?: OnAnimationFunction;
 };

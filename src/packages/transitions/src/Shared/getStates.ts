@@ -17,27 +17,34 @@ export const getStates = (
   // 3) Shared transition
   const retVal: ConfigStateType[] = [];
   sharedInterpolationInfos.forEach(st => {
-    // Find active shared interpolations
+    // Find active shared interpolation
     const sharedInterpolation = sharedInterpolations.find(
       si =>
         si.fromLabel === st.fromLabel &&
         si.toLabel === st.toLabel &&
         si.status === SharedInterpolationStatus.Active,
     );
+    const isPartOfInterpolation =
+      sharedInterpolations.find(
+        si =>
+          ((si.fromLabel === st.fromLabel && si.toLabel === st.toLabel) ||
+            (si.toLabel === st.fromLabel && si.toLabel === st.fromLabel)) &&
+          si.status === SharedInterpolationStatus.Active,
+      ) !== undefined;
     // Add 1) original from element
     retVal.push({
       name: getStateNameForLabel(st.fromLabel),
-      active: sharedInterpolation !== undefined,
+      active: isPartOfInterpolation,
     });
     // Add 2) original to element
     retVal.push({
       name: getStateNameForLabel(st.toLabel),
-      active: sharedInterpolation !== undefined,
+      active: isPartOfInterpolation,
     });
     // Add 3) shared transition state
     retVal.push({
       name: getStateNameForTransition(st),
-      active: sharedInterpolation !== undefined,
+      active: isPartOfInterpolation,
     });
   });
   return retVal.filter((v, i, a) => a.findIndex(n => n.name === v.name) === i);

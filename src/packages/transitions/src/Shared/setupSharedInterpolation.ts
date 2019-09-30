@@ -72,7 +72,7 @@ export const setupSharedInterpolation = async (
   const toConfig: ConfigType = {
     onEnter: {
       onEnd: () => {
-        console.log("Done with interpolation");
+        console.log("Removing interpolation elements");
         sharedInterpolation.onAnimationDone &&
           sharedInterpolation.onAnimationDone();
       },
@@ -81,7 +81,9 @@ export const setupSharedInterpolation = async (
     },
     onExit: {
       onEnd: () => {
-        sharedInterpolation.status = SharedInterpolationStatus.Done;
+        console.log("Animation done.");
+        sharedInterpolation.onAnimationFinished &&
+          sharedInterpolation.onAnimationFinished();
       },
       state: getStateNameForTransition(sharedInterpolation),
       interpolation: {
@@ -91,8 +93,8 @@ export const setupSharedInterpolation = async (
           easing: Easings.linear,
           duration: 100,
         },
-        inputRange: [0, 0.5, 1],
-        outputRange: [1, 1, 0],
+        inputRange: [0, 1],
+        outputRange: [1, 1],
       },
     },
   };
@@ -101,6 +103,7 @@ export const setupSharedInterpolation = async (
   sharedInterpolation.fromClone = sharedInterpolation.fromItem.clone({
     key: sharedInterpolation.fromId,
     label: sharedInterpolation.fromCloneLabel,
+    // staticStyle: { borderWidth: 2, borderColor: "#0000FF" },
     style: [fromStyles, { opacity: 0 }],
     config: fromConfig,
     animation: sharedInterpolation.animation,
@@ -109,6 +112,7 @@ export const setupSharedInterpolation = async (
   sharedInterpolation.toClone = sharedInterpolation.toItem.clone({
     key: sharedInterpolation.toId,
     label: sharedInterpolation.toCloneLabel,
+    //  staticStyle: { borderWidth: 2, borderColor: "#FF0000" },
     style: [fromStyles, { opacity: 0 }],
     config: toConfig,
     animation: sharedInterpolation.animation,
