@@ -1,37 +1,37 @@
-import React, {useState} from 'react';
+import React, { useState } from "react";
 import {
   View,
   TouchableOpacity,
   Text,
   StyleSheet,
   Dimensions,
-} from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+} from "react-native";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-import Fluid, {Easings} from 'react-native-fluid-transitions';
+import Fluid, { Easings } from "react-native-fluid-transitions";
 
-import * as Colors from '../colors';
+import * as Colors from "../colors";
 
 type Props = {
   easing?: any;
   isActive: boolean;
   color: string;
 };
-const EC: React.FC<Props> = ({easing, isActive, color}) => (
+const EC: React.FC<Props> = ({ easing, isActive, color }) => (
   <View style={styles.componentContainer}>
-    <Text style={styles.text}>{easing ? easing.name : 'spring'}</Text>
+    <Text style={styles.text}>{easing ? easing.name : "spring"}</Text>
     <Fluid.View
-      staticStyle={[styles.component, {backgroundColor: color}]}
+      staticStyle={[styles.component, { backgroundColor: color }]}
       style={isActive ? styles.activeComponent : styles.inactiveComponent}
       animation={
         easing !== undefined
           ? {
-              type: 'timing',
+              type: "timing",
               duration: 2000,
               easing,
             }
           : {
-              type: 'spring',
+              type: "spring",
               mass: 2,
               stiffness: 120,
               damping: 10,
@@ -80,26 +80,26 @@ const EasingExampleScreen = () => {
 };
 
 EasingExampleScreen.navigationOptions = {
-  title: 'Easings',
+  title: "Easings",
 };
 
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignSelf: 'stretch',
+    alignSelf: "stretch",
   },
   buttonsContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   componentsContainer: {
     margin: 20,
   },
   componentContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   text: {
     fontSize: 11,
@@ -113,10 +113,10 @@ const styles = StyleSheet.create({
     marginVertical: 4,
   },
   inactiveComponent: {
-    transform: [{translateX: 0}],
+    transform: [{ translateX: 0 }],
   },
   activeComponent: {
-    transform: [{translateX: width - 120}],
+    transform: [{ translateX: width - 120 }],
   },
 });
 
