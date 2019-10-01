@@ -222,24 +222,12 @@ export const useSharedInterpolation = (
     }
   };
 
-  const hasOverwrittenTransition = (si: SharedInterpolationType): boolean => {
-    return (
-      sharedInterpolations.current.find(
-        p =>
-          p !== si &&
-          p.status === SharedInterpolationStatus.Active &&
-          ((p.fromLabel === si.fromLabel && p.toLabel === si.toLabel) ||
-            (p.fromLabel === si.toLabel && p.toLabel === si.fromLabel)),
-      ) !== undefined
-    );
-  };
-
   const removeOverwrittenTransitions = () => {
     let shouldForceUpdate = false;
     sharedInterpolations.current.forEach(si => {
       if (
         si.status === SharedInterpolationStatus.Active &&
-        hasOverwrittenTransition(si)
+        hasOverwrittenTransition(si, sharedInterpolations.current)
       ) {
         si.status = SharedInterpolationStatus.Done;
         shouldForceUpdate = true;
@@ -364,4 +352,19 @@ const decorateConfiguration = (
       outputRange: [0, 1, 1],
     },
   });
+};
+
+const hasOverwrittenTransition = (
+  si: SharedInterpolationType,
+  sharedInterpolations: SharedInterpolationType[],
+): boolean => {
+  return (
+    sharedInterpolations.find(
+      p =>
+        p !== si &&
+        p.status === SharedInterpolationStatus.Active &&
+        ((p.fromLabel === si.fromLabel && p.toLabel === si.toLabel) ||
+          (p.fromLabel === si.toLabel && p.toLabel === si.fromLabel)),
+    ) !== undefined
+  );
 };
