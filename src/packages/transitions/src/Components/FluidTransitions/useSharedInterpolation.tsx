@@ -1,14 +1,19 @@
-import React, { useContext, useRef, useEffect, useState, useMemo } from "react";
+import React, {
+  useContext,
+  useRef,
+  useEffect,
+  useState,
+  useMemo,
+  useCallback,
+} from "react";
 import {
   SharedInterpolationContext,
   TransitionItem,
   TransitionItemContextType,
   SharedInterpolationType,
-  AnimationContextType,
   SharedInterpolationStatus,
   OnAnimationFunction,
   StateContextType,
-  Easings,
   SharedInterpolationInfo,
   Style,
 } from "../Types";
@@ -17,18 +22,19 @@ import { useForceUpdate } from "../../Hooks";
 import { useLog } from "../../Hooks/useLog";
 import {
   createSharedInterpolation,
-  SharedStateName,
   setupSharedInterpolation,
+  getStates,
+  getStateNameForLabel,
 } from "../../Shared";
 import { TransitionView } from "../index";
-import { fluidException, fluidInternalException } from "../../Types";
+import { fluidException, fluidInternalException, AsGroup } from "../../Types";
 import {
   ConfigAnimationType,
   createConfig,
   ChildAnimationDirection,
   SafeStateConfigType,
-  ConfigStateType,
   ConfigOnType,
+  ConfigType,
 } from "../../Configuration";
 
 export const useSharedInterpolation = (
@@ -46,160 +52,174 @@ export const useSharedInterpolation = (
   const forceUpdate = useForceUpdate();
   const logger = useLog(transitionItem.label, "shared");
 
-  // set up config for interpolation
-  const stateName = useMemo(
-    () => SharedStateName + (transitionItem.label || "unknown"),
-    [transitionItem.label],
-  );
+  // State name for this transition item's shared element transition
+  const sharedTransitionStateName = getStateNameForLabel(transitionItem.label);
+  decorateConfiguration(sharedTransitionStateName, configuration);
 
-  configuration.onEnter = configuration.onEnter.concat([
-    getParentOpacityInterpolation(stateName, [1, 0, 0]),
-  ]);
+  const registerSharedInterpolationInfo = useCallback(
+    (fromLabel: string, toLabel: string) => {
+      const exinstingInfo = sharedInterpolationInfos.find(
+        p => p.fromLabel === fromLabel && p.toLabel === toLabel,
+      );
+      if (exinstingInfo) {
+        return;
+      }
 
-  configuration.onExit = configuration.onExit.concat([
-    getParentOpacityInterpolation(stateName, [0, 1, 1]),
-  ]);
+      // Check if we can get the source/target items from this context
+      const toItem = transitionItemContext.getTransitionItemByLabel(toLabel);
+      const fromItem = transitionItemContext.getTransitionItemByLabel(
+        fromLabel,
+      );
 
-  const registerSharedInterpolationInfo = (
-    fromLabel: string,
-    toLabel: string,
-    active: boolean,
-  ) => {
-    const exinstingInfo = sharedInterpolationInfos.find(
-      p => p.fromLabel === fromLabel && p.toLabel === toLabel,
-    );
-    if (exinstingInfo) {
-      exinstingInfo.active = active;
-      return;
-    }
-
-    // Check if we can get the source/target items from this context
-    const toItem = transitionItemContext.getTransitionItemByLabel(toLabel);
-    const fromItem = transitionItemContext.getTransitionItemByLabel(fromLabel);
-
-    // Check if we have found these two items
-    if (fromItem && toItem) {
-      setSharedInterpolationInfos(p => [
-        ...p,
-        {
+      // Check if we have found these two items
+      if (fromItem && toItem) {
+        setSharedInterpolationInfos(p => [
+          ...p,
+          {
+            fromLabel,
+            toLabel,
+          },
+        ]);
+      } else if (sharedInterpolatorContext) {
+        // Walk up the tree
+        sharedInterpolatorContext.registerSharedInterpolationInfo(
           fromLabel,
           toLabel,
-          active,
-        },
-      ]);
-    } else if (sharedInterpolatorContext) {
-      // Walk up the tree
-      sharedInterpolatorContext.registerSharedInterpolationInfo(
-        fromLabel,
-        toLabel,
-        active,
-      );
-    }
-  };
-
-  const registerSharedInterpolation = async (
-    item: TransitionItem,
-    fromLabel: string,
-    toLabel: string,
-    animation?: ConfigAnimationType,
-    onBegin?: OnAnimationFunction,
-    onEnd?: OnAnimationFunction,
-  ) => {
-    // Check if we can get the source item from this context
-    const ownerItem = transitionItemContext.getOwner();
-    const toItem = transitionItemContext.getTransitionItemByLabel(
-      item.label || "unknown",
-    );
-
-    let overriddenFromStyle: Style | undefined;
-
-    // Check if current context knows about both to/from items
-    const fromItem = transitionItemContext.getTransitionItemByLabel(fromLabel);
-    if (fromItem && toItem) {
-      if (__DEV__) {
-        logger(
-          () =>
-            "Starting Shared Transition from " +
-            fromItem.label +
-            " -> " +
-            toItem.label,
         );
       }
+    },
+    [
+      sharedInterpolationInfos,
+      sharedInterpolatorContext,
+      transitionItemContext,
+    ],
+  );
 
-      // Check if there is already an interpolation running here
-      const existingInterpolation = sharedInterpolations.current.find(
-        p =>
-          (p.fromLabel === fromLabel && p.toLabel === toLabel) ||
-          (p.fromLabel === toLabel && p.toLabel === fromLabel),
+  const registerSharedInterpolation = useCallback(
+    async (
+      item: TransitionItem,
+      fromLabel: string,
+      toLabel: string,
+      animation?: ConfigAnimationType,
+      onBegin?: OnAnimationFunction,
+      onEnd?: OnAnimationFunction,
+    ) => {
+      // Check if we can get the source item from this context
+      const ownerItem = transitionItemContext.getOwner();
+      const toItem = transitionItemContext.getTransitionItemByLabel(
+        item.label || "unknown",
       );
-      if (existingInterpolation) {
-        // There is already a shared interpolation going on here. We
-        // should stop it and transfer the style values to the
-        // new interpolation
-        const fromItemClone = transitionItemContext.getTransitionItemByLabel(
-          existingInterpolation.fromCloneLabel,
-        );
 
-        if (!fromItemClone) {
-          throw fluidInternalException(
-            "Could not find clones in onging interpolation.",
+      let overriddenFromStyle: Style | undefined;
+
+      // Check if current context knows about both to/from items
+      const fromItem = transitionItemContext.getTransitionItemByLabel(
+        fromLabel,
+      );
+      if (fromItem && toItem) {
+        if (__DEV__) {
+          logger(
+            () =>
+              "Starting Shared Transition from " +
+              fromItem.label +
+              " -> " +
+              toItem.label,
           );
         }
-        // Overriden from style
-        overriddenFromStyle = fromItemClone.getCalculatedStyles();
-      }
 
-      // Create interpolation
-      const sharedInterpolation: SharedInterpolationType = createSharedInterpolation(
-        fromItem,
-        toItem,
-        currentDirection,
-        animation,
-        onBegin,
-        onEnd,
-      );
-
-      // Create onAnimationDone
-      sharedInterpolation.onAnimationDone = () => {
-        const s = sharedInterpolations.current.find(
-          si => si.id === sharedInterpolation.id,
+        // Check if there is already an interpolation running here
+        const existingInterpolation = sharedInterpolations.current.find(
+          p =>
+            (p.fromLabel === fromLabel && p.toLabel === toLabel) ||
+            (p.fromLabel === toLabel && p.toLabel === fromLabel),
         );
-        if (s && s.status === SharedInterpolationStatus.Active) {
-          s.status = SharedInterpolationStatus.Removing;
-          forceUpdate();
-          // TODO: Callback to user-land?
+        if (existingInterpolation) {
+          // There is already a shared interpolation going on here. We
+          // should stop it and transfer the style values to the
+          // new interpolation
+          const fromItemClone = transitionItemContext.getTransitionItemByLabel(
+            existingInterpolation.fromCloneLabel,
+          );
+
+          if (!fromItemClone) {
+            throw fluidInternalException(
+              "Could not find clones in onging interpolation.",
+            );
+          }
+          // Overriden from style
+          overriddenFromStyle = fromItemClone.getCalculatedStyles();
         }
-      };
 
-      // Add to list of preparing shared interpolations
-      sharedInterpolations.current.push(sharedInterpolation);
+        // Create interpolation
+        const sharedInterpolation: SharedInterpolationType = createSharedInterpolation(
+          fromItem,
+          toItem,
+          currentDirection,
+          animation,
+          onBegin,
+          onEnd,
+        );
 
-      // Start setting up the shared interpolation
-      sharedInterpolation.setupPromise = setupSharedInterpolation(
-        sharedInterpolation,
-        ownerItem,
-        overriddenFromStyle,
-      );
-    } else if (sharedInterpolatorContext) {
-      // Walk up the tree to find parent root and start shared
-      // interpolation from there.
-      sharedInterpolatorContext.registerSharedInterpolation(
-        item,
-        fromLabel,
-        toLabel,
-        animation,
-        onBegin,
-        onEnd,
-      );
-    } else {
-      throw fluidException(
-        "No container found for shared element transition. " +
-          "Remember to wrap shared elements in a parent Fluid.View.",
-      );
-    }
-  };
+        // Create onAnimationDone
+        sharedInterpolation.onAnimationDone = () => {
+          const s = sharedInterpolations.current.find(
+            si => si.id === sharedInterpolation.id,
+          );
+          if (s && s.status === SharedInterpolationStatus.Active) {
+            s.status = SharedInterpolationStatus.Removing;
+            forceUpdate();
+            // TODO: Callback to user-land?
+          }
+        };
 
-  const setupPendingTransitions = () => {
+        sharedInterpolation.onAnimationFinished = () => {
+          const s = sharedInterpolations.current.find(
+            si => si.id === sharedInterpolation.id,
+          );
+          if (s && s.status === SharedInterpolationStatus.Removing) {
+            s.status = SharedInterpolationStatus.Done;
+            forceUpdate();
+            // TODO: Callback to user-land?
+          }
+        };
+
+        // Add to list of preparing shared interpolations
+        sharedInterpolations.current.push(sharedInterpolation);
+
+        // Start setting up the shared interpolation
+        sharedInterpolation.setupPromise = setupSharedInterpolation(
+          sharedInterpolation,
+          ownerItem,
+          overriddenFromStyle,
+        );
+      } else if (sharedInterpolatorContext) {
+        // Walk up the tree to find parent root and start shared
+        // interpolation from there.
+        sharedInterpolatorContext.registerSharedInterpolation(
+          item,
+          fromLabel,
+          toLabel,
+          animation,
+          onBegin,
+          onEnd,
+        );
+      } else {
+        throw fluidException(
+          "No container found for shared element transition. " +
+            "Remember to wrap shared elements in a parent Fluid.View.",
+        );
+      }
+    },
+    [
+      currentDirection,
+      forceUpdate,
+      logger,
+      sharedInterpolatorContext,
+      transitionItemContext,
+    ],
+  );
+
+  const setupPendingTransitions = useCallback(() => {
     // Handle pending shared transitions
     const pendingSharedTransitions = sharedInterpolations.current.filter(
       p => p.status === SharedInterpolationStatus.Created,
@@ -224,26 +244,14 @@ export const useSharedInterpolation = (
         forceUpdate();
       });
     }
-  };
-
-  const hasOverwrittenTransition = (si: SharedInterpolationType): boolean => {
-    return (
-      sharedInterpolations.current.find(
-        p =>
-          p !== si &&
-          p.status === SharedInterpolationStatus.Active &&
-          ((p.fromLabel === si.fromLabel && p.toLabel === si.toLabel) ||
-            (p.fromLabel === si.toLabel && p.toLabel === si.fromLabel)),
-      ) !== undefined
-    );
-  };
+  }, [forceUpdate]);
 
   const removeOverwrittenTransitions = () => {
     let shouldForceUpdate = false;
     sharedInterpolations.current.forEach(si => {
       if (
         si.status === SharedInterpolationStatus.Active &&
-        hasOverwrittenTransition(si)
+        hasOverwrittenTransition(si, sharedInterpolations.current)
       ) {
         si.status = SharedInterpolationStatus.Done;
         shouldForceUpdate = true;
@@ -252,12 +260,6 @@ export const useSharedInterpolation = (
     if (shouldForceUpdate) {
       forceUpdate();
     }
-  };
-
-  const removeDeadTransitions = () => {
-    sharedInterpolations.current = sharedInterpolations.current.filter(
-      p => p.status !== SharedInterpolationStatus.Done,
-    );
   };
 
   useEffect(() => {
@@ -281,43 +283,24 @@ export const useSharedInterpolation = (
       p.status === SharedInterpolationStatus.Removing,
   );
 
-  // Set up states
-  const sharedTransitionStates: ConfigStateType[] = sharedInterpolationInfos.map(
-    p => ({
-      name: SharedStateName + p.fromLabel,
-      active:
-        sharedInterpolations.current.find(
-          p2 =>
-            ((p.fromLabel === p2.fromLabel && p.toLabel === p2.toLabel) ||
-              (p.toLabel === p2.fromLabel && p.fromLabel === p2.toLabel)) &&
-            p2.status !== SharedInterpolationStatus.Done &&
-            p2.status !== SharedInterpolationStatus.Removing,
-        ) !== undefined,
-    }),
-  );
-
-  const mainSharedStates: ConfigStateType[] = sharedInterpolationInfos.map(
-    p => ({
-      name: SharedStateName + "-" + p.fromLabel + "->" + p.toLabel,
-      active:
-        sharedInterpolations.current.find(
-          p2 =>
-            p.fromLabel === p2.fromLabel &&
-            p.toLabel === p2.toLabel &&
-            p2.status !== SharedInterpolationStatus.Removing,
-        ) !== undefined,
-    }),
-  );
-
   // Remove elements that have status Died
-  removeDeadTransitions();
+  sharedInterpolations.current = removeDeadTransitions(
+    sharedInterpolations.current,
+  );
 
   // Add states
-  stateContext.states = [
-    ...stateContext.states,
-    ...sharedTransitionStates,
-    ...mainSharedStates,
-  ];
+  const transitionStates = getStates(
+    sharedInterpolationInfos,
+    sharedInterpolations.current,
+  );
+
+  if (transitionStates.length > 0) {
+    console.log(
+      transitionStates.map(s => `${s.name} (${s.active ? 1 : 0})`).join(", "),
+    );
+  }
+
+  stateContext.states = [...stateContext.states, ...transitionStates];
 
   const renderSharedOverlay = (
     Component: any,
@@ -351,27 +334,61 @@ export const useSharedInterpolation = (
   };
 };
 
-const getParentOpacityInterpolation = (
-  state: string,
-  outputRange: number[],
-): ConfigOnType => ({
-  state,
-  interpolation: {
-    animation: {
-      type: "timing",
-      easing: Easings.linear,
-      duration: 100,
-    },
-    inputRange: [0, 0.6, 1],
-    outputRange,
-    styleKey: "opacity",
-  },
-});
-
 const styles = StyleSheet.create({
   overlayContainer: {
     ...StyleSheet.absoluteFillObject,
     // overflow: "hidden"
-    // backgroundColor: "#00FF0044"
+    // borderWidth: StyleSheet.hairlineWidth,
+    // borderColor: "#00FF0044",
+    // backgroundColor: "#00FF0022",
   },
 });
+
+const decorateConfiguration = (
+  sharedTransitionStateName: string,
+  configuration: SafeStateConfigType,
+) => {
+  configuration.onEnter.push({
+    state: sharedTransitionStateName,
+    animation: {
+      type: "timing",
+      duration: 100,
+    },
+    interpolation: {
+      styleKey: "opacity",
+      inputRange: [0, 0.999, 1],
+      outputRange: [1, 0, 0],
+    },
+  });
+  configuration.onExit.push({
+    state: sharedTransitionStateName,
+    animation: {
+      type: "timing",
+      duration: 100,
+    },
+    interpolation: {
+      styleKey: "opacity",
+      inputRange: [0, 0.001, 1],
+      outputRange: [0, 1, 1],
+    },
+  });
+};
+
+const hasOverwrittenTransition = (
+  si: SharedInterpolationType,
+  sharedInterpolations: SharedInterpolationType[],
+): boolean => {
+  return (
+    sharedInterpolations.find(
+      p =>
+        p !== si &&
+        p.status === SharedInterpolationStatus.Active &&
+        ((p.fromLabel === si.fromLabel && p.toLabel === si.toLabel) ||
+          (p.fromLabel === si.toLabel && p.toLabel === si.fromLabel)),
+    ) !== undefined
+  );
+};
+
+const removeDeadTransitions = (sis: SharedInterpolationType[]) => {
+  return sis.filter(p => p.status !== SharedInterpolationStatus.Done);
+};

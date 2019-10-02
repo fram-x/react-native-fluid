@@ -9,9 +9,6 @@ import { ConfigAnimationType, ChildAnimationDirection } from "../Configuration";
 let TransitionId = 1000;
 let SharedTransitionId = -1000;
 
-export const SharedStateName = "__shrd";
-export const TransitionItemLabelPrefix = "__ti";
-
 export const createSharedInterpolation = (
   fromItem: TransitionItem,
   toItem: TransitionItem,
@@ -25,14 +22,13 @@ export const createSharedInterpolation = (
     id: sharedTransitionId,
     orgFromId: fromItem.id,
     orgToId: toItem.id,
-    stateName: SharedStateName + "-" + fromItem.label + "->" + toItem.label,
     status: SharedInterpolationStatus.Created,
     direction,
     animation,
     fromLabel: fromItem.label || "unknown",
     toLabel: toItem.label || "unknown",
-    fromCloneLabel: fromItem.label + sharedTransitionId.toString() || "unknown",
-    toCloneLabel: toItem.label + sharedTransitionId.toString() || "unknown",
+    fromCloneLabel: `${fromItem.label || "unknown"}${sharedTransitionId}`,
+    toCloneLabel: `${toItem.label || "unknown"}${sharedTransitionId}`,
     fromId: SharedTransitionId--,
     toId: SharedTransitionId--,
     fromItem,

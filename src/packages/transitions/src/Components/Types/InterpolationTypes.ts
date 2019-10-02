@@ -60,14 +60,12 @@ export type OnAnimationFunction = () => void;
 export type SharedInterpolationInfo = {
   fromLabel: string;
   toLabel: string;
-  active: boolean;
 };
 
 export type SharedInterpolationType = {
   id: number;
   orgFromId: number;
   orgToId: number;
-  stateName: string;
   fromLabel: string;
   toLabel: string;
   fromCloneLabel: string;
@@ -83,5 +81,6 @@ export type SharedInterpolationType = {
   fromClone?: React.ReactElement;
   toClone?: React.ReactElement;
   onAnimationDone?: OnAnimationFunction;
+  onAnimationFinished?: OnAnimationFunction;
   onAnimationBegin?: OnAnimationFunction;
 };
