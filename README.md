@@ -3,7 +3,7 @@
 ## Bugs
 
 [X] Fix issue with removing a when interpolation. See Styles example and press on/off
-[ ] Style-flash in Styles example - press button and while it is animating, press inbox-button
+[X] Style-flash in Styles example - press button and while it is animating, press inbox-button
 
 [ ] Shared transitions (WIP)
   [ ] Fix running second shared transition while one is running
@@ -14,10 +14,6 @@
 
 ### Android
 [ ] Parallax example, not interpolating change of header color correctly
-[ ] Performance
-  [ ] General slow in debug mode, fast enough under hermes.
-  [ ] Repeat is really slow
-  [ ] Stagger is really slow
 [X] SVG - ValueNode cannot be cast to a number
 [X] Interpolation 
   [X] "Error while updating transform"

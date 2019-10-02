@@ -10,37 +10,77 @@ const {
   proc,
   set,
   call,
-  neq,
+  // debug,
   block,
   cond,
   eq,
   and,
   greaterOrEq,
+  lessOrEq,
 } = AnimationProvider.Animated;
-
-// const debug = (_: string, a: any) => a;
 
 export enum StopReason {
   DurationEnd = 0,
   Removed = 1,
 }
 
+const _animationRunningFlags: {
+  [key: string]: { [key: string]: IAnimationValue };
+} = {};
+
+const _animationRunningShadowFlags: { [key: string]: boolean } = {};
+const _removedAnimation: { [key: string]: boolean } = {};
+const _beginListeners: { [key: number]: Array<(id: number) => void> } = {};
+const _endListeners: {
+  [key: number]: Array<(id: number, stopReason: number) => void>;
+} = {};
+
 const getAnimationKey = (ownerId: number, key: string) => `${key}(${ownerId})`;
 
+/**
+ * @description Stops an ongoing animation for a given value key
+ * @param ownerId Id of transitionitem owning animation
+ * @param key Key for animated value to be stopped
+ */
 export const stopAnimation = (ownerId: number, key: string) => {
   const animationKey = getAnimationKey(ownerId, key);
-  if (_runningAnimations[animationKey]) {
-    _runningAnimationShadows[animationKey] = false;
+  if (_animationRunningFlags[animationKey]) {
+    // Mark shadows
+    _animationRunningShadowFlags[animationKey] = false;
     _removedAnimation[animationKey] = true;
-    _runningAnimations[animationKey].setValue(1);
+    // Stop all
+    if (_animationRunningFlags[animationKey]) {
+      Object.keys(_animationRunningFlags[animationKey]).forEach(k =>
+        _animationRunningFlags[animationKey][k].setValue(2),
+      );
+      _animationRunningFlags[animationKey] = {};
+    }
   }
 };
 
+/**
+ * @description Returns true if the animation has been stopped
+ * @param ownerId transitionitem owning the animation
+ * @param key key for animation value to be checked
+ */
 export const IsAnimationRemoved = (ownerId: number, key: string) => {
   const animationKey = getAnimationKey(ownerId, key);
   return _removedAnimation[animationKey] === true;
 };
 
+/**
+ * @description Creates a new lifecycle proc node for running an animation and
+ * keeping track of the lifecycle of the animation
+ * @param ownerId id of transitionitem owning the animation
+ * @param key Key for animation value to be animated
+ * @param animationId id of the animation
+ * @param source Animated value driving the animation
+ * @param offset offset in ms for starting point of animation
+ * @param duration duration in ms for animation
+ * @param onBegin optional callback that will be called when animation starts
+ * @param onEnd optional callback that will be called when animation ends
+ * @param updateValue Statement / proc node to call to update node
+ */
 export const getLifecycleFunc = (
   ownerId: number,
   key: string,
@@ -54,47 +94,56 @@ export const getLifecycleFunc = (
 ) => {
   const animationKey = getAnimationKey(ownerId, key);
 
-  onBegin &&
-    registerBeginListener(animationId, (id: number) => {
-      _runningAnimationShadows[animationKey] = true;
-      _removedAnimation[animationKey] = false;
-      onBegin && onBegin(id);
-    });
+  // Register callbacks for start/stop
+  registerBeginListener(animationId, (id: number) => {
+    _animationRunningShadowFlags[animationKey] = true;
+    _removedAnimation[animationKey] = false;
+    onBegin && onBegin(id);
+  });
 
-  onEnd &&
-    registerEndListener(animationId, (id: number, stopReason: StopReason) => {
-      onEnd && onEnd(id, stopReason);
-      _runningAnimationShadows[animationKey] = false;
-    });
+  registerEndListener(animationId, (id: number, stopReason: StopReason) => {
+    onEnd && onEnd(id, stopReason);
+    if (_animationRunningFlags[animationKey]) {
+      delete _animationRunningFlags[animationKey][id];
+      _animationRunningShadowFlags[animationKey] = false;
+    }
+  });
 
-  const started = AnimationProvider.createValue(0);
-  const stopped = AnimationProvider.createValue(0);
+  // Flag for animation running.
+  // -1: not initialized, 0: not running, 1: running, 2: stopped from the outside
+  const isAnimationRunning = AnimationProvider.createValue(-1);
 
-  const previousStopFlag =
-    _runningAnimations[animationKey] || AnimationProvider.createValue(-1);
-  _runningAnimations[animationKey] = stopped;
+  // Save previous stop flag so we can stop a previous ongoing
+  // animation on the same key
+  if (!_animationRunningFlags[animationKey]) {
+    _animationRunningFlags[animationKey] = {};
+  }
+
+  // Create block that stops previous animations
+  const stopPrevious = block(
+    Object.keys(_animationRunningFlags[animationKey]).map(k =>
+      set(_animationRunningFlags[animationKey][k], 2),
+    ),
+  );
+
+  // Add next animation to block
+  _animationRunningFlags[animationKey][animationId] = isAnimationRunning;
 
   const f = lifecycleFunc(
     animationId,
     ownerId,
     normalize(source, offset, duration),
-    started,
-    stopped,
-    previousStopFlag,
+    isAnimationRunning,
+    stopPrevious,
     updateValue,
   );
 
   return () => f;
 };
 
-const _runningAnimations: { [key: string]: IAnimationValue } = {};
-const _runningAnimationShadows: { [key: string]: boolean } = {};
-const _removedAnimation: { [key: string]: boolean } = {};
-const _beginListeners: { [key: number]: Array<(id: number) => void> } = {};
-const _endListeners: {
-  [key: number]: Array<(id: number, stopReason: number) => void>;
-} = {};
-
+/**
+ * @description Registers a listener to be called when animation starts
+ */
 const registerBeginListener = (id: number, callback: (id: number) => void) => {
   if (!_beginListeners[id]) {
     _beginListeners[id] = [];
@@ -102,6 +151,9 @@ const registerBeginListener = (id: number, callback: (id: number) => void) => {
   _beginListeners[id].push(callback);
 };
 
+/**
+ * @description Registers a listener to be called when animation ends
+ */
 const registerEndListener = (
   id: number,
   callback: (id: number, stopReason: StopReason) => void,
@@ -112,6 +164,9 @@ const registerEndListener = (
   _endListeners[id].push(callback);
 };
 
+/**
+ * @description Callback from native side when an animation starts
+ */
 const onAnimationBegin = (args: ReadonlyArray<number>) => {
   const animationId = args[0] as number;
   while (
@@ -126,6 +181,9 @@ const onAnimationBegin = (args: ReadonlyArray<number>) => {
   }
 };
 
+/**
+ * @description Callback from native side when animation ends
+ */
 const onAnimationEnd = (args: ReadonlyArray<number>) => {
   const animationId = args[0];
   const stopReason = args[2];
@@ -138,42 +196,53 @@ const onAnimationEnd = (args: ReadonlyArray<number>) => {
   }
 };
 
+/**
+ * @description Defines the lifecycle function for running an animation
+ */
 const lifecycleFunc = createProc("lifecycle", () =>
   proc(
     "lifecycle",
-    (animationId, ownerId, input, started, stopped, previousStopFlag, output) =>
-      block([
+    (
+      animationId,
+      ownerId,
+      input,
+      isRunning,
+      stopPreviousAnimations,
+      updateValue,
+    ) =>
+      cond(
         // Check if we haven't started but we have reached the start
-        cond(
-          and(greaterOrEq(input, 0), eq(started, 0), eq(stopped, 0)),
-          cond(eq(started, 0), [
-            // Stop previous animation
-            cond(neq(previousStopFlag, -1), [
-              set(previousStopFlag as IAnimationValue, 1),
-            ]),
-            // Mark as started
-            set(started as IAnimationValue, 1),
-            // Call on begin
-            call([animationId, ownerId], onAnimationBegin),
-          ]),
-        ),
-
-        // Check if stopped value has been changed
-        cond(and(eq(started, 1), eq(stopped, 1)), [
-          // We are stopped from the outside
-          call([animationId, ownerId, stopped], onAnimationEnd),
-          set(started as IAnimationValue, 0),
-        ]),
-        // Now we can evaluate wether or not we should update
-        // the value with the setValue call proc node
-        cond(and(eq(started, 1), eq(stopped, 0)), [output]),
-        // Check for end value reached
-        cond(and(eq(started, 1), eq(stopped, 0), greaterOrEq(input, 1)), [
-          // Callback when done
-          call([animationId, ownerId, stopped], onAnimationEnd),
-          // Mark as stopped
-          set(stopped as IAnimationValue, 1),
-        ]),
-      ]),
+        and(greaterOrEq(input, 0), eq(isRunning, -1)),
+        [
+          stopPreviousAnimations,
+          set(isRunning as IAnimationValue, 1),
+          call([animationId, ownerId], onAnimationBegin),
+        ],
+        [
+          // Check if running value has been changed from the outside
+          cond(
+            eq(isRunning, 2),
+            [
+              // We are stopped from the outside
+              // debug("N:Stopped from the outside", isRunning),
+              call([animationId, ownerId, isRunning], onAnimationEnd),
+            ],
+            [
+              cond(and(greaterOrEq(input, 0), lessOrEq(input, 1)), [
+                // Call update
+                updateValue,
+                cond(greaterOrEq(input, 1), [
+                  // We have started but have now reached the end of the animation
+                  // debug("N:STOPPED ANIMATION", animationId),
+                  // Mark as stopped
+                  set(isRunning as IAnimationValue, 0),
+                  // Callback when done
+                  call([animationId, ownerId, isRunning], onAnimationEnd),
+                ]),
+              ]),
+            ],
+          ),
+        ],
+      ),
   ),
 );
