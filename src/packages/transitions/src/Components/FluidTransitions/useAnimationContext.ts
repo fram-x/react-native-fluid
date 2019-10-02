@@ -58,6 +58,14 @@ export const useAnimationContext = (
     if (context && context.isInAnimationContext()) {
       context.registerAnimation(interpolationInfo);
     } else {
+      // check if we already have an interpolation going for this one
+      interpolationInfos.current = interpolationInfos.current.filter(
+        ip =>
+          !(
+            ip.itemId === interpolationInfo.itemId &&
+            ip.key === interpolationInfo.key
+          ),
+      );
       interpolationInfos.current.push(interpolationInfo);
     }
   };

@@ -41,7 +41,7 @@ describe("createAnimationNode / linear", () => {
       1000,
       0,
       [0, 0.5, 1],
-      [1, 1.5, 1]
+      [1, 1.5, 1],
     );
     // @ts-ignore
     expect(valueToTest.__getValue()).toBe(1.5);
@@ -58,7 +58,7 @@ describe("createAnimationNode / easing", () => {
       [0, 0.5, 1],
       [1, 1.5, 1],
       easing,
-      "bezier1"
+      "bezier1",
     );
     // @ts-ignore
     expect(valueToTest.__getValue()).toBe(1);
@@ -75,7 +75,7 @@ describe("createAnimationNode / easing", () => {
       [0, 0.5, 1],
       [0, 0.5, 1],
       easing,
-      "bezier2"
+      "bezier2",
     );
     // @ts-ignore
     expect(valueToTest.__getValue()).toBe(0.6275000000000001);
@@ -90,7 +90,7 @@ describe("createAnimationNode / easing", () => {
       [0, 0.25, 1],
       [0, 0.25, 1],
       easing,
-      "bezier2"
+      "bezier2",
     );
     // @ts-ignore
     expect(valueToTest.__getValue()).toBe(0.6275000000000001);
@@ -104,7 +104,7 @@ const evalAnimationNode = (
   inputRange: number[],
   outputRange: number[],
   easingFunction: EasingFunction = Easings.linear,
-  easingKey: string = "linear"
+  easingKey: string = "linear",
 ) => {
   const source = AnimationProvider.createValue(sourceVal);
   const target = AnimationProvider.createValue(0);
@@ -128,8 +128,10 @@ const evalAnimationNode = (
     "extend",
     () => {},
     () => {},
-    interpolateValue
+    interpolateValue,
   );
+  // @ts-ignore
+  node.evaluate();
   // @ts-ignore
   node.evaluate();
   // @ts-ignore
