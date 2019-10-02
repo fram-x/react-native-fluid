@@ -20,17 +20,13 @@ export const getStates = (
     // Find active shared interpolation
     const sharedInterpolation = sharedInterpolations.find(
       si =>
-        si.fromLabel === st.fromLabel &&
-        si.toLabel === st.toLabel &&
-        si.status === SharedInterpolationStatus.Active,
+        (si.fromLabel === st.fromLabel && si.toLabel === st.toLabel) ||
+        (si.toLabel === st.fromLabel && si.toLabel === st.fromLabel),
     );
     const isPartOfInterpolation =
-      sharedInterpolations.find(
-        si =>
-          ((si.fromLabel === st.fromLabel && si.toLabel === st.toLabel) ||
-            (si.toLabel === st.fromLabel && si.toLabel === st.fromLabel)) &&
-          si.status === SharedInterpolationStatus.Active,
-      ) !== undefined;
+      sharedInterpolation !== undefined &&
+      sharedInterpolation.status === SharedInterpolationStatus.Active;
+
     // Add 1) original from element
     retVal.push({
       name: getStateNameForLabel(st.fromLabel),
@@ -42,10 +38,12 @@ export const getStates = (
       active: isPartOfInterpolation,
     });
     // Add 3) shared transition state
-    retVal.push({
-      name: getStateNameForTransition(st),
-      active: isPartOfInterpolation,
-    });
+    if (sharedInterpolation) {
+      retVal.push({
+        name: getStateNameForTransition(sharedInterpolation),
+        active: isPartOfInterpolation,
+      });
+    }
   });
   return retVal.filter((v, i, a) => a.findIndex(n => n.name === v.name) === i);
 };
@@ -53,5 +51,5 @@ export const getStates = (
 export const getStateNameForLabel = (label: string | undefined) =>
   `${SharedStatePrefix}.${label || "unknown"}`;
 
-export const getStateNameForTransition = (si: SharedInterpolationInfo) =>
-  `${SharedStatePrefix}.${si.fromLabel}-${si.toLabel}`;
+export const getStateNameForTransition = (si: SharedInterpolationType) =>
+  `${SharedStatePrefix}.${si.id}`;
