@@ -32,6 +32,11 @@ class HomeScreen extends React.PureComponent<any> {
             onPress={() => this.openExample("parallax")}
           />
           <HomeScreenButton
+            text="Dragging"
+            icon="script-outline"
+            onPress={() => this.openExample("dragging")}
+          />
+          <HomeScreenButton
             text="Children"
             icon="view-list"
             onPress={() => this.openExample("children")}

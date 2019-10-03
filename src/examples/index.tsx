@@ -17,6 +17,7 @@ import StyleExampleScreen from "./Style";
 import InteractionsExampleScreen from "./Interactions";
 import SvgExampleScreen from "./SVG";
 import RepeatExampleScreen from "./Repeating";
+import DraggingExampleScreen from "./Dragging";
 
 const Stack = createStackNavigator();
 
@@ -43,6 +44,7 @@ const App = () => {
         />
         <Stack.Screen name="svg" component={SvgExampleScreen} />
         <Stack.Screen name="repeat" component={RepeatExampleScreen} />
+        <Stack.Screen name="dragging" component={DraggingExampleScreen} />
       </Stack.Navigator>
     </NavigationNativeContainer>
   );

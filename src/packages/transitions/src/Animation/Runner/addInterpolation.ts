@@ -1,10 +1,13 @@
 import { InterpolationInfo } from "../../Components/Types";
-import { IAnimationNode } from "react-native-fluid-animations";
+import {
+  AnimationProvider,
+  IAnimationNode,
+} from "react-native-fluid-animations";
 import { createInterpolationNode } from "./Functions";
 
 export const addInterpolation = (
   interpolator: IAnimationNode,
-  interpolationInfo: InterpolationInfo
+  interpolationInfo: InterpolationInfo,
 ) => {
   const { key, interpolate, interpolationConfig } = interpolationInfo;
 
@@ -13,7 +16,7 @@ export const addInterpolation = (
     outputRange,
     extrapolate,
     extrapolateLeft,
-    extrapolateRight
+    extrapolateRight,
   } = interpolationConfig;
 
   createInterpolationNode(
@@ -25,6 +28,6 @@ export const addInterpolation = (
     extrapolate,
     extrapolateLeft,
     extrapolateRight,
-    interpolate
+    interpolate,
   );
 };

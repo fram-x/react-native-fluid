@@ -4,10 +4,12 @@ import {
   ValueContextType,
   Values,
   AnimatedStyleKeys,
+  InterpolatorContext,
+  InterpolatorContextType,
 } from "../Types";
 import { getStyleInfo } from "../../Styles/getStyleInfo";
 import { useLog } from "../../Hooks";
-import { UseLoggerFunction, LoggerLevel } from "../../Types";
+import { UseLoggerFunction, LoggerLevel, fluidException } from "../../Types";
 import {
   ConfigAnimationType,
   ConfigWhenStyleType,
@@ -17,9 +19,11 @@ import {
   isConfigStyleInterpolation,
   isConfigPropInterpolation,
   getResolvedStateName,
+  isConfigWhenValueInterplation,
 } from "../../Configuration";
 import { getAnimationOnEnd } from "../../Animation/Builder/getAnimationOnEnd";
 import { stopAnimation } from "../../Animation/Runner/Functions";
+import { useContext } from "react";
 
 export const useWhenConfig = (
   transitionItem: TransitionItem,
@@ -30,6 +34,8 @@ export const useWhenConfig = (
   animationType?: ConfigAnimationType,
 ) => {
   const logger = useLog(transitionItem.label, "cwhen");
+
+  const interpolatorContext = useContext(InterpolatorContext);
 
   const configs = configuration.when;
 
@@ -79,6 +85,7 @@ export const useWhenConfig = (
         styleContext,
         propContext,
         isRemoved,
+        interpolatorContext,
         animationType,
       );
     }
@@ -92,6 +99,7 @@ const registerWhenInterpolations = (
   styleContext: ValueContextType,
   propContext: ValueContextType,
   isRemoved: boolean,
+  interpolatorContext: InterpolatorContextType | null,
   animationType?: ConfigAnimationType,
 ) => {
   // No need to do anything if we don't have any interpolations
@@ -124,7 +132,35 @@ const registerWhenInterpolations = (
   interpolations.forEach(interpolation => {
     if (!isRemoved) {
       // Let us create the animation
-      if (isConfigStyleInterpolation(interpolation)) {
+      if (isConfigWhenValueInterplation(interpolation)) {
+        if (!interpolatorContext) {
+          throw fluidException(
+            "A when config element refers to a value but is not " +
+              "contained in a parent fluid view.",
+          );
+        }
+        const interpolator = interpolatorContext.getInterpolator(
+          interpolation.value.ownerLabel,
+          interpolation.value.valueName,
+        );
+        if (!interpolator) {
+          throw fluidException(
+            "Could not find interpolator with name " +
+              interpolation.value.valueName +
+              " in component with label " +
+              interpolation.value.ownerLabel,
+          );
+        }
+        styleContext.addInterpolation(
+          interpolator,
+          interpolation.styleKey,
+          interpolation.inputRange,
+          interpolation.outputRange,
+          interpolation.extrapolate,
+          interpolation.extrapolateLeft,
+          interpolation.extrapolateRight,
+        );
+      } else if (isConfigStyleInterpolation(interpolation)) {
         styleContext.addAnimation(
           interpolation.styleKey,
           interpolation.inputRange,
@@ -157,7 +193,9 @@ const registerWhenInterpolations = (
       }
     } else {
       // Removed
-      if (isConfigStyleInterpolation(interpolation)) {
+      if (isConfigWhenValueInterplation(interpolation)) {
+        console.log("TODO: Remove when interpolation with value");
+      } else if (isConfigStyleInterpolation(interpolation)) {
         stopAnimation(transitionItem.id, interpolation.styleKey);
       } else if (isConfigPropInterpolation(interpolation)) {
         stopAnimation(transitionItem.id, interpolation.propName);

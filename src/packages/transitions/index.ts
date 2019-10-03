@@ -6,7 +6,11 @@ import {
   createFluidComponent,
 } from "./src/Components";
 
-import { InterpolatorContext, StateContext } from "./src/Components/Types";
+import {
+  InterpolatorContext,
+  StateContext,
+  StateContextType,  ,
+} from "./src/Components/Types";
 import { useFluidState, useFluidConfig } from "./src/Hooks";
 import { createConfig, createState } from "./src/Configuration";
 import {
@@ -24,6 +28,7 @@ import {
   StateMounted,
   StateUnmounted,
   ValueDescriptorType,
+  ComponentProps
 } from "./src/Types";
 
 const Animations = {
@@ -57,8 +62,10 @@ export {
   MetricsInfo,
   InterpolatorContext,
   StateContext,
+  StateContextType,
   createFluidComponent,
   ValueDescriptorType,
   interpolateColor,
   interpolateValue,
+  ComponentProps,
 };

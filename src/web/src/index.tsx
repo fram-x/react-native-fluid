@@ -1,4 +1,4 @@
-import App from "./Stagger";
+import App from "./Styles";
 import * as serviceWorker from "./serviceWorker";
 import { AppRegistry } from "react-native";
 

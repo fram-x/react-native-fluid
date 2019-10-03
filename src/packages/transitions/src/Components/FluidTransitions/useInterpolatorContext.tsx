@@ -2,7 +2,7 @@ import { useRef, useContext, useEffect } from "react";
 import {
   InterpolatorContext,
   InterpolatorInfo,
-  PartialInterpolatorInfo
+  PartialInterpolatorInfo,
 } from "../Types";
 import { useForceUpdate } from "../../Hooks";
 import * as Constants from "../../Types/Constants";
@@ -16,7 +16,7 @@ import { fluidException } from "../../Types";
 export const useInterpolatorContext = (
   label: string | undefined,
   props: any,
-  setupInterpolators?: (props: any) => PartialInterpolatorInfo
+  setupInterpolators?: (props: any) => PartialInterpolatorInfo,
 ) => {
   /******************************************************
    * Setup
@@ -34,12 +34,12 @@ export const useInterpolatorContext = (
   if (setupInterpolators && !interpolatorEntry.current) {
     if (!label) {
       throw fluidException(
-        "All components exposing interpolators must be named through the label property."
+        "All components exposing interpolators must be named through the label property.",
       );
     }
     interpolatorEntry.current = {
       label: label,
-      ...setupInterpolators(props)
+      ...setupInterpolators(props),
     };
   }
 
@@ -55,9 +55,9 @@ export const useInterpolatorContext = (
     interpolatorEntries.current.push(interpolatorInfo);
   };
 
-  const getInterpolator = (label: string, name: string) => {
+  const getInterpolator = (lbl: string, name: string) => {
     // Custom/dummy interpolators
-    if (label === Constants.InterpolatorLabelRoot) {
+    if (lbl === Constants.InterpolatorLabelRoot) {
       switch (name) {
         case Constants.InterpolatorStatic:
           return AnimationProvider.createValue(1);
@@ -66,19 +66,19 @@ export const useInterpolatorContext = (
 
     // Check context
     if (context) {
-      return context.getInterpolator(label, name);
+      return context.getInterpolator(lbl, name);
     }
 
     hasInterpolatorRequest.current = true;
     const interpolatorInfo = interpolatorEntries.current.find(
-      ii => ii.label === label && ii.interpolators[name] != undefined
+      ii => ii.label === lbl && ii.interpolators[name] !== undefined,
     );
     if (interpolatorInfo) {
       return interpolatorInfo.interpolators[name];
     }
     if (isMounted.current) {
       throw fluidException(
-        "Could not find interpolator " + label + "." + name + "."
+        "Could not find interpolator " + lbl + "." + name + ".",
       );
     } else {
       return undefined;
@@ -99,13 +99,13 @@ export const useInterpolatorContext = (
 
   return {
     extraProps: {
-      ...(interpolatorEntry.current ? interpolatorEntry.current.props : {})
+      ...(interpolatorEntry.current ? interpolatorEntry.current.props : {}),
     },
     interpolatorContext: context
       ? context
       : {
           getInterpolator: getInterpolator,
-          registerInterpolator: registerInterpolator
-        }
+          registerInterpolator: registerInterpolator,
+        },
   };
 };
