@@ -1,5 +1,8 @@
 import React from "react";
-import Fluid, { useFluidConfig } from "react-native-fluid-transitions";
+import Fluid, {
+  useFluidConfig,
+  useFluidState,
+} from "react-native-fluid-transitions";
 import { GestureContainer } from "react-native-fluid-gestures";
 import { StyleSheet, View } from "react-native";
 import * as Colors from "../colors";
@@ -15,6 +18,7 @@ const valueDragY = {
 };
 
 const DraggingExampleScreen = () => {
+  const [isSnappingState, setIsSnapping] = useFluidState(false);
   const config = useFluidConfig({
     onEnter: {
       state: "dragging",
@@ -24,14 +28,17 @@ const DraggingExampleScreen = () => {
         styleKey: "backgroundColor",
       },
     },
-    onExit: {
-      state: "dragging",
-      interpolation: {
-        inputRange: [0, 1],
-        outputRange: [Colors.ColorB, Colors.ColorA],
-        styleKey: "backgroundColor",
+    onExit: [
+      {
+        state: "dragging",
+        onBegin: () => setIsSnapping(true),
+        interpolation: {
+          inputRange: [0, 1],
+          outputRange: [Colors.ColorB, Colors.ColorA],
+          styleKey: "backgroundColor",
+        },
       },
-    },
+    ],
     when: [
       {
         state: "dragging",
@@ -53,12 +60,21 @@ const DraggingExampleScreen = () => {
           value: valueDragY,
         },
       },
+      {
+        state: isSnappingState,
+        onEnd: () => {
+          setIsSnapping(false);
+          console.log("snapping done");
+        },
+        style: { transform: [{ translateX: 0 }, { translateY: 0 }] },
+      },
     ],
   });
   return (
     <GestureContainer label="gestureContainer" style={styles.container}>
       <Fluid.View
         config={config}
+        states={isSnappingState}
         style={styles.staticBox}
         staticStyle={styles.box}
       />
