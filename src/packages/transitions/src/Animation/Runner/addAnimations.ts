@@ -54,7 +54,7 @@ export const addAnimations = (
       extrapolateRight,
       onBegin,
       () => {
-        unregisterRunningInterpolation(ownerId, key);
+        unregisterRunningInterpolation(ownerId, key, animationId);
         onEnd && onEnd();
       },
       interpolate,
@@ -63,6 +63,7 @@ export const addAnimations = (
     registerRunningInterpolation(
       ownerId,
       key,
+      animationId,
       source as IAnimationValue,
       animationNode,
     );

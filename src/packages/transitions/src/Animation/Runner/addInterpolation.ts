@@ -1,10 +1,7 @@
 import { InterpolationInfo } from "../../Components/Types";
 import { IAnimationNode, IAnimationValue } from "react-native-fluid-animations";
 import { createInterpolationNode } from "./Functions";
-import {
-  registerRunningInterpolation,
-  unregisterRunningInterpolation,
-} from "./interpolations";
+import { registerRunningInterpolation } from "./interpolations";
 
 export const addInterpolation = (
   source: IAnimationNode,
@@ -35,6 +32,7 @@ export const addInterpolation = (
   registerRunningInterpolation(
     itemId,
     key,
+    interpolationInfo.id,
     source as IAnimationValue,
     interpolationNode,
   );

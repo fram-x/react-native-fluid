@@ -14,6 +14,7 @@ import {
 export const registerRunningInterpolation = (
   itemId: number,
   key: string,
+  animationId: number,
   source: IAnimationValue,
   animation: IAnimationNode,
 ) => {
@@ -25,8 +26,9 @@ export const registerRunningInterpolation = (
   _runningInterpolations[getKey(itemId, key)] = {
     source,
     animation,
+    animationId,
   };
-  // console.log("Added interpolation for", itemId, "key:", key);
+  console.log("Added interpolation for", itemId, "key:", key);
 };
 
 /**
@@ -34,12 +36,21 @@ export const registerRunningInterpolation = (
  * @param itemId TransitionItem id
  * @param key Key that is animated
  */
-export const unregisterRunningInterpolation = (itemId: number, key: string) => {
+export const unregisterRunningInterpolation = (
+  itemId: number,
+  key: string,
+  animationId?: number,
+) => {
   const runningKey = getKey(itemId, key);
+
+  // Get previous running interpolation for this item/key
   const tmp = _runningInterpolations[runningKey];
   if (!tmp) return;
 
-  // console.log("Removing interpolation for", itemId, "key:", key);
+  if (animationId && tmp.animationId > animationId) return;
+
+  // Now we are ready.
+  console.log("Removing interpolation for", itemId, "key:", key);
   // Unregister attachment
   delete _runningInterpolations[runningKey];
   // Detach node
@@ -53,6 +64,7 @@ const getKey = (itemId: number, key: string) => {
 type RunningInterpolation = {
   source: IAnimationValue;
   animation: IAnimationNode;
+  animationId: number;
 };
 
 const _runningInterpolations: {
