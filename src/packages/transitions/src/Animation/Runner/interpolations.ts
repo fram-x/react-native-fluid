@@ -26,7 +26,7 @@ export const registerRunningInterpolation = (
     source,
     animation,
   };
-  console.log("Added interpolation for", itemId, "key:", key);
+  // console.log("Added interpolation for", itemId, "key:", key);
 };
 
 /**
@@ -39,7 +39,7 @@ export const unregisterRunningInterpolation = (itemId: number, key: string) => {
   const tmp = _runningInterpolations[runningKey];
   if (!tmp) return;
 
-  console.log("Removing interpolation for", itemId, "key:", key);
+  // console.log("Removing interpolation for", itemId, "key:", key);
   // Unregister attachment
   delete _runningInterpolations[runningKey];
   // Detach node
