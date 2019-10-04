@@ -13,8 +13,13 @@
     "resolveJsonModule": true,
     "declaration": true,
     "sourceMap": true,
-    "jsx": "react"
+    "jsx": "react",
+    "baseUrl": ".",
+    "paths": {
+      "react-native-fluid-animations": ["../../packages/animated"],
+      "react-native-fluid-transitions": ["../../packages/transitions"]
+    }
   },
-  "include": ["src", "index.web.ts", "index.ts"],
+  "include": ["src", "index.ts"],
   "exclude": ["node_modules", "**/*.spec.ts"]
 }
