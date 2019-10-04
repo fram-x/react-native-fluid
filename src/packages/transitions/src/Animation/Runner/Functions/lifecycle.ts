@@ -10,7 +10,6 @@ const {
   proc,
   set,
   call,
-  debug,
   block,
   cond,
   eq,

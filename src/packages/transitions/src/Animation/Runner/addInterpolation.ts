@@ -1,17 +1,16 @@
-import { InterpolationInfo, TransitionItem } from "../../Components/Types";
-import {
-  AnimationProvider,
-  IAnimationNode,
-  IAnimationValue,
-} from "react-native-fluid-animations";
+import { InterpolationInfo } from "../../Components/Types";
+import { IAnimationNode, IAnimationValue } from "react-native-fluid-animations";
 import { createInterpolationNode } from "./Functions";
-import { ConfigWhenInterpolationType } from "src/Configuration";
+import {
+  registerRunningInterpolation,
+  unregisterRunningInterpolation,
+} from "./interpolations";
 
 export const addInterpolation = (
-  interpolator: IAnimationNode,
+  source: IAnimationNode,
   interpolationInfo: InterpolationInfo,
 ) => {
-  const { key, interpolate, interpolationConfig } = interpolationInfo;
+  const { key, interpolate, itemId, interpolationConfig } = interpolationInfo;
 
   const {
     inputRange,
@@ -22,7 +21,7 @@ export const addInterpolation = (
   } = interpolationConfig;
 
   const interpolationNode = createInterpolationNode(
-    interpolator,
+    source,
     interpolationInfo.interpolator,
     key,
     inputRange || [0, 1],
@@ -33,37 +32,17 @@ export const addInterpolation = (
     interpolate,
   );
 
-  // Add to list of interpolations
-  _runningInterpolations[
-    getInterpolationKey(interpolationInfo.itemId, interpolationInfo.key)
-  ] = {
-    interpolator: interpolator as IAnimationValue,
+  registerRunningInterpolation(
+    itemId,
+    key,
+    source as IAnimationValue,
     interpolationNode,
-  };
-
-  // @ts-ignore
-  AnimationProvider.Animated.attach(interpolator, interpolationNode);
+  );
 };
 
 export const removeInterpolation = (
   itemId: number,
   interpolationKey: string,
 ) => {
-  const key = getInterpolationKey(itemId, interpolationKey);
-  const attachedNode = _runningInterpolations[key];
-  delete _runningInterpolations[key];
-  AnimationProvider.Animated.detach(
-    attachedNode.interpolator,
-    attachedNode.interpolationNode,
-  );
+  unregisterRunningInterpolation(itemId, interpolationKey);
 };
-
-const getInterpolationKey = (itemId: number, key: string) => {
-  return `${itemId}-${key}`;
-};
-
-type AttachedNode = {
-  interpolator: IAnimationValue;
-  interpolationNode: IAnimationNode;
-};
-const _runningInterpolations: { [key: string]: AttachedNode } = {};

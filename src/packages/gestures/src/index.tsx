@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { ViewProps, ViewStyle } from "react-native";
+import { ViewStyle, StyleProp } from "react-native";
 import {
   PanGestureHandler,
   PanGestureHandlerGestureEvent,
@@ -14,9 +14,7 @@ import {
   ComponentProps,
 } from "react-native-fluid-transitions";
 
-type Props = {};
-
-type DraggableProps = ComponentProps<ViewProps> & {
+type DraggableProps = ComponentProps<StyleProp<ViewStyle>> & {
   onGestureEvent?: (event: PanGestureHandlerGestureEvent) => void;
   onHandlerStateChange?: (event: PanGestureHandlerStateChangeEvent) => void;
 };

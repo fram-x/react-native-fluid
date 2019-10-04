@@ -16,8 +16,6 @@ const {
   and,
   block,
   always,
-  attach,
-  detach,
   cond,
 } = AnimationProvider.Animated;
 
@@ -126,16 +124,12 @@ export const createAnimationNode = (
     offset,
     duration,
     (_id: number) => onBegin && onBegin(),
-    (_id: number, _stopReason: StopReason) => {
-      detach(source as IAnimationValue, animationFrameNode);
-      onEnd && onEnd();
-    },
+    (_id: number, _stopReason: StopReason) => onEnd && onEnd(),
     // Now let's update the target node with the results from the
     // interpolation (including easing)
     interpolateNode,
   );
 
   const animationFrameNode = always(lifecycleFunc);
-  attach(source as IAnimationValue, animationFrameNode);
   return animationFrameNode;
 };

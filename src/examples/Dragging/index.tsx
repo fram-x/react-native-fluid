@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Fluid, {
   useFluidConfig,
   useFluidState,
 } from "react-native-fluid-transitions";
 import { GestureContainer } from "react-native-fluid-gestures";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import * as Colors from "../colors";
 
 const valueDragX = {
@@ -18,10 +18,22 @@ const valueDragY = {
 };
 
 const DraggingExampleScreen = () => {
-  const [isSnappingState, setIsSnapping] = useFluidState(false);
+  const [isSnappingState, setIsSnappingInt] = useFluidState(false);
+  const [s, setS] = useState("Tic");
+
+  const setIsSnapping = (v: boolean) => {
+    setIsSnappingInt(v);
+    console.log("Snapping", v);
+  };
+
+  useEffect(() => {
+    setTimeout(() => setS(p => (p === "Tic" ? "Toc" : "Tic")), 500);
+  }, [s]);
+
   const config = useFluidConfig({
     onEnter: {
       state: "dragging",
+      onBegin: () => setIsSnapping(false),
       interpolation: {
         inputRange: [0, 1],
         outputRange: [Colors.ColorA, Colors.ColorB],
@@ -77,8 +89,9 @@ const DraggingExampleScreen = () => {
           config={config}
           states={isSnappingState}
           style={styles.staticBox}
-          staticStyle={styles.box}
-        />
+          staticStyle={styles.box}>
+          <Text style={styles.boxText}>{s}</Text>
+        </Fluid.View>
       </GestureContainer>
     </View>
   );
@@ -98,6 +111,13 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  boxText: {
+    fontSize: 15,
+    color: "#FFF",
+    fontWeight: "bold",
   },
   staticBox: {
     backgroundColor: Colors.ColorA,

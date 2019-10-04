@@ -1,11 +1,15 @@
 import { createAnimationNode } from "./Functions";
 import { AnimationInfo } from "../../Components/Types/AnimationInfo";
 import { Easings } from "../../Components/Types";
-import { IAnimationNode } from "react-native-fluid-animations";
+import { IAnimationNode, IAnimationValue } from "react-native-fluid-animations";
+import {
+  unregisterRunningInterpolation,
+  registerRunningInterpolation,
+} from "./interpolations";
 
 export const addAnimations = (
   source: IAnimationNode,
-  animations: AnimationInfo[]
+  animations: AnimationInfo[],
 ) => {
   // Skip tracking?
   if (animations.length === 0) return;
@@ -28,12 +32,12 @@ export const addAnimations = (
       offset,
       onBegin,
       onEnd,
-      interpolate
+      interpolate,
     } = animation;
     // Get easing
     const easingFunction = easing || Easings.linear;
     // Create node
-    createAnimationNode(
+    const animationNode = createAnimationNode(
       source,
       target,
       animationId,
@@ -49,8 +53,18 @@ export const addAnimations = (
       extrapolateLeft,
       extrapolateRight,
       onBegin,
-      onEnd,
-      interpolate
+      () => {
+        unregisterRunningInterpolation(ownerId, key);
+        onEnd && onEnd();
+      },
+      interpolate,
+    );
+
+    registerRunningInterpolation(
+      ownerId,
+      key,
+      source as IAnimationValue,
+      animationNode,
     );
   });
 };
