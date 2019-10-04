@@ -3,7 +3,7 @@ import {
   IAnimationNode,
   ExtrapolateType,
   IAnimationValue,
-  InterpolateFunction
+  InterpolateFunction,
 } from "react-native-fluid-animations";
 import { getExtrapolationValue } from "./getExtrapolationValue";
 import { getSetInterpolationValue } from "./setInterpolationValue";
@@ -11,11 +11,12 @@ const {
   lessThan,
   lessOrEq,
   greaterOrEq,
+  debug,
   and,
   block,
   always,
   attach,
-  cond
+  cond,
 } = AnimationProvider.Animated;
 
 export const createInterpolationNode = (
@@ -27,19 +28,19 @@ export const createInterpolationNode = (
   extrapolate: ExtrapolateType | undefined,
   extrapolateLeft: ExtrapolateType | undefined,
   extrapolateRight: ExtrapolateType | undefined,
-  interpolate: InterpolateFunction
+  interpolate: InterpolateFunction,
 ) => {
   // Build interpolations if range has more items than two
-  const elements = new Array<IAnimationNode>();
+  const elements: Array<IAnimationNode> = [];
 
   // Resolve extrapolate left
   const extrapolateLeftValue = AnimationProvider.createValue(
-    getExtrapolationValue(extrapolateLeft || extrapolate || "extend")
+    getExtrapolationValue(extrapolateLeft || extrapolate || "extend"),
   );
 
   // Resolve extrapolate right
   const extrapolateRightValue = AnimationProvider.createValue(
-    getExtrapolationValue(extrapolateRight || extrapolate || "extend")
+    getExtrapolationValue(extrapolateRight || extrapolate || "extend"),
   );
 
   // Get set function
@@ -56,8 +57,8 @@ export const createInterpolationNode = (
         outputRange[0],
         outputRange[1],
         extrapolateLeftValue,
-        extrapolateRightValue
-      )
+        extrapolateRightValue,
+      ),
     );
   } else {
     // Push the rest (if any)
@@ -68,7 +69,7 @@ export const createInterpolationNode = (
             greaterOrEq(source, inputRange[i]),
             i === inputRange.length - 2
               ? lessOrEq(source, inputRange[i + 1])
-              : lessThan(source, inputRange[i + 1])
+              : lessThan(source, inputRange[i + 1]),
           ),
           [
             setInterpolationValueFunc(
@@ -79,20 +80,17 @@ export const createInterpolationNode = (
               outputRange[i],
               outputRange[i + 1],
               extrapolateLeftValue,
-              extrapolateRightValue
-            )
-          ]
-        )
+              extrapolateRightValue,
+            ),
+          ],
+        ),
       );
     }
   }
 
   const interpolateNode = always(() =>
-    elements.length === 1 ? elements[0] : block(elements)
+    elements.length === 1 ? elements[0] : block(elements),
   );
-
-  // @ts-ignore
-  attach(source, interpolateNode);
 
   return interpolateNode;
 };

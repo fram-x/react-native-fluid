@@ -185,7 +185,9 @@ export type ConfigWhenInterpolationType = BaseConfigType & {
     | ConfigPropInterpolationType
     | ConfigPropInterpolationType[]
     | ConfigStyleInterpolationType
-    | ConfigStyleInterpolationType[];
+    | ConfigStyleInterpolationType[]
+    | ConfigValueInterpolationType
+    | ConfigValueInterpolationType[];
 };
 
 export type ConfigWhenType = ConfigWhenStyleType | ConfigWhenInterpolationType;
@@ -259,6 +261,12 @@ export const isConfigOnFactory = (
   obj: ConfigOnType,
 ): obj is ConfigOnFactoryType => {
   return (obj as ConfigOnFactoryType).onFactory !== undefined;
+};
+
+export const isConfigWhenValueInterplation = (
+  obj: BaseConfigInterpolationType,
+): obj is ConfigValueInterpolationType => {
+  return (obj as ConfigValueInterpolationType).value !== undefined;
 };
 
 export const isConfigStyleInterpolation = (

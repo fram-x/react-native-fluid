@@ -16,7 +16,6 @@ const {
   add,
   multiply,
   round,
-  concat,
   cond,
   set,
   eq,
