@@ -57,7 +57,7 @@ export const GestureContainer: React.FC<DraggableProps> = ({ ...props }) => {
       const { style, ...rest } = this.props;
       return (
         <PanGestureHandler
-          onGestureEvent={onGestureEvent}
+          onGestureEvent={onGestureEvent as any}
           onHandlerStateChange={onHandlerStateChange}>
           <AnimationProvider.Types.View {...rest} style={style} />
         </PanGestureHandler>
