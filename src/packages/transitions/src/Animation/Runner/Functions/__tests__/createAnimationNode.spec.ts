@@ -134,7 +134,5 @@ const evalAnimationNode = (
   node.evaluate();
   // @ts-ignore
   node.evaluate();
-  // @ts-ignore
-  node.evaluate();
   return target;
 };

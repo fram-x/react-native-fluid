@@ -4,6 +4,8 @@
 
 [X] Fix issue with removing a when interpolation. See Styles example and press on/off
 [X] Style-flash in Styles example - press button and while it is animating, press inbox-button
+[ ] Create central function for removing interpolations and animations
+[X] Fix createAnimationNode impl so that tests only needs to run once
 
 [ ] Shared transitions (WIP)
   [ ] Fix running second shared transition while one is running
@@ -25,7 +27,7 @@
 [X] ConfigStateType should be accepted as state 
 [X] StaggerMs & StaggerFunc => stagger
 [X] Test/implement stagger custom function
-[ ] Create dragging example
+[X] Create dragging example
 [ ] Navigation with new Stack navigator
 
 ## Later

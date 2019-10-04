@@ -10,7 +10,7 @@ const {
   proc,
   set,
   call,
-  // debug,
+  debug,
   block,
   cond,
   eq,
@@ -210,39 +210,31 @@ const lifecycleFunc = createProc("lifecycle", () =>
       stopPreviousAnimations,
       updateValue,
     ) =>
-      cond(
-        // Check if we haven't started but we have reached the start
-        and(greaterOrEq(input, 0), eq(isRunning, -1)),
-        [
+      block([
+        // Start animation
+        cond(and(greaterOrEq(input, 0), eq(isRunning, -1)), [
           stopPreviousAnimations,
           set(isRunning as IAnimationValue, 1),
+          // debug("Started", isRunning),
           call([animationId, ownerId], onAnimationBegin),
-        ],
-        [
-          // Check if running value has been changed from the outside
-          cond(
-            eq(isRunning, 2),
-            [
-              // We are stopped from the outside
-              // debug("N:Stopped from the outside", isRunning),
-              call([animationId, ownerId, isRunning], onAnimationEnd),
-            ],
-            [
-              cond(and(greaterOrEq(input, 0), lessOrEq(input, 1)), [
-                // Call update
-                updateValue,
-                cond(greaterOrEq(input, 1), [
-                  // We have started but have now reached the end of the animation
-                  // debug("N:STOPPED ANIMATION", animationId),
-                  // Mark as stopped
-                  set(isRunning as IAnimationValue, 0),
-                  // Callback when done
-                  call([animationId, ownerId, isRunning], onAnimationEnd),
-                ]),
-              ]),
-            ],
-          ),
-        ],
-      ),
+        ]),
+        // Check if running value has been changed from the outside
+        cond(eq(isRunning, 2), [
+          // We are stopped from the outside
+          //debug("Stopped from the outside", isRunning),
+          call([animationId, ownerId, isRunning], onAnimationEnd),
+        ]),
+        // Update
+        cond(and(greaterOrEq(input, 0), lessOrEq(input, 1)), [updateValue]),
+        // Check too see if we should stop
+        cond(greaterOrEq(input, 1), [
+          // We have started but have now reached the end of the animation
+          // debug("STOPPED ANIMATION", animationId),
+          // Mark as stopped
+          set(isRunning as IAnimationValue, 0),
+          // Callback when done
+          call([animationId, ownerId, isRunning], onAnimationEnd),
+        ]),
+      ]),
   ),
 );

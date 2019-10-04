@@ -3,7 +3,7 @@ import { normalize } from "./normalize";
 import {
   InterpolateFunction,
   AnimationProvider,
-  IAnimationValue
+  IAnimationValue,
 } from "react-native-fluid-animations";
 import { createProc } from "../../Functions/createProc";
 import { EasingFunction } from "../../../Components/Types";
@@ -13,13 +13,13 @@ export const getSetAnimationValue = (
   interpolateInternal: InterpolateFunction,
   key: string,
   easingFunction: EasingFunction,
-  easingKey: string
+  easingKey: string,
 ) => {
   const interpolate = getInterpolatorFunction(
     interpolateInternal,
     key,
     easingFunction,
-    easingKey
+    easingKey,
   );
 
   return createProc(`setAnimationValue_${easingKey}-${key}`, () =>
@@ -36,28 +36,26 @@ export const getSetAnimationValue = (
         outputMax,
         extrapolateLeft,
         extrapolateRight,
-        outputStart
+        outputStart,
       ) =>
         // Copy start output range - this is needed since it might be
         // the tracker itself
         cond(
           eq(outputStart, Number.MIN_VALUE),
-          // Update output start
-          [set(outputStart as IAnimationValue, outputMin)],
-          [
-            // Interpolate
-            interpolate(
-              normalize(source, offset, duration),
-              inputMin,
-              inputMax,
-              outputStart,
-              outputMax,
-              extrapolateLeft,
-              extrapolateRight,
-              target
-            )
-          ]
-        )
-    )
+          // if outputStart is Minvalue then
+          set(outputStart as IAnimationValue, outputMin),
+          // else Interpolate
+          interpolate(
+            normalize(source, offset, duration),
+            inputMin,
+            inputMax,
+            outputStart,
+            outputMax,
+            extrapolateLeft,
+            extrapolateRight,
+            target,
+          ),
+        ),
+    ),
   );
 };
