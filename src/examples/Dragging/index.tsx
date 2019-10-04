@@ -67,18 +67,21 @@ const DraggingExampleScreen = () => {
           console.log("snapping done");
         },
         style: { transform: [{ translateX: 0 }, { translateY: 0 }] },
+        animation: Fluid.Animations.Springs.Gentle,
       },
     ],
   });
   return (
-    <GestureContainer label="gestureContainer" style={styles.container}>
-      <Fluid.View
-        config={config}
-        states={isSnappingState}
-        style={styles.staticBox}
-        staticStyle={styles.box}
-      />
-    </GestureContainer>
+    <View style={styles.container}>
+      <GestureContainer label="gestureContainer" style={styles.box}>
+        <Fluid.View
+          config={config}
+          states={isSnappingState}
+          style={styles.staticBox}
+          staticStyle={styles.box}
+        />
+      </GestureContainer>
+    </View>
   );
 };
 
@@ -95,6 +98,7 @@ const styles = StyleSheet.create({
   box: {
     width: 100,
     height: 100,
+    borderRadius: 8,
   },
   staticBox: {
     backgroundColor: Colors.ColorA,

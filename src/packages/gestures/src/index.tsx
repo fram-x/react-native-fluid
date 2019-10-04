@@ -21,7 +21,7 @@ type DraggableProps = ComponentProps<ViewProps> & {
   onHandlerStateChange?: (event: PanGestureHandlerStateChangeEvent) => void;
 };
 
-export const GestureContainer: React.FC<Props> = ({ ...props }) => {
+export const GestureContainer: React.FC<DraggableProps> = ({ ...props }) => {
   const [isDraggingState, setIsDragging] = useFluidState(false);
   const stateContext = useContext(StateContext);
 

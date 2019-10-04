@@ -92,8 +92,5 @@ export const createInterpolationNode = (
     elements.length === 1 ? elements[0] : block(elements),
   );
 
-  // @ts-ignore
-  attach(source, interpolateNode);
-
   return interpolateNode;
 };
