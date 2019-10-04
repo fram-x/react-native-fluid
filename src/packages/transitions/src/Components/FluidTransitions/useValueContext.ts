@@ -168,11 +168,6 @@ export const useValueContext = (
     };
 
     /**
-     *
-     */
-    // const removeInterpolation = () => {};
-
-    /**
      * @description Adds an animation for a given stylekey
      * @param key
      * @param inputValues

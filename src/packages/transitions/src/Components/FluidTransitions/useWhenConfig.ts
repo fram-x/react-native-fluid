@@ -22,9 +22,8 @@ import {
   isConfigWhenValueInterplation,
 } from "../../Configuration";
 import { getAnimationOnEnd } from "../../Animation/Builder/getAnimationOnEnd";
-import { stopAnimation } from "../../Animation/Runner/Functions";
 import { useContext } from "react";
-import { removeInterpolation } from "../../Animation/Runner/addInterpolation";
+import { unregisterRunningInterpolation } from "../../Animation/Runner/interpolations";
 
 export const useWhenConfig = (
   transitionItem: TransitionItem,
@@ -195,11 +194,20 @@ const registerWhenInterpolations = (
     } else {
       // Removed
       if (isConfigWhenValueInterplation(interpolation)) {
-        removeInterpolation(transitionItem.id, interpolation.styleKey);
+        unregisterRunningInterpolation(
+          transitionItem.id,
+          interpolation.styleKey,
+        );
       } else if (isConfigStyleInterpolation(interpolation)) {
-        stopAnimation(transitionItem.id, interpolation.styleKey);
+        unregisterRunningInterpolation(
+          transitionItem.id,
+          interpolation.styleKey,
+        );
       } else if (isConfigPropInterpolation(interpolation)) {
-        stopAnimation(transitionItem.id, interpolation.propName);
+        unregisterRunningInterpolation(
+          transitionItem.id,
+          interpolation.propName,
+        );
       }
     }
   });

@@ -39,10 +39,3 @@ export const addInterpolation = (
     interpolationNode,
   );
 };
-
-export const removeInterpolation = (
-  itemId: number,
-  interpolationKey: string,
-) => {
-  unregisterRunningInterpolation(itemId, interpolationKey);
-};
