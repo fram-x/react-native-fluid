@@ -29,10 +29,7 @@ import {
 } from "../../Configuration";
 import { getAnimationOnEnd } from "../../Animation/Builder/getAnimationOnEnd";
 import { useContext, useRef } from "react";
-import {
-  unregisterRunningInterpolation,
-  stopRunningInterpolation,
-} from "../../Animation/Runner/interpolations";
+import { unregisterRunningInterpolation } from "../../Animation/Runner/interpolations";
 
 type ActiveInterpolations = { [key: string]: InterpolationInfo };
 
@@ -89,6 +86,7 @@ export const useWhenConfig = (
     if (isConfigWhenStyle(cf)) {
       // When with style
       registerWhenStyle(
+        transitionItem,
         logger,
         cf,
         styleContext,
@@ -227,7 +225,11 @@ const registerWhenInterpolations = (
         // Check if there is a running animation that we created
         if (activeInterpolations[key]) {
           // Stop the previous one that was emitted by us
-          // TODO
+          unregisterRunningInterpolation(
+            transitionItem.id,
+            key,
+            activeInterpolations[key].id,
+          );
         }
         activeInterpolations[key] = ip;
       }
@@ -247,8 +249,7 @@ const registerWhenInterpolations = (
       }
 
       if (activeInterpolations[key]) {
-        // TODO: Stop running animation
-        stopRunningInterpolation(
+        unregisterRunningInterpolation(
           transitionItem.id,
           key,
           activeInterpolations[key].id,
@@ -270,6 +271,7 @@ const registerWhenInterpolations = (
 };
 
 const registerWhenStyle = (
+  transitionItem: TransitionItem,
   logger: UseLoggerFunction,
   when: ConfigWhenStyleType,
   styleContext: ValueContextType,
@@ -314,7 +316,7 @@ const registerWhenStyle = (
   // Register interpolations
   Object.keys(interpolations).forEach(key => {
     // Let us create the animation
-    styleContext.addAnimation(
+    const ip = styleContext.addAnimation(
       key,
       undefined,
       isRemoved
@@ -332,5 +334,8 @@ const registerWhenStyle = (
       when.flip,
       when.yoyo,
     );
+    if (ip) {
+      activeInterpolations[key] = ip;
+    }
   });
 };

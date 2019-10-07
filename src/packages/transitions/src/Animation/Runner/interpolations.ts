@@ -46,7 +46,7 @@ export const registerRunningInterpolation = (
     isRunningShadow: isRunningValue,
   };
 
-  console.log("Added interpolation for", itemId, "key:", key);
+  //console.log("Added interpolation for", itemId, "key:", key);
 };
 
 /**
@@ -61,16 +61,21 @@ export const stopRunningInterpolation = (
   animationId: number,
 ) => {
   const runningKey = getKey(itemId, key);
-  ensureInterpolation(itemId, key, animationId, "Stopping");
+  if (!ensureInterpolation(itemId, key, animationId)) return;
+  if (
+    _runningInterpolations[runningKey][animationId].isRunningShadow ===
+    RunningFlags.Stopped
+  )
+    return;
 
-  console.log(
-    "Stopping interpolation",
-    animationId,
-    "for",
-    key,
-    "item",
-    itemId,
-  );
+  // console.log(
+  //   "Stopping interpolation",
+  //   animationId,
+  //   "for",
+  //   key,
+  //   "item",
+  //   itemId,
+  // );
   _runningInterpolations[runningKey][animationId].isRunningShadow =
     RunningFlags.Stopped;
   _runningInterpolations[runningKey][animationId].isRunningFlag.setValue(
@@ -90,16 +95,16 @@ export const startRunningInterpolation = (
   animationId: number,
 ) => {
   const runningKey = getKey(itemId, key);
-  ensureInterpolation(itemId, key, animationId, "Starting");
+  if (!ensureInterpolation(itemId, key, animationId)) return;
 
-  console.log(
-    "Starting interpolation",
-    animationId,
-    "for",
-    key,
-    "item",
-    itemId,
-  );
+  // console.log(
+  //   "Starting interpolation",
+  //   animationId,
+  //   "for",
+  //   key,
+  //   "item",
+  //   itemId,
+  // );
   _runningInterpolations[runningKey][animationId].isRunningShadow =
     RunningFlags.Started;
   _runningInterpolations[runningKey][animationId].isRunningFlag.setValue(
@@ -119,10 +124,12 @@ export const unregisterRunningInterpolation = (
   animationId: number,
 ) => {
   const runningKey = getKey(itemId, key);
-  ensureInterpolation(itemId, key, animationId, "Unregistering");
+  if (!ensureInterpolation(itemId, key, animationId)) return;
 
   // Now we are ready.
-  console.log("Removing interpolation for", itemId, "key:", key);
+  stopRunningInterpolation(itemId, key, animationId);
+
+  // console.log("Removing interpolation for", itemId, "key:", key);
 
   // Detach node
   AnimationProvider.Animated.detach(
@@ -160,24 +167,13 @@ const ensureInterpolation = (
   itemId: number,
   key: string,
   animationId: number,
-  message: string,
 ) => {
   const runningKey = getKey(itemId, key);
   if (!_runningInterpolations[runningKey]) {
-    throw fluidInternalException(
-      message + " failed: " + key + " for item id " + itemId,
-    );
+    return false;
   }
   if (!_runningInterpolations[runningKey][animationId]) {
-    throw fluidInternalException(
-      message +
-        " failed: " +
-        key +
-        " for item id " +
-        itemId +
-        " for animationid " +
-        animationId,
-    );
+    return false;
   }
 };
 const getKey = (itemId: number, key: string) => {
