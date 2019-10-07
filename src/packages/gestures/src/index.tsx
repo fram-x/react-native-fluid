@@ -44,12 +44,10 @@ export const GestureContainer: React.FC<DraggableProps> = ({ ...props }) => {
 
   const onHandlerStateChange = (event: PanGestureHandlerStateChangeEvent) => {
     if (event.nativeEvent.state === State.BEGAN) {
-      console.log("dragging");
       translateX.setValue(0);
       translateY.setValue(0);
       setIsDragging(true);
     } else if (event.nativeEvent.oldState === State.ACTIVE) {
-      console.log("dragging stop");
       setIsDragging(false);
     }
   };
