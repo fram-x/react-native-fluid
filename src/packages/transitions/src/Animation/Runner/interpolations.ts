@@ -3,11 +3,19 @@ import {
   AnimationProvider,
   IAnimationValue,
 } from "react-native-fluid-animations";
+import { fluidInternalException } from "../../Types";
+
+export const RunningFlags = {
+  NotStarted: -1,
+  Started: 1,
+  Stopped: 2,
+};
 
 /**
  * @description Registers a running animation for a transition item and a given key
  * @param itemId TransitionItem id
  * @param key Key that is animated
+ * @param animationId Id of the interpolation
  * @param source Driver for the animation
  * @param animation Animation node
  */
@@ -17,46 +25,161 @@ export const registerRunningInterpolation = (
   animationId: number,
   source: IAnimationValue,
   animation: IAnimationNode,
+  isRunningFlag: IAnimationValue,
+  isRunningValue: number,
 ) => {
-  // Unregister previous
-  unregisterRunningInterpolation(itemId, key);
+  const runningKey = getKey(itemId, key);
+
   // Attach nodes
   AnimationProvider.Animated.attach(source, animation);
-  // Register attachment
-  _runningInterpolations[getKey(itemId, key)] = {
+
+  // Register that we have attached
+  if (!_runningInterpolations[runningKey]) {
+    _runningInterpolations[runningKey] = {};
+  }
+
+  _runningInterpolations[runningKey][animationId] = {
     source,
     animation,
     animationId,
+    isRunningFlag: isRunningFlag,
+    isRunningShadow: isRunningValue,
   };
+
   console.log("Added interpolation for", itemId, "key:", key);
+};
+
+/**
+ * @description Sends a stop signal to a running animation
+ * @param itemId
+ * @param key
+ * @param animationId
+ */
+export const stopRunningInterpolation = (
+  itemId: number,
+  key: string,
+  animationId: number,
+) => {
+  const runningKey = getKey(itemId, key);
+  ensureInterpolation(itemId, key, animationId, "Stopping");
+
+  console.log(
+    "Stopping interpolation",
+    animationId,
+    "for",
+    key,
+    "item",
+    itemId,
+  );
+  _runningInterpolations[runningKey][animationId].isRunningShadow =
+    RunningFlags.Stopped;
+  _runningInterpolations[runningKey][animationId].isRunningFlag.setValue(
+    RunningFlags.Stopped,
+  );
+};
+
+/**
+ * @description Sends a start signal to a running animation
+ * @param itemId
+ * @param key
+ * @param animationId
+ */
+export const startRunningInterpolation = (
+  itemId: number,
+  key: string,
+  animationId: number,
+) => {
+  const runningKey = getKey(itemId, key);
+  ensureInterpolation(itemId, key, animationId, "Starting");
+
+  console.log(
+    "Starting interpolation",
+    animationId,
+    "for",
+    key,
+    "item",
+    itemId,
+  );
+  _runningInterpolations[runningKey][animationId].isRunningShadow =
+    RunningFlags.Started;
+  _runningInterpolations[runningKey][animationId].isRunningFlag.setValue(
+    RunningFlags.Started,
+  );
 };
 
 /**
  * @description Unregisters a running animation for a transition item and a given key
  * @param itemId TransitionItem id
  * @param key Key that is animated
+ * @param animationId Id of the interpolation
  */
 export const unregisterRunningInterpolation = (
   itemId: number,
   key: string,
-  animationId?: number,
+  animationId: number,
 ) => {
   const runningKey = getKey(itemId, key);
-
-  // Get previous running interpolation for this item/key
-  const tmp = _runningInterpolations[runningKey];
-  if (!tmp) return;
-
-  if (animationId && tmp.animationId > animationId) return;
+  ensureInterpolation(itemId, key, animationId, "Unregistering");
 
   // Now we are ready.
   console.log("Removing interpolation for", itemId, "key:", key);
-  // Unregister attachment
-  delete _runningInterpolations[runningKey];
+
   // Detach node
-  AnimationProvider.Animated.detach(tmp.source, tmp.animation);
+  AnimationProvider.Animated.detach(
+    _runningInterpolations[runningKey][animationId].source,
+    _runningInterpolations[runningKey][animationId].animation,
+  );
+
+  // Unregister attachment
+  delete _runningInterpolations[runningKey][animationId];
+  if (Object.keys(_runningInterpolations[runningKey]).length === 0) {
+    delete _runningInterpolations[runningKey];
+  }
 };
 
+/**
+ * @description Unregisters a running animation for a transition item and a given key
+ * @param itemId TransitionItem id
+ * @param key Key that is animated
+ * @param animationId Id of the interpolation
+ */
+export const isInterpolationRunning = (
+  itemId: number,
+  key: string,
+  animationId: number,
+) => {
+  const runningKey = getKey(itemId, key);
+  return (
+    _runningInterpolations[runningKey] &&
+    _runningInterpolations[runningKey][animationId] &&
+    _runningInterpolations[runningKey][animationId].isRunningShadow
+  );
+};
+
+const ensureInterpolation = (
+  itemId: number,
+  key: string,
+  animationId: number,
+  message: string,
+) => {
+  const runningKey = getKey(itemId, key);
+  if (!_runningInterpolations[runningKey]) {
+    throw fluidInternalException(
+      message + " failed: " + key + " for item id " + itemId,
+    );
+  }
+  if (!_runningInterpolations[runningKey][animationId]) {
+    throw fluidInternalException(
+      message +
+        " failed: " +
+        key +
+        " for item id " +
+        itemId +
+        " for animationid " +
+        animationId,
+    );
+  }
+};
 const getKey = (itemId: number, key: string) => {
   return `${itemId}-${key}`;
 };
@@ -65,8 +188,10 @@ type RunningInterpolation = {
   source: IAnimationValue;
   animation: IAnimationNode;
   animationId: number;
+  isRunningFlag: IAnimationValue;
+  isRunningShadow: number;
 };
 
 const _runningInterpolations: {
-  [key: string]: RunningInterpolation;
+  [key: string]: { [key: number]: RunningInterpolation };
 } = {};

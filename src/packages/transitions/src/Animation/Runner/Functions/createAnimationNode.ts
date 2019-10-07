@@ -22,6 +22,7 @@ const {
 export const createAnimationNode = (
   source: IAnimationNode,
   target: IAnimationValue,
+  isRunningFlag: IAnimationValue,
   animationId: number,
   key: string,
   ownerId: number,
@@ -125,8 +126,7 @@ export const createAnimationNode = (
     duration,
     (_id: number) => onBegin && onBegin(),
     (_id: number, _stopReason: StopReason) => onEnd && onEnd(),
-    // Now let's update the target node with the results from the
-    // interpolation (including easing)
+    isRunningFlag,
     interpolateNode,
   );
 

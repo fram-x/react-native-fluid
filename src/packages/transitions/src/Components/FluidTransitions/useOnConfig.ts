@@ -95,7 +95,10 @@ export const useOnConfig = (
           removed.find(p => p === onConfig) !== undefined ? "exit" : "enter",
       });
       addInterpolation(
-        { state: onConfig.state, interpolation: factoryResults.interpolation },
+        {
+          state: onConfig.state,
+          interpolation: factoryResults.interpolation,
+        },
         factoryResults.animation,
       );
     }

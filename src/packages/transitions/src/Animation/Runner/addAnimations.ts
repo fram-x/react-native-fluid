@@ -1,10 +1,17 @@
 import { createAnimationNode } from "./Functions";
 import { AnimationInfo } from "../../Components/Types/AnimationInfo";
 import { Easings } from "../../Components/Types";
-import { IAnimationNode, IAnimationValue } from "react-native-fluid-animations";
+import {
+  IAnimationNode,
+  IAnimationValue,
+  AnimationProvider,
+} from "react-native-fluid-animations";
 import {
   unregisterRunningInterpolation,
   registerRunningInterpolation,
+  startRunningInterpolation,
+  RunningFlags,
+  stopRunningInterpolation,
 } from "./interpolations";
 
 export const addAnimations = (
@@ -34,12 +41,36 @@ export const addAnimations = (
       onEnd,
       interpolate,
     } = animation;
+
     // Get easing
     const easingFunction = easing || Easings.linear;
+
+    // Create running flag - initial value should be -1 to signal that
+    // we have not started
+    const isRunningFlag = AnimationProvider.createValue(
+      RunningFlags.NotStarted,
+    );
+
+    let onBeginOnce: (() => void) | undefined;
+    onBeginOnce = () => {
+      onBeginOnce = undefined;
+      startRunningInterpolation(ownerId, key, animationId);
+      onBegin && onBegin();
+    };
+
+    let onEndOnce: (() => void) | undefined;
+    onEndOnce = () => {
+      onEndOnce = undefined;
+      stopRunningInterpolation(ownerId, key, animationId);
+      unregisterRunningInterpolation(ownerId, key, animationId);
+      onEnd && onEnd();
+    };
+
     // Create node
     const animationNode = createAnimationNode(
       source,
       target,
+      isRunningFlag,
       animationId,
       key,
       ownerId,
@@ -52,11 +83,8 @@ export const addAnimations = (
       extrapolate,
       extrapolateLeft,
       extrapolateRight,
-      onBegin,
-      () => {
-        unregisterRunningInterpolation(ownerId, key, animationId);
-        onEnd && onEnd();
-      },
+      onBeginOnce,
+      onEndOnce,
       interpolate,
     );
 
@@ -66,6 +94,8 @@ export const addAnimations = (
       animationId,
       source as IAnimationValue,
       animationNode,
+      isRunningFlag,
+      RunningFlags.NotStarted,
     );
   });
 };

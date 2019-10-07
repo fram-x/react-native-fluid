@@ -87,11 +87,11 @@ export const useValueContext = (
       loop?: number,
       flip?: number,
       yoyo?: number,
-    ) => {
+    ): InterpolationInfo | undefined => {
       // Check that we are allowed to interpolate this style - otherwise
       // We'll just skip it.
       if (!valueDescriptors[key]) {
-        return;
+        return undefined;
       }
 
       markAsChanged();
@@ -164,6 +164,7 @@ export const useValueContext = (
 
         // Register
         animationContext.registerInterpolation(interpolator, interpolationInfo);
+        return interpolationInfo;
       }
     };
 
@@ -193,11 +194,11 @@ export const useValueContext = (
       loop?: number,
       flip?: number,
       yoyo?: number,
-    ) => {
+    ): InterpolationInfo | undefined => {
       // Check that we are allowed to interpolate this style - otherwise
       // We'll just skip it.
       if (!valueDescriptors[key]) {
-        return;
+        return undefined;
       }
 
       markAsChanged();
@@ -260,6 +261,7 @@ export const useValueContext = (
 
       // Register
       animationContext.registerAnimation(interpolationInfo);
+      return interpolationInfo;
     };
 
     // Set up next style context

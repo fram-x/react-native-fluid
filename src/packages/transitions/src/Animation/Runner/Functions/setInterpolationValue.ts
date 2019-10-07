@@ -1,16 +1,19 @@
 import { getInterpolatorFunction } from "./interpolate";
 import {
   InterpolateFunction,
-  AnimationProvider
+  AnimationProvider,
+  IAnimationValue,
 } from "react-native-fluid-animations";
-import { createProc } from "../../Functions/createProc";
-const { proc } = AnimationProvider.Animated;
+import { createProc } from "../../../Animation/Functions";
+import { RunningFlags } from "../interpolations";
+const { cond, proc, set, eq } = AnimationProvider.Animated;
 
 export const getSetInterpolationValue = (
   interpolateInternal: InterpolateFunction,
-  key: string
+  isRunningFlag: IAnimationValue,
+  key: string,
 ) => {
-  const interpolate = getInterpolatorFunction(interpolateInternal, key);
+  const interpolateFunc = getInterpolatorFunction(interpolateInternal, key);
 
   return createProc(`setInterpolationValue_${key}`, () =>
     proc(
@@ -23,18 +26,30 @@ export const getSetInterpolationValue = (
         outputMin,
         outputMax,
         extrapolateLeft,
-        extrapolateRight
+        extrapolateRight,
       ) =>
-        interpolate(
-          source,
-          inputMin,
-          inputMax,
-          outputMin,
-          outputMax,
-          extrapolateLeft,
-          extrapolateRight,
-          target
-        )
-    )
+        cond(
+          eq(isRunningFlag, RunningFlags.NotStarted),
+          [
+            // Update running flag
+            set(isRunningFlag, RunningFlags.Started),
+          ],
+          // Update if we are running
+          cond(
+            eq(isRunningFlag, 1),
+            // Update!
+            interpolateFunc(
+              source,
+              inputMin,
+              inputMax,
+              outputMin,
+              outputMax,
+              extrapolateLeft,
+              extrapolateRight,
+              target,
+            ),
+          ),
+        ),
+    ),
   );
 };

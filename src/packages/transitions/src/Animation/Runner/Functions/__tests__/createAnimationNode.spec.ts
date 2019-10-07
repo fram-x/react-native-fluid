@@ -108,12 +108,14 @@ const evalAnimationNode = (
 ) => {
   const source = AnimationProvider.createValue(sourceVal);
   const target = AnimationProvider.createValue(0);
+  const isRunning = AnimationProvider.createValue(1);
   const animationId = 10;
   const key = "scale";
   const ownerId = 100;
   const node = createAnimationNode(
     source,
     target,
+    isRunning,
     animationId,
     key,
     ownerId,

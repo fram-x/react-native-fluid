@@ -6,10 +6,16 @@ import {
   AnimatedStyleKeys,
   InterpolatorContext,
   InterpolatorContextType,
+  InterpolationInfo,
 } from "../Types";
 import { getStyleInfo } from "../../Styles/getStyleInfo";
 import { useLog } from "../../Hooks";
-import { UseLoggerFunction, LoggerLevel, fluidException } from "../../Types";
+import {
+  UseLoggerFunction,
+  LoggerLevel,
+  fluidException,
+  fluidInternalException,
+} from "../../Types";
 import {
   ConfigAnimationType,
   ConfigWhenStyleType,
@@ -22,8 +28,13 @@ import {
   isConfigWhenValueInterplation,
 } from "../../Configuration";
 import { getAnimationOnEnd } from "../../Animation/Builder/getAnimationOnEnd";
-import { useContext } from "react";
-import { unregisterRunningInterpolation } from "../../Animation/Runner/interpolations";
+import { useContext, useRef } from "react";
+import {
+  unregisterRunningInterpolation,
+  stopRunningInterpolation,
+} from "../../Animation/Runner/interpolations";
+
+type ActiveInterpolations = { [key: string]: InterpolationInfo };
 
 export const useWhenConfig = (
   transitionItem: TransitionItem,
@@ -35,23 +46,25 @@ export const useWhenConfig = (
 ) => {
   const logger = useLog(transitionItem.label, "cwhen");
 
+  // Store active interpolations
+  const activeInterpolationsRef = useRef<ActiveInterpolations>({});
+
+  // Get context for interpolators
   const interpolatorContext = useContext(InterpolatorContext);
 
+  // Get the when part of the configuration and find changes
   const configs = configuration.when;
-
   const added = configs.filter(
     o =>
       stateChanges.added.find(s => s.name === getResolvedStateName(o.state)) !==
       undefined,
   );
-
   const changed = configs.filter(
     o =>
       stateChanges.changed.find(
         s => s.name === getResolvedStateName(o.state),
       ) !== undefined,
   );
-
   const removed = configs.filter(
     o =>
       stateChanges.removed.find(
@@ -75,7 +88,14 @@ export const useWhenConfig = (
     const isRemoved = removed.indexOf(cf) > -1;
     if (isConfigWhenStyle(cf)) {
       // When with style
-      registerWhenStyle(logger, cf, styleContext, isRemoved, animationType);
+      registerWhenStyle(
+        logger,
+        cf,
+        styleContext,
+        isRemoved,
+        activeInterpolationsRef.current,
+        animationType,
+      );
     } else {
       // When with interpolation
       registerWhenInterpolations(
@@ -85,6 +105,7 @@ export const useWhenConfig = (
         styleContext,
         propContext,
         isRemoved,
+        activeInterpolationsRef.current,
         interpolatorContext,
         animationType,
       );
@@ -99,6 +120,7 @@ const registerWhenInterpolations = (
   styleContext: ValueContextType,
   propContext: ValueContextType,
   isRemoved: boolean,
+  activeInterpolations: ActiveInterpolations,
   interpolatorContext: InterpolatorContextType | null,
   animationType?: ConfigAnimationType,
 ) => {
@@ -131,7 +153,10 @@ const registerWhenInterpolations = (
 
   interpolations.forEach(interpolation => {
     if (!isRemoved) {
-      // Let us create the animation
+      // State was added/changed - create a new animation/interpolation
+      let ip: InterpolationInfo | undefined;
+      let key: string | undefined;
+
       if (isConfigWhenValueInterplation(interpolation)) {
         if (!interpolatorContext) {
           throw fluidException(
@@ -143,6 +168,7 @@ const registerWhenInterpolations = (
           interpolation.value.ownerLabel,
           interpolation.value.valueName,
         );
+
         if (!interpolator) {
           throw fluidException(
             "Could not find interpolator with name " +
@@ -151,7 +177,9 @@ const registerWhenInterpolations = (
               interpolation.value.ownerLabel,
           );
         }
-        styleContext.addInterpolation(
+
+        key = interpolation.styleKey;
+        ip = styleContext.addInterpolation(
           interpolator,
           interpolation.styleKey,
           interpolation.inputRange,
@@ -161,7 +189,8 @@ const registerWhenInterpolations = (
           interpolation.extrapolateRight,
         );
       } else if (isConfigStyleInterpolation(interpolation)) {
-        styleContext.addAnimation(
+        key = interpolation.styleKey;
+        ip = styleContext.addAnimation(
           interpolation.styleKey,
           interpolation.inputRange,
           interpolation.outputRange,
@@ -176,7 +205,8 @@ const registerWhenInterpolations = (
           when.yoyo,
         );
       } else if (isConfigPropInterpolation(interpolation)) {
-        propContext.addAnimation(
+        key = interpolation.propName;
+        ip = propContext.addAnimation(
           interpolation.propName,
           interpolation.inputRange,
           interpolation.outputRange,
@@ -191,22 +221,48 @@ const registerWhenInterpolations = (
           when.yoyo,
         );
       }
+      // Make sure we keep track of running animations, and that we
+      // remove previous animations/interpolations that we have added
+      if (ip && key) {
+        // Check if there is a running animation that we created
+        if (activeInterpolations[key]) {
+          // Stop the previous one that was emitted by us
+          // TODO
+        }
+        activeInterpolations[key] = ip;
+      }
     } else {
       // Removed
-      if (isConfigWhenValueInterplation(interpolation)) {
-        unregisterRunningInterpolation(
-          transitionItem.id,
-          interpolation.styleKey,
-        );
-      } else if (isConfigStyleInterpolation(interpolation)) {
-        unregisterRunningInterpolation(
-          transitionItem.id,
-          interpolation.styleKey,
-        );
+      let key: string | undefined;
+      if (
+        isConfigWhenValueInterplation(interpolation) ||
+        isConfigStyleInterpolation(interpolation)
+      ) {
+        key = interpolation.styleKey;
       } else if (isConfigPropInterpolation(interpolation)) {
-        unregisterRunningInterpolation(
+        key = interpolation.propName;
+      } else {
+        key = "";
+        throw fluidException("Unknown interpolation type");
+      }
+
+      if (activeInterpolations[key]) {
+        // TODO: Stop running animation
+        stopRunningInterpolation(
           transitionItem.id,
-          interpolation.propName,
+          key,
+          activeInterpolations[key].id,
+        );
+
+        // Remove from active interpolations
+        delete activeInterpolations[key];
+      } else {
+        throw fluidInternalException(
+          "Could not find interpolation for key " +
+            key +
+            " when trying to remove the interpolation since the state " +
+            getResolvedStateName(when.state) +
+            " was removed.",
         );
       }
     }
@@ -218,6 +274,7 @@ const registerWhenStyle = (
   when: ConfigWhenStyleType,
   styleContext: ValueContextType,
   isRemoved: boolean,
+  activeInterpolations: ActiveInterpolations,
   animationType?: ConfigAnimationType,
 ) => {
   // Find all values that needs interpolation

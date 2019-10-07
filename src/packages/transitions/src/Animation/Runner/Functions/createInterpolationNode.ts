@@ -20,6 +20,7 @@ const {
 export const createInterpolationNode = (
   source: IAnimationNode,
   target: IAnimationValue,
+  isRunningFlag: IAnimationValue,
   key: string,
   inputRange: Array<number>,
   outputRange: Array<number | string | IAnimationNode>,
@@ -42,7 +43,11 @@ export const createInterpolationNode = (
   );
 
   // Get set function
-  const setInterpolationValueFunc = getSetInterpolationValue(interpolate, key);
+  const setInterpolationValueFunc = getSetInterpolationValue(
+    interpolate,
+    isRunningFlag,
+    key,
+  ) as any;
 
   if (inputRange.length === 2) {
     // Push first element in interpolation
