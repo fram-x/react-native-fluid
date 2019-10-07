@@ -64,7 +64,6 @@ const DraggingExampleScreen = () => {
         state: isSnappingState,
         onEnd: () => {
           setIsSnapping(false);
-          console.log("snapping done");
         },
         style: { transform: [{ translateX: 0 }, { translateY: 0 }] },
         animation: Fluid.Animations.Springs.Gentle,
