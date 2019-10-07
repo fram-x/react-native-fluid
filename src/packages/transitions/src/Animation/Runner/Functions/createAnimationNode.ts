@@ -117,6 +117,19 @@ export const createAnimationNode = (
   // Find the element for setting value
   const interpolateNode = elements.length === 1 ? elements[0] : block(elements);
 
+  let onBeginOnce: (() => void) | undefined;
+  onBeginOnce = () => {
+    onBeginOnce = undefined;
+    onBegin && onBegin();
+  };
+
+  let onEndOnce: (() => void) | undefined;
+  onEndOnce = () => {
+    onEndOnce = undefined;
+    detach(source as IAnimationValue, animationFrameNode);
+    onEnd && onEnd();
+  };
+
   // Build lifecycle function
   const lifecycleFunc = getLifecycleFunc(
     ownerId,
@@ -125,11 +138,8 @@ export const createAnimationNode = (
     source,
     offset,
     duration,
-    (_id: number) => onBegin && onBegin(),
-    (_id: number, _stopReason: StopReason) => {
-      detach(source as IAnimationValue, animationFrameNode);
-      onEnd && onEnd();
-    },
+    onBeginOnce,
+    onEndOnce,
     // Now let's update the target node with the results from the
     // interpolation (including easing)
     interpolateNode,

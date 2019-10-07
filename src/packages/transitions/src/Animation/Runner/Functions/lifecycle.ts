@@ -221,7 +221,7 @@ const lifecycleFunc = createProc("lifecycle", () =>
         // Check if running value has been changed from the outside
         cond(eq(isRunning, 2), [
           // We are stopped from the outside
-          //debug("Stopped from the outside", isRunning),
+          // debug("Stopped from the outside", isRunning),
           call([animationId, ownerId, isRunning], onAnimationEnd),
         ]),
         // Update

@@ -161,6 +161,7 @@ const registerWhenInterpolations = (
           interpolation.extrapolateLeft,
           interpolation.extrapolateRight,
         );
+        stopAnimation(transitionItem.id, interpolation.styleKey);
       } else if (isConfigStyleInterpolation(interpolation)) {
         styleContext.addAnimation(
           interpolation.styleKey,
