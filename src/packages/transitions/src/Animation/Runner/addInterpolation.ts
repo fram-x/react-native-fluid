@@ -5,7 +5,6 @@ import {
   IAnimationValue,
 } from "react-native-fluid-animations";
 import { createInterpolationNode } from "./Functions";
-import { ConfigWhenInterpolationType } from "src/Configuration";
 
 export const addInterpolation = (
   interpolator: IAnimationNode,
