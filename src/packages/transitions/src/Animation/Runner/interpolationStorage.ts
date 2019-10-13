@@ -149,7 +149,7 @@ export const getStopPreviousAnimationNode = (
     // Add stop signal
     prevInterpolations.map(p =>
       AnimationProvider.Animated.debug(
-        `Stopping ${animationId} ${key} for ${itemId}`,
+        `Stop ${animationId} ${key} for ${itemId}`,
         AnimationProvider.Animated.set(p.isRunningFlag, RunningFlags.Stopped),
       ),
     ),

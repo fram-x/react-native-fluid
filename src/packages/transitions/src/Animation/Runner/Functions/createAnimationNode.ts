@@ -143,8 +143,10 @@ export const createAnimationNode = (
     onEnd && onEnd();
   };
 
+  // Create is running flag
   const isRunningFlag = AnimationProvider.createValue(RunningFlags.NotStarted);
 
+  // Get statement for removing previous nodes
   const stopPrevAnimationsNode = getStopPreviousAnimationNode(
     ownerId,
     key,
