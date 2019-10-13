@@ -66,7 +66,7 @@ const DraggingExampleScreen = () => {
           setIsSnapping(false);
         },
         style: { transform: [{ translateX: 0 }, { translateY: 0 }] },
-        animation: Fluid.Animations.Springs.Gentle,
+        animation: Fluid.Animations.Springs.WobblySlow,
       },
     ],
   });

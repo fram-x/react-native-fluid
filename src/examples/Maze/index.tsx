@@ -20,7 +20,7 @@ const createMaze = () => {
 };
 
 const swapMaze = (maze: Array<boolean>) => {
-  const nextMaze = new Array<boolean>();
+  const nextMaze: Array<boolean> = [];
   let i = 0;
   for (let y = 0; y < height / boxSize; y++) {
     for (let x = 0; x < columns; x++) {

@@ -9,7 +9,7 @@ import {
 import {
   InterpolatorContext,
   StateContext,
-  StateContextType,  ,
+  StateContextType,
 } from "./src/Components/Types";
 import { useFluidState, useFluidConfig } from "./src/Hooks";
 import { createConfig, createState } from "./src/Configuration";
@@ -28,7 +28,7 @@ import {
   StateMounted,
   StateUnmounted,
   ValueDescriptorType,
-  ComponentProps
+  ComponentProps,
 } from "./src/Types";
 
 const Animations = {

@@ -19,7 +19,7 @@ import { dumpTree } from "./Builder/dumpTree";
 import { addAnimations } from "./Runner";
 import { AnimationInfo } from "../Components/Types/AnimationInfo";
 import { isConfigAnimationTiming } from "../Configuration";
-import { IsAnimationRemoved } from "./Runner/Functions";
+import { isInterpolationRunning } from "./Runner/interpolationStorage";
 
 export function commitAnimations(
   root: TransitionItem,
@@ -102,7 +102,7 @@ export function commitAnimations(
       // We have someone that needs to be looped
       if (loopInterpolations.length > 0) {
         const repeatAnimations = loopInterpolations.filter(
-          p => !IsAnimationRemoved(p.itemId, p.key),
+          p => !isInterpolationRunning(p.itemId, p.key),
         );
         if (repeatAnimations.length > 0) {
           commitAnimations(root, repeatAnimations);

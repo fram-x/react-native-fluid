@@ -10,6 +10,13 @@ import {
 } from "react-native-fluid-animations";
 import { getExtrapolationValue } from "./getExtrapolationValue";
 import { EasingFunction } from "../../../Components/Types/Easing";
+import {
+  registerRunningInterpolation,
+  RunningFlags,
+  unregisterRunningInterpolation,
+  setInterpolationRunningValue,
+  getStopPreviousAnimationNode,
+} from "../interpolationStorage";
 const {
   lessThan,
   greaterOrEq,
@@ -120,15 +127,29 @@ export const createAnimationNode = (
   let onBeginOnce: (() => void) | undefined;
   onBeginOnce = () => {
     onBeginOnce = undefined;
+    setInterpolationRunningValue(
+      ownerId,
+      key,
+      animationId,
+      RunningFlags.Started,
+    );
     onBegin && onBegin();
   };
 
   let onEndOnce: (() => void) | undefined;
   onEndOnce = () => {
     onEndOnce = undefined;
-    detach(source as IAnimationValue, animationFrameNode);
+    unregisterRunningInterpolation(ownerId, key, animationId);
     onEnd && onEnd();
   };
+
+  const isRunningFlag = AnimationProvider.createValue(RunningFlags.NotStarted);
+
+  const stopPrevAnimationsNode = getStopPreviousAnimationNode(
+    ownerId,
+    key,
+    animationId,
+  );
 
   // Build lifecycle function
   const lifecycleFunc = getLifecycleFunc(
@@ -140,12 +161,20 @@ export const createAnimationNode = (
     duration,
     onBeginOnce,
     onEndOnce,
-    // Now let's update the target node with the results from the
-    // interpolation (including easing)
     interpolateNode,
+    isRunningFlag,
+    stopPrevAnimationsNode,
   );
 
   const animationFrameNode = always(lifecycleFunc);
-  attach(source as IAnimationValue, animationFrameNode);
+  registerRunningInterpolation(
+    ownerId,
+    key,
+    animationId,
+    source as IAnimationValue,
+    animationFrameNode,
+    isRunningFlag,
+    RunningFlags.NotStarted,
+  );
   return animationFrameNode;
 };
