@@ -4,9 +4,8 @@
 
 [X] Fix issue with removing a when interpolation. See Styles example and press on/off
 [X] Style-flash in Styles example - press button and while it is animating, press inbox-button
-[ ] Create central function for removing interpolations and animations
+[X] Create central function for removing interpolations and animations
 [X] Fix createAnimationNode impl so that tests only needs to run once
-[ ] Optimize running multiple animation updates when nodes are equal (duration, offset, easing)
 
 [ ] Shared transitions (WIP)
   [ ] Fix running second shared transition while one is running
@@ -37,7 +36,7 @@
 [ ] Fix Spotify example, find out why changing to static styles fixes initial pos
 [ ] Add velocity calculation to spring functions, find a way to keep velocity on 
     animations and pass them to the spring function
-[ ] Optimize runner - find common interpolations and accept multiple set value nodes
+[ ] Optimize running multiple animation updates when nodes are equal (duration, offset, easing)
 
 # Documentation
 
