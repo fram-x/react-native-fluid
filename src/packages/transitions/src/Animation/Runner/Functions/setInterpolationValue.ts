@@ -1,14 +1,16 @@
 import { getInterpolatorFunction } from "./interpolate";
 import {
   InterpolateFunction,
-  AnimationProvider
+  AnimationProvider,
+  IAnimationValue,
+  IAnimationNode,
 } from "react-native-fluid-animations";
 import { createProc } from "../../Functions/createProc";
-const { proc } = AnimationProvider.Animated;
+const { proc, block, cond, eq, set } = AnimationProvider.Animated;
 
 export const getSetInterpolationValue = (
   interpolateInternal: InterpolateFunction,
-  key: string
+  key: string,
 ) => {
   const interpolate = getInterpolatorFunction(interpolateInternal, key);
 
@@ -23,18 +25,26 @@ export const getSetInterpolationValue = (
         outputMin,
         outputMax,
         extrapolateLeft,
-        extrapolateRight
+        extrapolateRight,
+        isStarted,
+        removePreviousStatement,
       ) =>
-        interpolate(
-          source,
-          inputMin,
-          inputMax,
-          outputMin,
-          outputMax,
-          extrapolateLeft,
-          extrapolateRight,
-          target
-        )
-    )
+        block([
+          cond(eq(isStarted, 0), [
+            set(isStarted as IAnimationValue, 1),
+            removePreviousStatement,
+          ]),
+          interpolate(
+            source,
+            inputMin,
+            inputMax,
+            outputMin,
+            outputMax,
+            extrapolateLeft,
+            extrapolateRight,
+            target,
+          ),
+        ]),
+    ),
   );
 };

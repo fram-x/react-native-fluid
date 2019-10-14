@@ -23,7 +23,9 @@ export const addInterpolation = (
   const interpolationNode = createInterpolationNode(
     interpolator,
     interpolationInfo.interpolator,
+    interpolationInfo.id,
     key,
+    interpolationInfo.itemId,
     inputRange || [0, 1],
     outputRange,
     extrapolate,

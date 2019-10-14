@@ -205,6 +205,12 @@ export const useValueContext = (
         return;
       }
 
+      // Check if we have the same start/end values - then we should
+      // just skip
+      if (outputRange.filter((v, i, a) => a.indexOf(v) === i).length === 1) {
+        return;
+      }
+
       markAsChanged();
 
       // Check if the key exists in our list of styles interpolations

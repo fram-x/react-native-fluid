@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useMemo, useCallback } from "react";
 import { ViewProps, ViewStyle } from "react-native";
 import {
   PanGestureHandler,
@@ -13,8 +13,6 @@ import {
   useFluidState,
   ComponentProps,
 } from "react-native-fluid-transitions";
-
-type Props = {};
 
 type DraggableProps = ComponentProps<ViewProps> & {
   onGestureEvent?: (event: PanGestureHandlerGestureEvent) => void;
@@ -42,15 +40,18 @@ export const GestureContainer: React.FC<DraggableProps> = ({ ...props }) => {
     },
   ]);
 
-  const onHandlerStateChange = (event: PanGestureHandlerStateChangeEvent) => {
-    if (event.nativeEvent.state === State.BEGAN) {
-      setIsDragging(true);
-    } else if (event.nativeEvent.oldState === State.ACTIVE) {
-      setIsDragging(false);
-      translateX.setValue(0);
-      translateY.setValue(0);
-    }
-  };
+  const onHandlerStateChange = useCallback(
+    (event: PanGestureHandlerStateChangeEvent) => {
+      if (event.nativeEvent.state === State.BEGAN) {
+        setIsDragging(true);
+      } else if (event.nativeEvent.oldState === State.ACTIVE) {
+        setIsDragging(false);
+        translateX.setValue(0);
+        translateY.setValue(0);
+      }
+    },
+    [setIsDragging, translateX, translateY],
+  );
 
   class GestureComponent extends React.PureComponent<DraggableProps> {
     render() {
@@ -65,25 +66,28 @@ export const GestureContainer: React.FC<DraggableProps> = ({ ...props }) => {
     }
   }
 
-  const [Component] = useState(() =>
-    createFluidComponent<DraggableProps, ViewStyle>(
-      GestureComponent,
-      false,
-      () => {
-        return {
-          interpolators: {
-            translateX,
-            translateY,
-            velocityX,
-            velocityY,
-          },
-          props: {
-            onGestureEvent,
-            onHandlerStateChange,
-          },
-        };
-      },
-    ),
+  const Component = useMemo(
+    () =>
+      createFluidComponent<DraggableProps, ViewStyle>(
+        GestureComponent,
+        false,
+        () => {
+          return {
+            interpolators: {
+              translateX,
+              translateY,
+              velocityX,
+              velocityY,
+            },
+            props: {
+              onGestureEvent,
+              onHandlerStateChange,
+            },
+          };
+        },
+      ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
   );
 
   const states = [

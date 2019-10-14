@@ -6,6 +6,7 @@
 [X] Style-flash in Styles example - press button and while it is animating, press inbox-button
 [ ] Create central function for removing interpolations and animations
 [X] Fix createAnimationNode impl so that tests only needs to run once
+[ ] Optimize running multiple animation updates when nodes are equal (duration, offset, easing)
 
 [ ] Shared transitions (WIP)
   [ ] Fix running second shared transition while one is running
@@ -59,7 +60,7 @@ yarn add react-native-fluid-animations
 yarn add react-native-fluid-transitions
 ```
 
-Getting your first transitions set up is also really easy and should be the same for React Native and React Native Web:
+Getting your first transitions set up is really easy:
 
 ```js
 import React from 'react';

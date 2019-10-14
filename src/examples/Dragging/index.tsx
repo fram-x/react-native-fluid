@@ -22,6 +22,7 @@ const DraggingExampleScreen = () => {
   const config = useFluidConfig({
     onEnter: {
       state: "dragging",
+      onBegin: () => setIsSnapping(false),
       interpolation: {
         inputRange: [0, 1],
         outputRange: [Colors.ColorA, Colors.ColorB],
@@ -62,11 +63,9 @@ const DraggingExampleScreen = () => {
       },
       {
         state: isSnappingState,
-        onEnd: () => {
-          setIsSnapping(false);
-        },
+        onEnd: () => setIsSnapping(false),
         style: { transform: [{ translateX: 0 }, { translateY: 0 }] },
-        animation: Fluid.Animations.Springs.Gentle,
+        animation: Fluid.Animations.Springs.WobblySlow,
       },
     ],
   });

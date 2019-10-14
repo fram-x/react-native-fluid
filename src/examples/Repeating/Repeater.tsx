@@ -1,5 +1,9 @@
 import React from "react";
-import Fluid, { Easings } from "react-native-fluid-transitions";
+import Fluid, {
+  Easings,
+  useFluidConfig,
+  useFluidState,
+} from "react-native-fluid-transitions";
 import { StyleSheet } from "react-native";
 
 type Props = {
@@ -14,8 +18,8 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
-    marginBottom: 3
-  }
+    marginBottom: 3,
+  },
 });
 
 export const Repeater: React.FC<Props> = ({
@@ -23,29 +27,33 @@ export const Repeater: React.FC<Props> = ({
   flip,
   yoyo,
   color,
-  isRepeating
-}) => (
-  <Fluid.View
-    label="repeat"
-    states={{ name: "repeat", active: isRepeating }}
-    config={{
-      when: {
-        animation: {
-          type: "timing",
-          duration: 1200,
-          easing: Easings.back()
-        },
-        state: "repeat",
-        flip,
-        yoyo,
-        loop,
-        interpolation: {
-          outputRange: [-50, 0, 50],
-          styleKey: "transform.translateX"
-        }
-      }
-    }}
-    style={{ transform: [{ translateX: -50 }] }}
-    staticStyle={[styles.container, { backgroundColor: color }]}
-  />
-);
+  isRepeating,
+}) => {
+  const state = { name: "repeat", active: isRepeating };
+  const config = useFluidConfig({
+    when: {
+      animation: {
+        type: "timing",
+        duration: 1200,
+        easing: Easings.back(),
+      },
+      state: state,
+      flip,
+      yoyo,
+      loop,
+      interpolation: {
+        outputRange: [-50, 0, 50],
+        styleKey: "transform.translateX",
+      },
+    },
+  });
+  return (
+    <Fluid.View
+      label="repeat"
+      states={state}
+      config={config}
+      style={{ transform: [{ translateX: -50 }] }}
+      staticStyle={[styles.container, { backgroundColor: color }]}
+    />
+  );
+};

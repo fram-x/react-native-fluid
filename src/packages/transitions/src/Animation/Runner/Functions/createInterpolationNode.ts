@@ -7,6 +7,7 @@ import {
 } from "react-native-fluid-animations";
 import { getExtrapolationValue } from "./getExtrapolationValue";
 import { getSetInterpolationValue } from "./setInterpolationValue";
+import { getStopPreviousAnimationNode } from "../interpolationStorage";
 const {
   lessThan,
   lessOrEq,
@@ -19,10 +20,26 @@ const {
   cond,
 } = AnimationProvider.Animated;
 
+/**
+ * @description Creates the interpolation node for an interpolation
+ * @param source
+ * @param target
+ * @param animationId
+ * @param key
+ * @param ownerId
+ * @param inputRange
+ * @param outputRange
+ * @param extrapolate
+ * @param extrapolateLeft
+ * @param extrapolateRight
+ * @param interpolate
+ */
 export const createInterpolationNode = (
   source: IAnimationNode,
   target: IAnimationValue,
+  animationId: number,
   key: string,
+  ownerId: number,
   inputRange: Array<number>,
   outputRange: Array<number | string | IAnimationNode>,
   extrapolate: ExtrapolateType | undefined,
@@ -46,6 +63,15 @@ export const createInterpolationNode = (
   // Get set function
   const setInterpolationValueFunc = getSetInterpolationValue(interpolate, key);
 
+  // Get statement for removing previous nodes
+  const stopPrevAnimationsNode = getStopPreviousAnimationNode(
+    ownerId,
+    key,
+    animationId,
+  );
+
+  const isStarted = AnimationProvider.createValue(0);
+
   if (inputRange.length === 2) {
     // Push first element in interpolation
     elements.push(
@@ -58,6 +84,8 @@ export const createInterpolationNode = (
         outputRange[1],
         extrapolateLeftValue,
         extrapolateRightValue,
+        isStarted,
+        stopPrevAnimationsNode,
       ),
     );
   } else {
@@ -81,6 +109,8 @@ export const createInterpolationNode = (
               outputRange[i + 1],
               extrapolateLeftValue,
               extrapolateRightValue,
+              isStarted,
+              stopPrevAnimationsNode,
             ),
           ],
         ),
