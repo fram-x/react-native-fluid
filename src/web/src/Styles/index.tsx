@@ -63,6 +63,8 @@ StyleExampleScreen.navigationOptions = {
 
 const styles = StyleSheet.create({
   container: {
+    borderWidth: 1,
+    borderColor: "#CCC",
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
