@@ -146,11 +146,15 @@ const MyComponent = () => {
 
 ##### Configuration values
 
-| Field   | Description |
-| ------- | ----------- |
-| when    |             |
-| onEnter |             |
-| onExit  |             |
+| Field          | Description |
+| -------------- | ----------- |
+| when           |             |
+| onEnter        |             |
+| onExit         |             |
+| animation      |             |
+| childAnimation |             |
+| interpolation  |             |
+
 
 ###### When
 
@@ -197,6 +201,8 @@ The interpolation field can contain a single interpolation or an array of interp
 ###### onExit
 
 ###### Interpolation
+
+###### Child Animation
 
 ### Value Interpolations
 One of the more advanced techniques when building animations and transitions in React Native is when you need your interpolation to depend on a gesture value or a scrolliew position. In `react-native-fluid-transitions` this is already taken care of for you.
