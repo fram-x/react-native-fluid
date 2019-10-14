@@ -13,6 +13,7 @@
 
 ### Web
 - [ ] Fix measure of rotated elements on Web
+- [ ] Styles example: Button is not moving
 
 ### Android
 - [ ] Parallax example, not interpolating change of header color correctly
