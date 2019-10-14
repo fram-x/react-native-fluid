@@ -7,36 +7,36 @@
 - [X] Create central function for removing interpolations and animations
 - [X] Fix createAnimationNode impl so that tests only needs to run once
 
-[ ] Shared transitions (WIP)
-  [ ] Fix running second shared transition while one is running
+- [ ] Shared transitions (WIP)
+  - [ ] Fix running second shared transition while one is running
       Should we skip providing shared transitions in first version?
 
 ### Web
-[ ] Fix measure of rotated elements on Web
+- [ ] Fix measure of rotated elements on Web
 
 ### Android
-[ ] Parallax example, not interpolating change of header color correctly
-[X] SVG - ValueNode cannot be cast to a number
-[X] Interpolation 
-  [X] "Error while updating transform"
-  [X] Rotated image is not displayed correctly
-[X] Interactions - some alignment issue
+- [ ] Parallax example, not interpolating change of header color correctly
+- [X] SVG - ValueNode cannot be cast to a number
+- [X] Interpolation 
+  - [X] "Error while updating transform"
+  - [X] Rotated image is not displayed correctly
+- [X] Interactions - some alignment issue
  
 ## TODO
 
-[X] ConfigStateType should be accepted as state 
-[X] StaggerMs & StaggerFunc => stagger
-[X] Test/implement stagger custom function
-[X] Create dragging example
-[ ] Navigation with new Stack navigator
+- [X] ConfigStateType should be accepted as state 
+- [X] StaggerMs & StaggerFunc => stagger
+- [X] Test/implement stagger custom function
+- [X] Create dragging example
+- [ ] Navigation with new Stack navigator
 
 ## Later
 
-[ ] Prop animation - support nested props and arrays WIP
-[ ] Fix Spotify example, find out why changing to static styles fixes initial pos
-[ ] Add velocity calculation to spring functions, find a way to keep velocity on 
+- [ ] Prop animation - support nested props and arrays WIP
+- [ ] Fix Spotify example, find out why changing to static styles fixes initial pos
+- [ ] Add velocity calculation to spring functions, find a way to keep velocity on 
     animations and pass them to the spring function
-[ ] Optimize running multiple animation updates when nodes are equal (duration, offset, easing)
+- [ ] Optimize running multiple animation updates when nodes are equal (duration, offset, easing)
 
 # Documentation
 
