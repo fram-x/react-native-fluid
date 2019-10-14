@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
   inactive: { width: 50, height: 50, backgroundColor: 'gold' },
 });
 
-const MyComponent = () => (
+const MyComponent = () => {
   const [activeState, setActiveState] = useFluidState(false);
   const toggle = () => setActiveState(s => !s);
 
@@ -133,13 +133,15 @@ const MyComponent = () => (
     }
   });
 
-  <Fluid.View 
-    onPress={toggle}
-    config={config}
-    states={activeState}
-    style={styles.inactive}
-  />  
-)
+  return (
+    <Fluid.View 
+      onPress={toggle}
+      config={config}
+      states={activeState}
+      style={styles.inactive}
+    />
+  );
+}
 ```
 
 ##### Configuration values
