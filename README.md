@@ -143,8 +143,9 @@ const MyComponent = () => {
   );
 }
 ```
+#### States 
 
-##### Configuration values
+#### Configuration
 
 | Field          | Description |
 | -------------- | ----------- |
@@ -156,7 +157,7 @@ const MyComponent = () => {
 | interpolation  |             |
 
 
-###### When
+##### When
 
 The when configuration field can contain different types of configuration. All when configurations have a common set of properties:
 
@@ -196,13 +197,13 @@ The interpolation field can contain a single interpolation or an array of interp
 
 (See below for a description of the interpolation element)
 
-###### onEnter
+##### onEnter
 
-###### onExit
+##### onExit
 
-###### Interpolation
+##### Interpolation
 
-###### Child Animation
+##### Child Animation
 
 ### Value Interpolations
 One of the more advanced techniques when building animations and transitions in React Native is when you need your interpolation to depend on a gesture value or a scrolliew position. In `react-native-fluid-transitions` this is already taken care of for you.
