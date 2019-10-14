@@ -65,7 +65,7 @@ const DraggingExampleScreen = () => {
         state: isSnappingState,
         onEnd: () => setIsSnapping(false),
         style: { transform: [{ translateX: 0 }, { translateY: 0 }] },
-        animation: Fluid.Animations.Springs.WobblySlow,
+        animation: Fluid.Animations.Springs.spring(1, 100, 4),
       },
     ],
   });
