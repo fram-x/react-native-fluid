@@ -2,10 +2,10 @@
 
 ## Bugs
 
-[X] Fix issue with removing a when interpolation. See Styles example and press on/off
-[X] Style-flash in Styles example - press button and while it is animating, press inbox-button
-[X] Create central function for removing interpolations and animations
-[X] Fix createAnimationNode impl so that tests only needs to run once
+- [X] Fix issue with removing a when interpolation. See Styles example and press on/off
+- [X] Style-flash in Styles example - press button and while it is animating, press inbox-button
+- [X] Create central function for removing interpolations and animations
+- [X] Fix createAnimationNode impl so that tests only needs to run once
 
 [ ] Shared transitions (WIP)
   [ ] Fix running second shared transition while one is running
