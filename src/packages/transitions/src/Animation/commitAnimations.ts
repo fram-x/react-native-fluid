@@ -38,7 +38,10 @@ export function commitAnimations(
     log(
       root.label,
       "animc",
-      "Starting " + interpolationInfos.length + " animations.",
+      "Starting " +
+        interpolationInfos.length +
+        " animations:" +
+        interpolationInfos.map(p => p.id).join(", "),
       LoggerLevel.Verbose,
     );
   }

@@ -93,7 +93,10 @@ export const useAnimationContext = (
       if (__DEV__) {
         logger(
           () =>
-            "Setting up " + interpolationInfos.current.length + " animations.",
+            "Setting up " +
+            interpolationInfos.current.length +
+            " animations: " +
+            interpolationInfos.current.map(p => p.id).join(", "),
         );
       }
       // Now lets create animations from all interpolations waiting

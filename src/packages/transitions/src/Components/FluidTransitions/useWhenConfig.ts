@@ -116,7 +116,7 @@ const registerWhenInterpolations = (
     logger(
       () =>
         "Register when(" +
-        when.state +
+        getResolvedStateName(when.state) +
         ") interpolation for " +
         Object.keys(interpolations).join(", "),
       LoggerLevel.Verbose,
@@ -196,7 +196,7 @@ const registerWhenInterpolations = (
       if (isConfigWhenValueInterplation(interpolation)) {
         removeInterpolation(transitionItem.id, interpolation.styleKey);
       }
-      // NO need to stop these I think, we'll just let them finish.
+      // NO need to stop these I think, we'll just let them finish by themselves.
       // else if (isConfigStyleInterpolation(interpolation)) {
       //   stopAnimation(transitionItem.id, interpolation.styleKey);
       // } else if (isConfigPropInterpolation(interpolation)) {
@@ -234,7 +234,7 @@ const registerWhenStyle = (
     logger(
       () =>
         "Register when(" +
-        when.state +
+        getResolvedStateName(when.state) +
         ") style change for " +
         Object.keys(interpolations).join(", "),
       LoggerLevel.Verbose,
@@ -249,13 +249,15 @@ const registerWhenStyle = (
 
   // Register interpolations
   Object.keys(interpolations).forEach(key => {
+    const outputRange = isRemoved
+      ? [interpolations[key], AnimatedStyleKeys[key].defaultValue]
+      : [undefined, interpolations[key]];
+
     // Let us create the animation
     styleContext.addAnimation(
       key,
       undefined,
-      isRemoved
-        ? [interpolations[key], AnimatedStyleKeys[key].defaultValue]
-        : [undefined, interpolations[key]],
+      outputRange,
       when.animation ||
         animationType ||
         styleContext.descriptors[key].defaultAnimation,

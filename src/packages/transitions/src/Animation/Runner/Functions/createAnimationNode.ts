@@ -124,9 +124,7 @@ export const createAnimationNode = (
   // Find the element for setting value
   const interpolateNode = elements.length === 1 ? elements[0] : block(elements);
 
-  let onBeginOnce: (() => void) | undefined;
-  onBeginOnce = () => {
-    onBeginOnce = undefined;
+  const onBeginCallback = (_id: number) => {
     setInterpolationRunningValue(
       ownerId,
       key,
@@ -136,9 +134,7 @@ export const createAnimationNode = (
     onBegin && onBegin();
   };
 
-  let onEndOnce: (() => void) | undefined;
-  onEndOnce = () => {
-    onEndOnce = undefined;
+  const onEndCallback = (_id: number, _reason: number) => {
     unregisterRunningInterpolation(ownerId, key, animationId);
     onEnd && onEnd();
   };
@@ -161,8 +157,8 @@ export const createAnimationNode = (
     source,
     offset,
     duration,
-    onBeginOnce,
-    onEndOnce,
+    onBeginCallback,
+    onEndCallback,
     interpolateNode,
     isRunningFlag,
     stopPrevAnimationsNode,
