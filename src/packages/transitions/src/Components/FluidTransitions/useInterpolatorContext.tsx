@@ -1,4 +1,4 @@
-import { useRef, useContext, useEffect } from "react";
+import { useRef, useContext, useEffect, useCallback } from "react";
 import {
   InterpolatorContext,
   InterpolatorInfo,
@@ -22,7 +22,7 @@ export const useInterpolatorContext = (
    * Setup
    ******************************************************/
 
-  const interpolatorEntries = useRef(new Array<InterpolatorInfo>());
+  const interpolatorEntries = useRef<Array<InterpolatorInfo>>([]);
   const interpolatorEntry = useRef<InterpolatorInfo | undefined>(undefined);
   const isMounted = useRef(false);
   const hasInterpolatorRequest = useRef(false);
@@ -47,13 +47,16 @@ export const useInterpolatorContext = (
    * Context
    ******************************************************/
 
-  const registerInterpolator = (interpolatorInfo: InterpolatorInfo) => {
-    if (context) {
-      context.registerInterpolator(interpolatorInfo);
-      return;
-    }
-    interpolatorEntries.current.push(interpolatorInfo);
-  };
+  const registerInterpolator = useCallback(
+    (interpolatorInfo: InterpolatorInfo) => {
+      if (context) {
+        context.registerInterpolator(interpolatorInfo);
+        return;
+      }
+      interpolatorEntries.current.push(interpolatorInfo);
+    },
+    [context],
+  );
 
   const getInterpolator = (lbl: string, name: string) => {
     // Custom/dummy interpolators
@@ -95,7 +98,7 @@ export const useInterpolatorContext = (
     if (hasInterpolatorRequest.current && !context) {
       forceUpdate();
     }
-  }, []);
+  }, [context, forceUpdate, registerInterpolator]);
 
   return {
     extraProps: {

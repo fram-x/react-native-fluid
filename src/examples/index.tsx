@@ -18,6 +18,7 @@ import InteractionsExampleScreen from "./Interactions";
 import SvgExampleScreen from "./SVG";
 import RepeatExampleScreen from "./Repeating";
 import DraggingExampleScreen from "./Dragging";
+import NavigationExampleScreen from "./Navigation";
 
 const Stack = createStackNavigator();
 
@@ -45,6 +46,7 @@ const App = () => {
         <Stack.Screen name="svg" component={SvgExampleScreen} />
         <Stack.Screen name="repeat" component={RepeatExampleScreen} />
         <Stack.Screen name="dragging" component={DraggingExampleScreen} />
+        <Stack.Screen name="navigation" component={NavigationExampleScreen} />
       </Stack.Navigator>
     </NavigationNativeContainer>
   );
