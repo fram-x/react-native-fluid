@@ -43,28 +43,30 @@ const DraggingExampleScreen = () => {
     when: [
       {
         state: "dragging",
-        interpolation: {
-          styleKey: "transform.translateX",
-          inputRange: [0, 1],
-          outputRange: [0, 1],
-          extrapolate: "extend",
-          value: valueDragX,
-        },
-      },
-      {
-        state: "dragging",
-        interpolation: {
-          styleKey: "transform.translateY",
-          inputRange: [0, 1],
-          outputRange: [0, 1],
-          extrapolate: "extend",
-          value: valueDragY,
-        },
+        interpolation: [
+          {
+            styleKey: "transform.translateX",
+            inputRange: [0, 1],
+            outputRange: [0, 1],
+            extrapolate: "extend",
+            value: valueDragX,
+          },
+          {
+            styleKey: "transform.translateY",
+            inputRange: [0, 1],
+            outputRange: [0, 1],
+            extrapolate: "extend",
+            value: valueDragY,
+          },
+        ],
       },
       {
         state: isSnappingState,
         onEnd: () => setIsSnapping(false),
-        style: { transform: [{ translateX: 0 }, { translateY: 0 }] },
+        style: {
+          opacity: 1,
+          transform: [{ translateX: 0 }, { translateY: 0 }],
+        },
         animation: Fluid.Animations.Springs.spring(1, 100, 4),
       },
     ],
