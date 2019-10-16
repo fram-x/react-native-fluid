@@ -260,12 +260,11 @@ const registerWhenStyle = (
       key,
       undefined,
       outputRange,
-      when.animation ||
-        animationType ||
-        styleContext.descriptors[key].defaultAnimation,
+      when.animation || animationType,
       onBegin,
       onEnd,
-      styleContext.descriptors[key].extrapolate,
+      styleContext.descriptors[key] &&
+        styleContext.descriptors[key].extrapolate,
       undefined,
       undefined,
       when.loop,

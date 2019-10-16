@@ -49,6 +49,7 @@ export type ConfigStateType = {
   name: string;
   active?: boolean;
   value?: number | string | boolean;
+  negated?: ConfigStateType;
 };
 
 export const isConfigStateType = (obj: any): obj is ConfigStateType => {

@@ -13,9 +13,16 @@ function useFluidState(
     stateRef.current = {
       name: `${StateNamePrefix}${StateNameId++}`,
       active: value,
+      negated: {
+        name: `${StateNamePrefix}${StateNameId++}`,
+        active: !value,
+      },
     };
   } else {
     stateRef.current.active = value;
+    if (stateRef.current.negated) {
+      stateRef.current.negated.active = !value;
+    }
   }
   return [stateRef.current, setValue];
 }

@@ -49,7 +49,6 @@ export const MyFluidComponent: React.FC = ({ children }) => {
 
 export const MyFluidStateComponent: React.FC = ({ children }) => {
   const [active, setActive] = useFluidState(true);
-  const [inactive, setInactive] = useFluidState(true);
   const config = useFluidConfig({
     onEnter: {
       state: active,
@@ -57,6 +56,7 @@ export const MyFluidStateComponent: React.FC = ({ children }) => {
         styleKey: "transform.scale",
         inputRange: [0, 0.5, 1],
         outputRange: [1, 1.2, 1],
+        animation: Fluid.Animations.Springs.Gentle,
       },
     },
     when: [
@@ -64,14 +64,14 @@ export const MyFluidStateComponent: React.FC = ({ children }) => {
         state: active,
         style: styles.activeContainer,
       },
-      { state: inactive, style: styles.container },
+      {
+        state: active.negated,
+        style: styles.container,
+      },
     ],
   });
 
-  const toggleActive = () => {
-    setActive(p => !p);
-    setInactive(p => !p);
-  };
+  const toggleActive = () => setActive(p => !p);
 
   return (
     <Fluid.View onPress={toggleActive} config={config} states={active}>
