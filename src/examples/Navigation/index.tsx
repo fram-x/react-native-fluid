@@ -52,12 +52,12 @@ function customInterpolation({
 
   return {
     cardStyle: {
-      transform: [
-        // Translation for the animation of the current card
-        { translateX: translateFocused },
-        // Translation for the animation of the card on top of this
-        { translateX: translateUnfocused },
-      ],
+      // transform: [
+      //   // Translation for the animation of the current card
+      //   { translateX: translateFocused },
+      //   // Translation for the animation of the card on top of this
+      //   { translateX: translateUnfocused },
+      // ],
     },
     overlayStyle: { opacity: overlayOpacity },
     shadowStyle: { shadowOpacity },
@@ -69,6 +69,7 @@ const NavigationExampleScreen = () => (
   <Stack.Navigator
     screenOptions={{
       header: null,
+      cardTransparent: true,
       cardStyleInterpolator: customInterpolation,
       transitionSpec: {
         open: {
@@ -123,28 +124,39 @@ type Props = {
 const Screen: React.FC<Props> = ({ name, color, next, prev }) => {
   const navigation = useNavigation();
   const states = useContext(StateContext);
-  const isNavigating =
-    states &&
-    states.states.find(s => s.name === "navigating" && s.active) !== undefined;
-  console.log(name, "navigating:", isNavigating);
-  const isSwiping =
-    states &&
-    states.states.find(s => s.name === "swiping" && s.active) !== undefined;
-  console.log(name, "swiping:", isSwiping);
-  const isClosing =
-    states &&
-    states.states.find(s => s.name === "isClosing" && s.active) !== undefined;
-  console.log(name, "closing:", isClosing);
+  // const isNavigating =
+  //   states &&
+  //   states.states.find(s => s.name === "navigating" && s.active) !== undefined;
+  // console.log(name, "navigating:", isNavigating);
+  // const isSwiping =
+  //   states &&
+  //   states.states.find(s => s.name === "swiping" && s.active) !== undefined;
+  // console.log(name, "swiping:", isSwiping);
+  // const isClosing =
+  //   states &&
+  //   states.states.find(s => s.name === "isClosing" && s.active) !== undefined;
+  // console.log(name, "closing:", isClosing);
   const config = useFluidConfig({
-    interpolation: {
-      inputRange: [0, 1],
-      outputRange: [0, 1],
-      styleKey: "opacity",
-      value: {
-        ownerLabel: "navigation",
-        valueName: "progress",
+    interpolation: [
+      {
+        inputRange: [0, 0.5, 1],
+        outputRange: [0, 0, 1],
+        styleKey: "opacity",
+        value: {
+          ownerLabel: "navigation",
+          valueName: "current",
+        },
       },
-    },
+      {
+        inputRange: [0, 0.5, 1],
+        outputRange: [0, 0, 1],
+        styleKey: "opacity",
+        value: {
+          ownerLabel: "navigation",
+          valueName: "next",
+        },
+      },
+    ],
   });
   return (
     <Fluid.View

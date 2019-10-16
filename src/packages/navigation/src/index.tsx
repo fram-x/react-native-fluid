@@ -28,7 +28,6 @@ Card.tsx:
 
  */
 
-let NavId = 1;
 export const FluidNavigationContainer: React.FC = ({ ...props }) => {
   const [isNavigating, setIsNavigating] = useFluidState(false);
   const [isSwiping, setIsSwiping] = useFluidState(false);
@@ -36,42 +35,67 @@ export const FluidNavigationContainer: React.FC = ({ ...props }) => {
 
   const stateContext = useContext(StateContext);
   const transitionContext = useContext(TransitionContext);
-  const [navigationId] = useState(() => NavId++);
-  const onChange = useCallback(
-    (
-      msg: string,
-      value: Animated.Node<any>,
-      cb: (s: string, v: number) => void,
-    ) => {
-      if (!value) return [];
-      return Animated.onChange(value, [
-        Animated.call([value], (args: ReadonlyArray<number>) =>
-          cb(msg + " " + navigationId, args[0]),
-        ),
-      ]);
+
+  const [current] = useState(() => new Animated.Value(1));
+  const [next] = useState(() => new Animated.Value(0));
+
+  const doCall = useCallback(
+    (value: Animated.Node<any>, cb: (v: number) => void) => {
+      return Animated.call([value], (args: ReadonlyArray<number>) =>
+        cb(args[0]),
+      );
     },
-    [navigationId],
+    [],
+  );
+
+  const onChange = useCallback(
+    (value: Animated.Node<any>, node: Animated.Node<any>) => {
+      if (!value) return [];
+      return Animated.onChange(value, node);
+    },
+    [],
   );
 
   const exec = useMemo(
     () =>
       Animated.block([
-        onChange("current", transitionContext.current, console.log),
-        onChange("isSwiping", transitionContext.isSwiping, (_, v: number) => {
-          setIsSwiping(v as any);
-        }),
-        onChange("isClosing", transitionContext.isClosing, (_, v: number) => {
-          setIsClosing(v as any);
-        }),
         onChange(
-          "isAnimating",
+          transitionContext.current,
+          Animated.set(current, transitionContext.current),
+        ),
+        onChange(
+          transitionContext.next,
+          Animated.set(next, transitionContext.next),
+        ),
+        onChange(
+          transitionContext.isSwiping,
+          doCall(transitionContext.isSwiping, (v: number) => {
+            setIsSwiping(v as any);
+          }),
+        ),
+        onChange(
+          transitionContext.isClosing,
+          doCall(transitionContext.isSwiping, (v: number) => {
+            setIsClosing(v as any);
+          }),
+        ),
+        onChange(
           Animated.clockRunning(transitionContext.clock),
-          (_, v: number) => {
+          doCall(transitionContext.isSwiping, (v: number) => {
             setIsNavigating(v as any);
-          },
+          }),
         ),
       ]),
-    [onChange, transitionContext, setIsSwiping, setIsClosing, setIsNavigating],
+    [
+      onChange,
+      transitionContext,
+      current,
+      next,
+      doCall,
+      setIsSwiping,
+      setIsClosing,
+      setIsNavigating,
+    ],
   );
 
   class NavigationComponent extends React.PureComponent<{}> {
@@ -90,7 +114,8 @@ export const FluidNavigationContainer: React.FC = ({ ...props }) => {
     () =>
       createFluidComponent<{}, ViewStyle>(NavigationComponent, true, () => ({
         interpolators: {
-          progress: transitionContext.current,
+          current: current,
+          next: next,
         },
         props: {},
       })),
