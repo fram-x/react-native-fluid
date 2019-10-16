@@ -1,1 +1,2 @@
-export const dummy = 0;
+import { FluidNavigationContainer } from "./src";
+export { FluidNavigationContainer };
