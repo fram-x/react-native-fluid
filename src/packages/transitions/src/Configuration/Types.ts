@@ -51,6 +51,10 @@ export type ConfigStateType = {
   value?: number | string | boolean;
 };
 
+export const isConfigStateType = (obj: any): obj is ConfigStateType => {
+  return (obj as ConfigStateType).active !== undefined;
+};
+
 /**
  * @description Callback function for calculating stagger offset values in ms.
  * @param index Index of item we are calculating offset for
