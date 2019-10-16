@@ -3,7 +3,6 @@ import {
   StateChanges,
   ValueContextType,
   Values,
-  AnimatedStyleKeys,
   InterpolatorContext,
   InterpolatorContextType,
 } from "../Types";
@@ -34,9 +33,7 @@ export const useWhenConfig = (
   animationType?: ConfigAnimationType,
 ) => {
   const logger = useLog(transitionItem.label, "cwhen");
-
   const interpolatorContext = useContext(InterpolatorContext);
-
   const configs = configuration.when;
 
   const added = configs.filter(
@@ -250,7 +247,12 @@ const registerWhenStyle = (
   // Register interpolations
   Object.keys(interpolations).forEach(key => {
     const outputRange = isRemoved
-      ? [interpolations[key], AnimatedStyleKeys[key].defaultValue]
+      ? [
+          interpolations[key],
+          styleContext.descriptors[key]
+            ? styleContext.descriptors[key].defaultValue
+            : undefined,
+        ]
       : [undefined, interpolations[key]];
 
     // Let us create the animation

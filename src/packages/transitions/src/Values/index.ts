@@ -1,3 +1,3 @@
-export * from "./addValues";
+export * from "./addValue";
 export * from "./getChangedKeys";
 export * from "./createValue";
