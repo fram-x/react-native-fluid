@@ -52,15 +52,23 @@ export const useOnConfig = (
   });
 
   const added = configEnter.filter(
-    o => stateChanges.added.find(s => s.name === o.state) !== undefined,
+    o =>
+      stateChanges.added.find(s => s.name === getResolvedStateName(o.state)) !==
+      undefined,
   );
 
   const changed = configEnter.filter(
-    o => stateChanges.changed.find(s => s.name === o.state) !== undefined,
+    o =>
+      stateChanges.changed.find(
+        s => s.name === getResolvedStateName(o.state),
+      ) !== undefined,
   );
 
   const removed = configExit.filter(
-    o => stateChanges.removed.find(s => s.name === o.state) !== undefined,
+    o =>
+      stateChanges.removed.find(
+        s => s.name === getResolvedStateName(o.state),
+      ) !== undefined,
   );
 
   // Sort order?
