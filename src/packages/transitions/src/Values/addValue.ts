@@ -2,11 +2,11 @@ import { ValueTypeEntries, Values } from "../Components/Types";
 import { createValue } from "./createValue";
 import { ValueDescriptorType } from "../Types/AnimatedValueType";
 
-export const addValues = (
+export const addValue = (
   key: string,
   nextValues: Values,
   values: ValueTypeEntries,
-  valueDescriptor: ValueDescriptorType
+  valueDescriptor: ValueDescriptorType,
 ) => {
   // Check if we already have a value in our cache
   if (values[key]) {

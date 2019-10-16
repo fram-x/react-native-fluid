@@ -16,7 +16,7 @@ import {
   ExtrapolateType,
 } from "react-native-fluid-animations";
 import { useLog } from "../../Hooks/useLog";
-import { getChangedKeys, addValues, createValue } from "../../Values";
+import { getChangedKeys, addValue, createValue } from "../../Values";
 import { LoggerLevel, fluidException, ValueDescriptorsType } from "../../Types";
 import { ConfigAnimationType } from "../../Configuration";
 import { getOutputRange } from "../../Values/getOutputRange";
@@ -34,6 +34,8 @@ export const useValueContext = (
   nextKeys: string[],
   nextValues: Values,
 ) => {
+  const logger = useLog(transitionItem.label, "stctx");
+
   // Contains the previous keys
   const previousKeysRef = useRef<string[]>([]);
 
@@ -49,9 +51,6 @@ export const useValueContext = (
   const isChanged = useRef(false);
   isChanged.current = false;
 
-  // @ts-ignore
-  const logger = useLog(transitionItem.label, "stctx");
-
   if (
     valueContextRef.current === undefined ||
     nextValues !== previousValuesRef.current
@@ -63,7 +62,7 @@ export const useValueContext = (
 
     // Update added/removed style values
     added.forEach(k =>
-      addValues(k, nextValues, valuesRef.current, valueDescriptors[k]),
+      addValue(k, nextValues, valuesRef.current, valueDescriptors[k]),
     );
     // It looks like we don't need to do this:
     // removed.forEach(k => {
@@ -89,8 +88,19 @@ export const useValueContext = (
       yoyo?: number,
     ) => {
       // Check that we are allowed to interpolate this style - otherwise
-      // We'll just skip it.
+      // We'll just update the value directly.
+      const nextValue = outputValues[outputValues.length - 1];
       if (!valueDescriptors[key]) {
+        if (!valuesRef.current[key]) {
+          valuesRef.current[key] = createValue(nextValue, undefined);
+        }
+        if (nextValue) {
+          valuesRef.current[key].isSet = true;
+          valuesRef.current[key].interpolator = nextValue as any;
+          valuesRef.current[key].display = nextValue;
+        } else {
+          valuesRef.current[key].isSet = false;
+        }
         return;
       }
 
@@ -200,8 +210,18 @@ export const useValueContext = (
       yoyo?: number,
     ) => {
       // Check that we are allowed to interpolate this style - otherwise
-      // We'll just skip it.
+      // We'll just update the existing value without animation.
       if (!valueDescriptors[key]) {
+        if (!valuesRef.current[key]) {
+          valuesRef.current[key] = createValue(
+            outputRange[outputRange.length - 1],
+            undefined,
+          );
+        }
+        valuesRef.current[key].interpolator = outputRange[
+          outputRange.length - 1
+        ] as any;
+
         return;
       }
 
