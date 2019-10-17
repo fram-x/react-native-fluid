@@ -27,19 +27,19 @@ const styles = StyleSheet.create({
 
 function customInterpolation({
   current,
-  next,
-  layouts: { screen },
-}: CardInterpolationProps): CardInterpolatedStyle {
-  const translateFocused = Animated.interpolate(current.progress, {
-    inputRange: [0, 1],
-    outputRange: [screen.width, 0],
-  });
-  const translateUnfocused = next
-    ? Animated.interpolate(next.progress, {
-        inputRange: [0, 1],
-        outputRange: [0, Animated.multiply(screen.width, -0.3)],
-      })
-    : 0;
+}: //next,
+//layouts: { screen },
+CardInterpolationProps): CardInterpolatedStyle {
+  // const translateFocused = Animated.interpolate(current.progress, {
+  //   inputRange: [0, 1],
+  //   outputRange: [screen.width, 0],
+  // });
+  // const translateUnfocused = next
+  //   ? Animated.interpolate(next.progress, {
+  //       inputRange: [0, 1],
+  //       outputRange: [0, Animated.multiply(screen.width, -0.3)],
+  //     })
+  //   : 0;
 
   const overlayOpacity = Animated.interpolate(current.progress, {
     inputRange: [0, 1],
@@ -71,6 +71,7 @@ const NavigationExampleScreen = () => (
     screenOptions={{
       header: null,
       cardTransparent: true,
+      cardOverlayEnabled: false,
       cardStyleInterpolator: customInterpolation,
       transitionSpec: {
         open: {
