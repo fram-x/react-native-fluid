@@ -12,6 +12,7 @@ export const useInterpolatorConfig = (
   _propContext: ValueContextType,
   interpolatorContext: InterpolatorContextType,
   configuration: SafeStateConfigType,
+  isMounted: boolean,
 ) => {
   const interpolations = configuration.interpolation;
   interpolations.forEach(interpolation => {
@@ -26,13 +27,16 @@ export const useInterpolatorConfig = (
       valueName,
     );
     if (!interpolator) {
-      throw fluidException(
-        "Could not find interpolator " +
-          valueName +
-          " in item with label " +
-          ownerLabel +
-          ".",
-      );
+      if (isMounted) {
+        // TODO: Better explanation?
+        throw fluidException(
+          "Could not find interpolator " +
+            valueName +
+            " in item with label " +
+            ownerLabel +
+            ".",
+        );
+      } else return;
     }
 
     const {

@@ -4,6 +4,7 @@ import {
   InterpolatorInfo,
   PartialInterpolatorInfo,
 } from "../Types";
+import { useForceUpdate } from "../../Hooks";
 import { fluidException } from "../../Types";
 
 /**
@@ -21,6 +22,11 @@ export const useInterpolatorContext = (
 
   const interpolatorEntries = useRef<Array<InterpolatorInfo>>([]);
   const interpolatorEntry = useRef<InterpolatorInfo | undefined>(undefined);
+  const isMounted = useRef(false);
+  const hasInterpolatorRequest = useRef(false);
+
+  const forceUpdate = useForceUpdate();
+
   const context = useContext(InterpolatorContext);
 
   if (setupInterpolators && !interpolatorEntry.current) {
@@ -51,8 +57,6 @@ export const useInterpolatorContext = (
   );
 
   const getInterpolator = (lbl: string, name: string) => {
-    console.log(label);
-    console.log(interpolatorEntry.current);
     // Check context
     if (context) {
       return context.getInterpolator(lbl, name);
@@ -71,17 +75,27 @@ export const useInterpolatorContext = (
     ) {
       return interpolatorEntry.current.interpolators[name];
     }
+    if (!isMounted.current) {
+      forceUpdate();
+      return;
+    }
+
     throw fluidException(
       "Could not find interpolator " + lbl + "." + name + ".",
     );
   };
 
   useEffect(() => {
+    isMounted.current = true;
     if (interpolatorEntry.current) {
       registerInterpolator(interpolatorEntry.current);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+
+    // We have mounted - check if anyone has requested any interpolator
+    if (hasInterpolatorRequest.current && !context) {
+      forceUpdate();
+    }
+  }, [context, forceUpdate, registerInterpolator]);
 
   return {
     extraProps: {

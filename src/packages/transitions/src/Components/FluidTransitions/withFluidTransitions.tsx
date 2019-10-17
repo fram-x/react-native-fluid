@@ -204,6 +204,7 @@ export function withFluidTransitions<BasePropType, StyleType>(
       propContext,
       interpolatorContext,
       configuration,
+      isMounted,
     );
 
     // Shared interpolation context
