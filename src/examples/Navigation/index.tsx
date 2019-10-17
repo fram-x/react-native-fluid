@@ -141,14 +141,14 @@ const Screen: React.FC<Props> = ({ name, color, next, prev }) => {
     states && states.states.find(s => s.name === "isFocused");
   if (!isActiveState) throw new Error("Missing active state");
 
-  console.log(name, isActiveState.active);
+  // console.log(name, isActiveState.active);
   const config = useFluidConfig({
     when: [
       {
         state: isActiveState as ConfigStateType,
         interpolation: {
-          inputRange: [0, 1],
-          outputRange: [0, 1],
+          inputRange: [0, 0.5, 1],
+          outputRange: [0, 0, 1],
           styleKey: "opacity",
           value: {
             ownerLabel: "navigation",
@@ -159,8 +159,8 @@ const Screen: React.FC<Props> = ({ name, color, next, prev }) => {
       {
         state: (isActiveState as ConfigStateType).negated as ConfigStateType,
         interpolation: {
-          inputRange: [0, 1],
-          outputRange: [0, 1],
+          inputRange: [0, 0.5, 1],
+          outputRange: [1, 0, 0],
           styleKey: "opacity",
           value: {
             ownerLabel: "navigation",
@@ -172,6 +172,7 @@ const Screen: React.FC<Props> = ({ name, color, next, prev }) => {
   });
   return (
     <Fluid.View
+      label={name}
       style={[styles.container, { backgroundColor: color }]}
       config={config}>
       <Text>{"Hello world from " + name + "!"}</Text>

@@ -94,17 +94,16 @@ function getResolvedStates(
   states: Array<ConfigStateType>,
   statesContext: StateContextType | null,
 ): ConfigStateType[] {
-  const negatedStates = states
-    .filter(p => p.negated !== undefined)
-    .map(p => p.negated) as ConfigStateType[];
-
-  return [
+  const retVal = [
     ...states,
-    ...negatedStates,
     ...(statesContext
       ? statesContext.states.filter(
           s => s.name !== StateMounted && s.name !== StateUnmounted,
         )
       : []),
   ];
+
+  return retVal.concat(retVal
+    .filter(p => p.negated !== undefined)
+    .map(p => p.negated) as ConfigStateType[]);
 }
