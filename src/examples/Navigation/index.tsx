@@ -77,14 +77,14 @@ const NavigationExampleScreen = () => (
         open: {
           animation: "timing",
           config: {
-            duration: 2000,
+            duration: 4000,
             easing: Easing.linear,
           },
         },
         close: {
           animation: "timing",
           config: {
-            duration: 2000,
+            duration: 4000,
             easing: Easing.linear,
           },
         },
@@ -134,12 +134,12 @@ const Screen: React.FC<Props> = ({ name, color, next, prev }) => {
   //   states &&
   //   states.states.find(s => s.name === "swiping" && s.active) !== undefined;
   // console.log(name, "swiping:", isSwiping);
-  // const isClosing = states && states.states.find(s => s.name === "isClosing");
+  const state = states && states.states.find(s => s.name === "isVisible");
   const isFocusedState =
     states && states.states.find(s => s.name === "isFocused");
   if (!isFocusedState) throw new Error("Missing active state");
 
-  console.log(name, "isFocused:", isFocusedState.active);
+  console.log(name, "isFocused:", isFocusedState.active, state.active);
 
   const config = useFluidConfig({
     when: [
