@@ -1,4 +1,4 @@
-import { InterpolationInfo, TransitionItem } from "../../Components/Types";
+import { InterpolationInfo } from "../../Components/Types";
 import {
   AnimationProvider,
   IAnimationNode,
@@ -51,6 +51,7 @@ export const removeInterpolation = (
   interpolationKey: string,
 ) => {
   const key = getInterpolationKey(itemId, interpolationKey);
+  if (!_runningInterpolations[key]) return;
   const attachedNode = _runningInterpolations[key];
   delete _runningInterpolations[key];
   AnimationProvider.Animated.detach(

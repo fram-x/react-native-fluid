@@ -204,7 +204,6 @@ export function withFluidTransitions<BasePropType, StyleType>(
       propContext,
       interpolatorContext,
       configuration,
-      isMounted,
     );
 
     // Shared interpolation context
@@ -229,7 +228,6 @@ export function withFluidTransitions<BasePropType, StyleType>(
       propContext,
       stateChanges,
       configuration,
-      isMounted,
       animation || configuration.animation || TimingDefaultAnimationType,
     );
 

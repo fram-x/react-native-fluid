@@ -7,6 +7,7 @@ import {
   useFluidState,
 } from "react-native-fluid-transitions";
 import Animated from "react-native-reanimated";
+import { AnimationProvider } from "react-native-fluid-animations";
 
 /**
 StackGestureContext.tsx:
@@ -22,6 +23,7 @@ Card.tsx:
     position: this.transitionState.position,
     current: this.props.current,
     clock: this.clock,
+    focused: !this.props.accessibilityElementsHidden,
   }}>
   ...
 </TransitionContext.Provider>
@@ -137,7 +139,7 @@ export const FluidNavigationContainer: React.FC = ({ ...props }) => {
     {
       name: "isFocused",
       active: transitionContext.focused,
-      negate: { name: "isNotFocused", active: !transitionContext.focused },
+      negated: { name: "isNotFocused", active: !transitionContext.focused },
     },
   ];
 

@@ -139,13 +139,13 @@ const Screen: React.FC<Props> = ({ name, color, next, prev }) => {
   // console.log(name, "closing:", isClosing);
   const isActiveState =
     states && states.states.find(s => s.name === "isFocused");
-
   if (!isActiveState) throw new Error("Missing active state");
 
+  console.log(name, isActiveState.active);
   const config = useFluidConfig({
     when: [
       {
-        state: isActiveState,
+        state: isActiveState as ConfigStateType,
         interpolation: {
           inputRange: [0, 1],
           outputRange: [0, 1],
@@ -157,7 +157,7 @@ const Screen: React.FC<Props> = ({ name, color, next, prev }) => {
         },
       },
       {
-        state: isActiveState.negate,
+        state: (isActiveState as ConfigStateType).negated as ConfigStateType,
         interpolation: {
           inputRange: [0, 1],
           outputRange: [0, 1],
