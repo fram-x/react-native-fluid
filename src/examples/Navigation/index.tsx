@@ -10,6 +10,7 @@ import {
   CardInterpolatedStyle,
 } from "@react-navigation/stack/lib/typescript/stack/src/types";
 import Fluid, { useFluidConfig } from "react-native-fluid-transitions";
+import { ConfigStateType } from "src/packages/transitions/src/Configuration";
 
 const styles = StyleSheet.create({
   container: {
@@ -136,24 +137,35 @@ const Screen: React.FC<Props> = ({ name, color, next, prev }) => {
   //   states &&
   //   states.states.find(s => s.name === "isClosing" && s.active) !== undefined;
   // console.log(name, "closing:", isClosing);
+  const isActiveState =
+    states && states.states.find(s => s.name === "isFocused");
+
+  if (!isActiveState) throw new Error("Missing active state");
+
   const config = useFluidConfig({
-    interpolation: [
+    when: [
       {
-        inputRange: [0, 0.5, 1],
-        outputRange: [0, 0, 1],
-        styleKey: "opacity",
-        value: {
-          ownerLabel: "navigation",
-          valueName: "current",
+        state: isActiveState,
+        interpolation: {
+          inputRange: [0, 1],
+          outputRange: [0, 1],
+          styleKey: "opacity",
+          value: {
+            ownerLabel: "navigation",
+            valueName: "current",
+          },
         },
       },
       {
-        inputRange: [0, 0.5, 1],
-        outputRange: [0, 0, 1],
-        styleKey: "opacity",
-        value: {
-          ownerLabel: "navigation",
-          valueName: "next",
+        state: isActiveState.negate,
+        interpolation: {
+          inputRange: [0, 1],
+          outputRange: [0, 1],
+          styleKey: "opacity",
+          value: {
+            ownerLabel: "navigation",
+            valueName: "current",
+          },
         },
       },
     ],

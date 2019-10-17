@@ -229,6 +229,7 @@ export function withFluidTransitions<BasePropType, StyleType>(
       propContext,
       stateChanges,
       configuration,
+      isMounted,
       animation || configuration.animation || TimingDefaultAnimationType,
     );
 

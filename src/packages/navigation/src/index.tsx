@@ -36,8 +36,8 @@ export const FluidNavigationContainer: React.FC = ({ ...props }) => {
   const stateContext = useContext(StateContext);
   const transitionContext = useContext(TransitionContext);
 
-  const [current] = useState(() => new Animated.Value(1));
-  const [next] = useState(() => new Animated.Value(0));
+  const current = useMemo(() => new Animated.Value(1), []);
+  const fromNext = useMemo(() => new Animated.Value(1), []);
 
   const doCall = useCallback(
     (value: Animated.Node<any>, cb: (v: number) => void) => {
@@ -61,11 +61,17 @@ export const FluidNavigationContainer: React.FC = ({ ...props }) => {
       Animated.block([
         onChange(
           transitionContext.current,
-          Animated.set(current, transitionContext.current),
+          Animated.block([
+            Animated.set(fromNext, 0),
+            Animated.set(current, transitionContext.current),
+          ]),
         ),
         onChange(
           transitionContext.next,
-          Animated.set(next, transitionContext.next),
+          Animated.block([
+            Animated.set(fromNext, 1),
+            Animated.set(current, transitionContext.next),
+          ]),
         ),
         onChange(
           transitionContext.isSwiping,
@@ -88,9 +94,9 @@ export const FluidNavigationContainer: React.FC = ({ ...props }) => {
       ]),
     [
       onChange,
+      fromNext,
       transitionContext,
       current,
-      next,
       doCall,
       setIsSwiping,
       setIsClosing,
@@ -115,7 +121,7 @@ export const FluidNavigationContainer: React.FC = ({ ...props }) => {
       createFluidComponent<{}, ViewStyle>(NavigationComponent, true, () => ({
         interpolators: {
           current: current,
-          next: next,
+          fromNext: fromNext,
         },
         props: {},
       })),
@@ -128,6 +134,11 @@ export const FluidNavigationContainer: React.FC = ({ ...props }) => {
     { name: "navigating", active: isNavigating.active },
     { name: "swiping", active: isSwiping.active },
     { name: "isClosing", active: isClosing.active },
+    {
+      name: "isFocused",
+      active: transitionContext.focused,
+      negate: { name: "isNotFocused", active: !transitionContext.focused },
+    },
   ];
 
   // Render

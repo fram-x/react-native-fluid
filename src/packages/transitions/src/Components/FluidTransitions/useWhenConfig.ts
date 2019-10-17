@@ -30,6 +30,7 @@ export const useWhenConfig = (
   propContext: ValueContextType,
   stateChanges: StateChanges,
   configuration: SafeStateConfigType,
+  isMounted: boolean,
   animationType?: ConfigAnimationType,
 ) => {
   const logger = useLog(transitionItem.label, "cwhen");
@@ -82,6 +83,7 @@ export const useWhenConfig = (
         styleContext,
         propContext,
         isRemoved,
+        isMounted,
         interpolatorContext,
         animationType,
       );
@@ -96,6 +98,7 @@ const registerWhenInterpolations = (
   styleContext: ValueContextType,
   propContext: ValueContextType,
   isRemoved: boolean,
+  isMounted: boolean,
   interpolatorContext: InterpolatorContextType | null,
   animationType?: ConfigAnimationType,
 ) => {
@@ -141,6 +144,7 @@ const registerWhenInterpolations = (
           interpolation.value.valueName,
         );
         if (!interpolator) {
+          if (!isMounted) return;
           throw fluidException(
             "Could not find interpolator with name " +
               interpolation.value.valueName +
