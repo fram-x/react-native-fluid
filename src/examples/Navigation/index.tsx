@@ -147,8 +147,8 @@ const Screen: React.FC<Props> = ({ name, color, next, prev }) => {
       {
         state: isActiveState as ConfigStateType,
         interpolation: {
-          inputRange: [0, 0.5, 1],
-          outputRange: [0, 0, 1],
+          inputRange: [0, 0.5, 0.6, 1],
+          outputRange: [0, 0, 1, 1],
           styleKey: "opacity",
           value: {
             ownerLabel: "navigation",
@@ -159,8 +159,8 @@ const Screen: React.FC<Props> = ({ name, color, next, prev }) => {
       {
         state: (isActiveState as ConfigStateType).negated as ConfigStateType,
         interpolation: {
-          inputRange: [0, 0.5, 1],
-          outputRange: [1, 0, 0],
+          inputRange: [0, 0.4, 0.5, 1],
+          outputRange: [1, 1, 0, 0],
           styleKey: "opacity",
           value: {
             ownerLabel: "navigation",

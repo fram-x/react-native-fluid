@@ -65,7 +65,17 @@ export const FluidNavigationContainer: React.FC = ({ ...props }) => {
           transitionContext.current,
           Animated.block([
             Animated.set(fromNext, 0),
-            Animated.set(current, transitionContext.current),
+            AnimationProvider.Animated.debug(
+              "current",
+              Animated.set(
+                current,
+                Animated.cond(
+                  Animated.eq(transitionContext.isClosing, 1),
+                  transitionContext.current,
+                  transitionContext.current,
+                ),
+              ),
+            ),
           ]),
         ),
         onChange(
@@ -83,14 +93,8 @@ export const FluidNavigationContainer: React.FC = ({ ...props }) => {
         ),
         onChange(
           transitionContext.isClosing,
-          doCall(transitionContext.isSwiping, (v: number) => {
+          doCall(transitionContext.isClosing, (v: number) => {
             setIsClosing(v as any);
-          }),
-        ),
-        onChange(
-          Animated.clockRunning(transitionContext.clock),
-          doCall(transitionContext.isSwiping, (v: number) => {
-            setIsNavigating(v as any);
           }),
         ),
       ]),
@@ -102,7 +106,6 @@ export const FluidNavigationContainer: React.FC = ({ ...props }) => {
       doCall,
       setIsSwiping,
       setIsClosing,
-      setIsNavigating,
     ],
   );
 
