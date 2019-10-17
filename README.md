@@ -9,6 +9,7 @@
 * [ ] Shared transitions (WIP)
     * [ ] Fix running second shared transition while one is running  
     Should we skip providing shared transitions in first version?
+* [ ] Fix issue with when.interpolation.value not using animation (is it possible?)
 
 ### Web
 

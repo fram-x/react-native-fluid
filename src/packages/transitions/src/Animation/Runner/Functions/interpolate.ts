@@ -2,7 +2,7 @@ import { createProc } from "../../Functions/createProc";
 import {
   AnimationProvider,
   InterpolateFunction,
-  IAnimationValue
+  IAnimationValue,
 } from "react-native-fluid-animations";
 import { EasingFunction } from "../../../Components/Types/Easing";
 
@@ -13,20 +13,20 @@ const {
   lessThan,
   set,
   greaterThan,
-  block
+  block,
 } = AnimationProvider.Animated;
 
 export enum Extrapolate {
   Extend = 0,
   Identity = 1,
-  Clamp = 2
+  Clamp = 2,
 }
 
 export const getInterpolatorFunction = (
   interpolateInternal: InterpolateFunction,
   key: string,
   easingFunction: EasingFunction = (t: any) => t,
-  easingKey: string = "linear"
+  easingKey: string = "linear",
 ) => {
   return createProc(`interpolate${easingKey}-${key}`, () =>
     proc(
@@ -39,14 +39,14 @@ export const getInterpolatorFunction = (
         outputMax,
         extrapolateLeft,
         extrapolateRight,
-        outputValue
+        outputValue,
       ) => {
         const interpolateFunc = interpolateInternal(
           easingFunction(inputValue),
           inputMin,
           inputMax,
           outputMin,
-          outputMax
+          outputMax,
         );
 
         return block([
@@ -64,20 +64,20 @@ export const getInterpolatorFunction = (
               eq(extrapolateLeft, Extrapolate.Identity),
               [
                 // Return input value without easing
-                set(outputValue as IAnimationValue, inputValue)
+                set(outputValue as IAnimationValue, inputValue),
               ],
               // Clamp
               cond(
                 eq(extrapolateLeft, Extrapolate.Clamp),
                 [
                   // Return inputMin
-                  set(outputValue as IAnimationValue, outputMin)
+                  set(outputValue as IAnimationValue, outputMin),
                 ],
                 [
                   // Extend - return interpolated value
-                  set(outputValue as IAnimationValue, interpolateFunc)
-                ]
-              )
+                  set(outputValue as IAnimationValue, interpolateFunc),
+                ],
+              ),
             ),
             // Extrapolate right
             cond(
@@ -87,29 +87,29 @@ export const getInterpolatorFunction = (
                 eq(extrapolateRight, Extrapolate.Identity),
                 [
                   // Return input value
-                  set(outputValue as IAnimationValue, inputValue)
+                  set(outputValue as IAnimationValue, inputValue),
                 ],
                 // Clamp
                 cond(
                   eq(extrapolateRight, Extrapolate.Clamp),
                   [
                     // Return input max
-                    set(outputValue as IAnimationValue, outputMax)
+                    set(outputValue as IAnimationValue, outputMax),
                   ],
                   [
                     // Extend
-                    set(outputValue as IAnimationValue, interpolateFunc)
-                  ]
-                )
+                    set(outputValue as IAnimationValue, interpolateFunc),
+                  ],
+                ),
               ),
               [
                 // Interpolate
-                set(outputValue as IAnimationValue, interpolateFunc)
-              ]
-            )
-          )
+                set(outputValue as IAnimationValue, interpolateFunc),
+              ],
+            ),
+          ),
         ]);
-      }
-    )
+      },
+    ),
   );
 };

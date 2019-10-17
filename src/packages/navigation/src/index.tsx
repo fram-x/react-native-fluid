@@ -65,21 +65,27 @@ export const FluidNavigationContainer: React.FC = ({ ...props }) => {
           transitionContext.current,
           Animated.block([
             Animated.set(fromNext, 0),
+            // AnimationProvider.Animated.debug(
+            //   "current:",
             Animated.set(
               current,
               Animated.cond(
                 Animated.eq(transitionContext.isClosing, 1),
-                transitionContext.current,
+                Animated.sub(1, transitionContext.current),
                 transitionContext.current,
               ),
             ),
+            // ),
           ]),
         ),
         onChange(
           transitionContext.next,
           Animated.block([
             Animated.set(fromNext, 1),
+            //    AnimationProvider.Animated.debug(
+            //  "next:",
             Animated.set(current, transitionContext.next),
+            //  ),
           ]),
         ),
         onChange(
@@ -133,9 +139,9 @@ export const FluidNavigationContainer: React.FC = ({ ...props }) => {
 
   const states = [
     ...(stateContext ? stateContext.states : []),
-    { name: "navigating", active: isNavigating.active },
-    { name: "swiping", active: isSwiping.active },
-    { name: "isClosing", active: isClosing.active },
+    // { name: "navigating", active: isNavigating.active },
+    // { name: "swiping", active: isSwiping.active },
+    // { name: "isClosing", active: isClosing.active },
     {
       name: "isFocused",
       active: transitionContext.focused,

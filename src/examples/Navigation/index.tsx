@@ -134,40 +134,43 @@ const Screen: React.FC<Props> = ({ name, color, next, prev }) => {
   //   states &&
   //   states.states.find(s => s.name === "swiping" && s.active) !== undefined;
   // console.log(name, "swiping:", isSwiping);
-  // const isClosing =
-  //   states &&
-  //   states.states.find(s => s.name === "isClosing" && s.active) !== undefined;
-  // console.log(name, "closing:", isClosing);
-  const isActiveState =
+  // const isClosing = states && states.states.find(s => s.name === "isClosing");
+  const isFocusedState =
     states && states.states.find(s => s.name === "isFocused");
-  if (!isActiveState) throw new Error("Missing active state");
+  if (!isFocusedState) throw new Error("Missing active state");
 
-  console.log(
-    name,
-    "active/inactive states:",
-    isActiveState.active,
-    isActiveState.negated.active,
-  );
+  console.log(name, "isFocused:", isFocusedState.active);
 
   const config = useFluidConfig({
     when: [
       {
-        state: isActiveState as ConfigStateType,
-        interpolation: {
-          inputRange: [0, 0.5, 0.6, 1],
-          outputRange: [0, 0, 1, 1],
-          styleKey: "opacity",
-          value: {
-            ownerLabel: "navigation",
-            valueName: "current",
-          },
-        },
-      },
-      {
-        state: (isActiveState as ConfigStateType).negated as ConfigStateType,
+        state: isFocusedState as ConfigStateType,
         interpolation: [
           {
-            inputRange: [0, 0.4, 0.5, 1],
+            inputRange: [0, 0.45, 0.55, 1],
+            outputRange: [0, 0, 1, 1],
+            styleKey: "opacity",
+            value: {
+              ownerLabel: "navigation",
+              valueName: "current",
+            },
+          },
+          {
+            inputRange: [0, 0.45, 0.55, 1],
+            outputRange: ["45deg", "45deg", "45deg", "0deg"],
+            styleKey: "transform.rotate",
+            value: {
+              ownerLabel: "navigation",
+              valueName: "current",
+            },
+          },
+        ],
+      },
+      {
+        state: (isFocusedState as ConfigStateType).negated as ConfigStateType,
+        interpolation: [
+          {
+            inputRange: [0, 0.45, 0.55, 1],
             outputRange: [1, 1, 0, 0],
             styleKey: "opacity",
             value: {
@@ -176,8 +179,8 @@ const Screen: React.FC<Props> = ({ name, color, next, prev }) => {
             },
           },
           {
-            inputRange: [0, 0.4, 0.5, 1],
-            outputRange: [1, 0.8, 0, 0],
+            inputRange: [0, 0.45, 0.55, 1],
+            outputRange: [1, 0.8, 0.8, 0.8],
             styleKey: "transform.scale",
             value: {
               ownerLabel: "navigation",
@@ -192,7 +195,8 @@ const Screen: React.FC<Props> = ({ name, color, next, prev }) => {
     <Fluid.View
       label={name}
       style={[styles.container, { backgroundColor: color }]}
-      config={config}>
+      config={config}
+      states={isFocusedState}>
       <Text>{"Hello world from " + name + "!"}</Text>
       <View style={styles.buttons}>
         {prev && (
