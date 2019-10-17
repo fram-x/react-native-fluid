@@ -65,15 +65,12 @@ export const FluidNavigationContainer: React.FC = ({ ...props }) => {
           transitionContext.current,
           Animated.block([
             Animated.set(fromNext, 0),
-            AnimationProvider.Animated.debug(
-              "current",
-              Animated.set(
-                current,
-                Animated.cond(
-                  Animated.eq(transitionContext.isClosing, 1),
-                  transitionContext.current,
-                  transitionContext.current,
-                ),
+            Animated.set(
+              current,
+              Animated.cond(
+                Animated.eq(transitionContext.isClosing, 1),
+                transitionContext.current,
+                transitionContext.current,
               ),
             ),
           ]),
