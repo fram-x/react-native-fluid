@@ -1,15 +1,15 @@
 import React, { useContext } from "react";
 import { FluidNavigationContainer } from "react-native-fluid-navigation";
 import { View, StyleSheet, Text, Button } from "react-native";
-import { createStackNavigator } from "@react-navigation/stack";
-import { useNavigation } from "@react-navigation/core";
+import {
+  createStackNavigator,
+  StackCardInterpolationProps,
+  StackCardInterpolatedStyle,
+} from "@react-navigation/stack";
 import { StateContext } from "react-native-fluid-transitions";
 import Animated, { Easing } from "react-native-reanimated";
-import {
-  CardInterpolationProps,
-  CardInterpolatedStyle,
-} from "@react-navigation/stack/lib/typescript/stack/src/types";
 import Fluid, { useFluidConfig } from "react-native-fluid-transitions";
+import { useNavigation } from "@react-navigation/core";
 import { ConfigStateType } from "src/packages/transitions/src/Configuration";
 
 const styles = StyleSheet.create({
@@ -17,6 +17,8 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    opacity: 1,
+    transform: [{ scale: 1 }],
   },
   buttons: {
     alignItems: "center",
@@ -29,7 +31,7 @@ function customInterpolation({
   current,
 }: //next,
 //layouts: { screen },
-CardInterpolationProps): CardInterpolatedStyle {
+StackCardInterpolationProps): StackCardInterpolatedStyle {
   // const translateFocused = Animated.interpolate(current.progress, {
   //   inputRange: [0, 1],
   //   outputRange: [screen.width, 0],
@@ -70,7 +72,7 @@ const NavigationExampleScreen = () => {
   return (
     <Stack.Navigator
       screenOptions={{
-        header: null,
+        headerShown: false,
         cardTransparent: true,
         cardOverlayEnabled: false,
         cardStyleInterpolator: customInterpolation,
@@ -133,30 +135,25 @@ type Props = {
 const Screen: React.FC<Props> = ({ name, color, next, prev }) => {
   const navigation = useNavigation();
   const states = useContext(StateContext);
+
   const isNavigating =
     states && states.states.find(s => s.name === "isNavigating");
-  // console.log(name, "navigating:", isNavigating);
-  // const isSwiping =
-  //   states &&
-  //   states.states.find(s => s.name === "swiping" && s.active) !== undefined;
-  // console.log(name, "swiping:", isSwiping);
+
   const isFocusedState =
     states && states.states.find(s => s.name === "isFocused");
 
-  if (!isFocusedState || !isNavigating) throw new Error("Missing state");
+  const isForward = states && states.states.find(s => s.name === "isForward");
+  const isActive = states && states.states.find(s => s.name === "isActive");
 
-  console.log(
-    name,
-    "focus:",
-    isFocusedState.active,
-    "nav:",
-    isNavigating.active,
-  );
+  if (!isFocusedState || !isNavigating || !isForward || !isActive)
+    throw new Error("Missing state");
+
+  console.log(name, "active:", isActive.active);
 
   const config = useFluidConfig({
     when: [
       {
-        state: isFocusedState as ConfigStateType,
+        state: isActive as ConfigStateType,
         interpolation: [
           {
             inputRange: [0, 0.45, 0.55, 1],
@@ -179,7 +176,7 @@ const Screen: React.FC<Props> = ({ name, color, next, prev }) => {
         ],
       },
       {
-        state: (isFocusedState as ConfigStateType).negated as ConfigStateType,
+        state: (isActive as ConfigStateType).negated as ConfigStateType,
         interpolation: [
           {
             inputRange: [0, 0.45, 0.55, 1],

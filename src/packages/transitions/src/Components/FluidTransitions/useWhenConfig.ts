@@ -157,13 +157,13 @@ const registerWhenInterpolations = (
           interpolation.extrapolateLeft,
           interpolation.extrapolateRight,
         );
-        // console.log(
-        //   transitionItem.label,
-        //   "Adding interpolation",
-        //   getResolvedStateName(when.state),
-        //   interpolation.styleKey,
-        //   interpolation.outputRange.map(p => p.toString()).join(","),
-        // );
+        console.log(
+          transitionItem.label,
+          "Adding interpolation",
+          getResolvedStateName(when.state),
+          interpolation.styleKey,
+          interpolation.outputRange.map(p => p.toString()).join(","),
+        );
       } else if (isConfigStyleInterpolation(interpolation)) {
         styleContext.addAnimation(
           interpolation.styleKey,
@@ -199,13 +199,13 @@ const registerWhenInterpolations = (
       // Removed
       if (isConfigWhenValueInterplation(interpolation)) {
         removeInterpolation(transitionItem.id, interpolation.styleKey);
-        // console.log(
-        //   transitionItem.label,
-        //   "Removing interpolation",
-        //   getResolvedStateName(when.state),
-        //   interpolation.styleKey,
-        //   interpolation.outputRange.map(p => p.toString()).join(","),
-        // );
+        console.log(
+          transitionItem.label,
+          "Removing interpolation",
+          getResolvedStateName(when.state),
+          interpolation.styleKey,
+          interpolation.outputRange.map(p => p.toString()).join(","),
+        );
       }
       // NO need to stop these I think, we'll just let them finish by themselves.
       // else if (isConfigStyleInterpolation(interpolation)) {

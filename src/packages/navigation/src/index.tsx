@@ -10,21 +10,25 @@ import { TransitionContext } from "@react-navigation/stack/src/utils/StackGestur
 import {
   createFluidComponent,
   StateContext,
-  useFluidState,
 } from "react-native-fluid-transitions";
 import Animated from "react-native-reanimated";
 import { useNavigation } from "@react-navigation/core";
+import { AnimationProvider } from "react-native-fluid-animations";
 
 /**
 StackGestureContext.tsx:
 export const TransitionContext = React.createContext<any>(undefined);
 
-Stack.tsx:
-<TransitionContext.Provider
-  value={{ progress: progress[focusedRoute.key] }}>
+Stack.tsx#416:
+ <TransitionContext.Provider    
+  value={{
+    progress: progress[focusedRoute.key],
+    isForward: state.index === routes.length - 1,
+    index: index,
+    isActive: state.index === index,
+  }}>    
   ...
 </TransitionContext.Provider>
-
  */
 
 export const FluidNavigationContainer: React.FC = ({ ...props }) => {
@@ -47,7 +51,7 @@ export const FluidNavigationContainer: React.FC = ({ ...props }) => {
 
   useEffect(() => {
     navigation.addListener("transitionStart", onTransitionStart);
-    navigation.addListener("transitionStart", onTransitionEnd);
+    navigation.addListener("transitionEnd", onTransitionEnd);
     navigation.addListener("blur", onBlur);
     navigation.addListener("focus", onFocus);
 
@@ -77,24 +81,26 @@ export const FluidNavigationContainer: React.FC = ({ ...props }) => {
       Animated.block([
         onChange(
           transitionContext.progress,
-          Animated.block([
-            Animated.set(
-              current,
-              // Animated.cond(
-              //   Animated.eq(transitionContext.isVisible, 0),
-              //   Animated.sub(1, transitionContext.progress),
-              transitionContext.progress,
-            ),
-          ]),
+          transitionContext.isForward
+            ? AnimationProvider.Animated.debug(
+                "forward",
+                Animated.set(current, transitionContext.progress),
+              )
+            : (AnimationProvider.Animated.debug(
+                "backwards",
+                Animated.set(
+                  current,
+                  Animated.sub(1, transitionContext.progress),
+                ),
+              ) as any),
         ),
-        // onChange(
-        //   transitionContext.isSwiping,
-        //   doCall(transitionContext.isSwiping, (v: number) => {
-        //     setIsSwiping(v as any);
-        //   }),
-        // ),
       ]),
-    [onChange, transitionContext, current],
+    [
+      onChange,
+      transitionContext.isForward,
+      transitionContext.progress,
+      current,
+    ],
   );
 
   class NavigationComponent extends React.PureComponent<{}> {
@@ -137,6 +143,16 @@ export const FluidNavigationContainer: React.FC = ({ ...props }) => {
       name: "isFocused",
       active: isFocused,
       negated: { name: "isNotFocused", active: !isFocused },
+    },
+    {
+      name: "isForward",
+      active: transitionContext.isForward,
+      negated: { name: "isBackward", active: !transitionContext.isForward },
+    },
+    {
+      name: "isActive",
+      active: transitionContext.isActive,
+      negated: { name: "isInactive", active: !transitionContext.isActive },
     },
   ];
 
