@@ -1,4 +1,10 @@
-import React, { useContext, useMemo, useState, useCallback } from "react";
+import React, {
+  useContext,
+  useMemo,
+  useState,
+  useCallback,
+  useEffect,
+} from "react";
 import { ViewStyle, StyleSheet, View } from "react-native";
 import { TransitionContext } from "@react-navigation/stack/src/utils/StackGestureContext";
 import {
@@ -7,49 +13,56 @@ import {
   useFluidState,
 } from "react-native-fluid-transitions";
 import Animated from "react-native-reanimated";
-import { AnimationProvider } from "react-native-fluid-animations";
+import { useNavigation } from "@react-navigation/core";
 
 /**
 StackGestureContext.tsx:
 export const TransitionContext = React.createContext<any>(undefined);
 
-Card.tsx:
+Stack.tsx:
 <TransitionContext.Provider
-  value={{
-    isClosing: this.isClosing,
-    distance: this.distance,
-    active: this.props.active,
-    isSwiping: this.isSwiping,
-    position: this.transitionState.position,
-    current: this.props.current,
-    clock: this.clock,
-    focused: !this.props.accessibilityElementsHidden,
-  }}>
+  value={{ progress: progress[focusedRoute.key] }}>
   ...
 </TransitionContext.Provider>
 
  */
 
 export const FluidNavigationContainer: React.FC = ({ ...props }) => {
-  const [isNavigating, setIsNavigating] = useFluidState(false);
-  const [isSwiping, setIsSwiping] = useFluidState(false);
-  const [isClosing, setIsClosing] = useFluidState(false);
-  const [isVisible, setIsVisible] = useFluidState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
+  const [isSwiping, setIsSwiping] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+
+  const onTransitionStart = () => {
+    console.log("Transition begin");
+    setIsNavigating(true);
+  };
+  const onTransitionEnd = () => {
+    console.log("Transition end");
+    setIsNavigating(false);
+  };
+  const onBlur = () => setIsFocused(false);
+  const onFocus = () => setIsFocused(true);
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    navigation.addListener("transitionStart", onTransitionStart);
+    navigation.addListener("transitionStart", onTransitionEnd);
+    navigation.addListener("blur", onBlur);
+    navigation.addListener("focus", onFocus);
+
+    return () => {
+      navigation.removeListener("transitionStart", onTransitionStart);
+      navigation.removeListener("transitionEnd", onTransitionEnd);
+      navigation.removeListener("blur", onBlur);
+      navigation.removeListener("focus", onFocus);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const stateContext = useContext(StateContext);
   const transitionContext = useContext(TransitionContext);
-
   const current = useMemo(() => new Animated.Value(1), []);
-  const fromNext = useMemo(() => new Animated.Value(1), []);
-
-  const doCall = useCallback(
-    (value: Animated.Node<any>, cb: (v: number) => void) => {
-      return Animated.call([value], (args: ReadonlyArray<number>) =>
-        cb(args[0]),
-      );
-    },
-    [],
-  );
 
   const onChange = useCallback(
     (value: Animated.Node<any>, node: Animated.Node<any>) => {
@@ -63,68 +76,25 @@ export const FluidNavigationContainer: React.FC = ({ ...props }) => {
     () =>
       Animated.block([
         onChange(
-          transitionContext.current,
+          transitionContext.progress,
           Animated.block([
-            Animated.set(fromNext, 0),
             Animated.set(
               current,
-              Animated.cond(
-                Animated.eq(transitionContext.isVisible, 0),
-                Animated.sub(1, transitionContext.current),
-                transitionContext.current,
-              ),
+              // Animated.cond(
+              //   Animated.eq(transitionContext.isVisible, 0),
+              //   Animated.sub(1, transitionContext.progress),
+              transitionContext.progress,
             ),
           ]),
         ),
-        onChange(
-          transitionContext.next,
-          Animated.block([
-            Animated.set(fromNext, 1),
-            AnimationProvider.Animated.debug(
-              "next",
-              Animated.set(
-                current,
-                Animated.cond(
-                  Animated.eq(transitionContext.isVisible, 0),
-                  Animated.sub(1, transitionContext.next),
-                  transitionContext.next,
-                ),
-              ),
-            ),
-          ]),
-        ),
-        onChange(
-          transitionContext.isSwiping,
-          doCall(transitionContext.isSwiping, (v: number) => {
-            setIsSwiping(v as any);
-          }),
-        ),
-        onChange(
-          transitionContext.isClosing,
-          doCall(transitionContext.isClosing, (v: number) => {
-            setIsClosing(v as any);
-          }),
-        ),
-        onChange(
-          transitionContext.isVisible,
-          Animated.block([
-            doCall(transitionContext.isVisible, (v: number) => {
-              setIsVisible(v as any);
-            }),
-            Animated.set(current, transitionContext.current),
-          ]),
-        ),
+        // onChange(
+        //   transitionContext.isSwiping,
+        //   doCall(transitionContext.isSwiping, (v: number) => {
+        //     setIsSwiping(v as any);
+        //   }),
+        // ),
       ]),
-    [
-      onChange,
-      transitionContext,
-      fromNext,
-      current,
-      doCall,
-      setIsSwiping,
-      setIsClosing,
-      setIsVisible,
-    ],
+    [onChange, transitionContext, current],
   );
 
   class NavigationComponent extends React.PureComponent<{}> {
@@ -144,7 +114,6 @@ export const FluidNavigationContainer: React.FC = ({ ...props }) => {
       createFluidComponent<{}, ViewStyle>(NavigationComponent, true, () => ({
         interpolators: {
           current: current,
-          fromNext: fromNext,
         },
         props: {},
       })),
@@ -154,17 +123,20 @@ export const FluidNavigationContainer: React.FC = ({ ...props }) => {
 
   const states = [
     ...(stateContext ? stateContext.states : []),
-    // { name: "navigating", active: isNavigating.active },
-    // { name: "swiping", active: isSwiping.active },
     {
-      name: "isVisible",
-      active: isVisible.active,
-      negated: { name: "isNotVisible", active: !isVisible.active },
+      name: "isNavigating",
+      active: isNavigating,
+      negated: { name: "isNotNavigating", active: !isNavigating },
+    },
+    {
+      name: "isSwiping",
+      active: isSwiping,
+      negated: { name: "isNotSwiping", active: !isNavigating },
     },
     {
       name: "isFocused",
-      active: transitionContext.focused,
-      negated: { name: "isNotFocused", active: !transitionContext.focused },
+      active: isFocused,
+      negated: { name: "isNotFocused", active: !isFocused },
     },
   ];
 

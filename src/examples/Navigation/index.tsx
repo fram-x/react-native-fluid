@@ -66,56 +66,63 @@ CardInterpolationProps): CardInterpolatedStyle {
 }
 
 const Stack = createStackNavigator();
-const NavigationExampleScreen = () => (
-  <Stack.Navigator
-    screenOptions={{
-      header: null,
-      cardTransparent: true,
-      cardOverlayEnabled: false,
-      cardStyleInterpolator: customInterpolation,
-      transitionSpec: {
-        open: {
-          animation: "timing",
-          config: {
-            duration: 4000,
-            easing: Easing.linear,
+const NavigationExampleScreen = () => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        header: null,
+        cardTransparent: true,
+        cardOverlayEnabled: false,
+        cardStyleInterpolator: customInterpolation,
+        transitionSpec: {
+          open: {
+            animation: "timing",
+            config: {
+              duration: 4000,
+              easing: Easing.linear,
+            },
+          },
+          close: {
+            animation: "timing",
+            config: {
+              duration: 4000,
+              easing: Easing.linear,
+            },
           },
         },
-        close: {
-          animation: "timing",
-          config: {
-            duration: 4000,
-            easing: Easing.linear,
-          },
-        },
-      },
-    }}>
-    <Stack.Screen
-      name="screen1"
-      component={() => (
-        <FluidNavigationContainer>
-          <Screen name="Screen 1" color="gold" next="screen2" />
-        </FluidNavigationContainer>
-      )}
-    />
-    <Stack.Screen
-      name="screen2"
-      component={() => (
-        <FluidNavigationContainer>
-          <Screen name="Screen 2" color="pink" prev="screen1" next="screen3" />
-        </FluidNavigationContainer>
-      )}
-    />
-    <Stack.Screen
-      name="screen3"
-      component={() => (
-        <FluidNavigationContainer>
-          <Screen name="Screen 3" color="aqua" prev="screen2" />
-        </FluidNavigationContainer>
-      )}
-    />
-  </Stack.Navigator>
-);
+      }}>
+      <Stack.Screen
+        name="screen1"
+        component={() => (
+          <FluidNavigationContainer>
+            <Screen name="Screen 1" color="gold" next="screen2" />
+          </FluidNavigationContainer>
+        )}
+      />
+      <Stack.Screen
+        name="screen2"
+        component={() => (
+          <FluidNavigationContainer>
+            <Screen
+              name="Screen 2"
+              color="pink"
+              prev="screen1"
+              next="screen3"
+            />
+          </FluidNavigationContainer>
+        )}
+      />
+      <Stack.Screen
+        name="screen3"
+        component={() => (
+          <FluidNavigationContainer>
+            <Screen name="Screen 3" color="aqua" prev="screen2" />
+          </FluidNavigationContainer>
+        )}
+      />
+    </Stack.Navigator>
+  );
+};
 
 type Props = {
   name: string;
@@ -126,20 +133,25 @@ type Props = {
 const Screen: React.FC<Props> = ({ name, color, next, prev }) => {
   const navigation = useNavigation();
   const states = useContext(StateContext);
-  // const isNavigating =
-  //   states &&
-  //   states.states.find(s => s.name === "navigating" && s.active) !== undefined;
+  const isNavigating =
+    states && states.states.find(s => s.name === "isNavigating");
   // console.log(name, "navigating:", isNavigating);
   // const isSwiping =
   //   states &&
   //   states.states.find(s => s.name === "swiping" && s.active) !== undefined;
   // console.log(name, "swiping:", isSwiping);
-  const state = states && states.states.find(s => s.name === "isVisible");
   const isFocusedState =
     states && states.states.find(s => s.name === "isFocused");
-  if (!isFocusedState) throw new Error("Missing active state");
 
-  console.log(name, "isFocused:", isFocusedState.active, state.active);
+  if (!isFocusedState || !isNavigating) throw new Error("Missing state");
+
+  console.log(
+    name,
+    "focus:",
+    isFocusedState.active,
+    "nav:",
+    isNavigating.active,
+  );
 
   const config = useFluidConfig({
     when: [
