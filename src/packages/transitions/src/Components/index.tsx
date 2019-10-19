@@ -1,5 +1,3 @@
-// import MessageQueue from "react-native/Libraries/BatchedBridge/MessageQueue.js";
-
 import {
   ImageProps,
   TextProps,
@@ -12,13 +10,13 @@ import {
   View,
   Text,
   ScrollView,
-} from 'react-native';
-import {AnimationProvider} from 'react-native-fluid-animations';
-import {withFluidTransitions} from './FluidTransitions/withFluidTransitions';
-import {PartialInterpolatorInfo} from './Types/InterpolatorContext';
-import {ValueDescriptorsType, ValueDescriptorType} from '../Types';
-import {SpringDefaultAnimationType} from '../Utilities';
-import {interpolateValue} from '../Animation/Runner/Functions';
+} from "react-native";
+import { AnimationProvider } from "react-native-fluid-animations";
+import { withFluidTransitions } from "./FluidTransitions/withFluidTransitions";
+import { PartialInterpolatorInfo } from "./Types/InterpolatorContext";
+import { ValueDescriptorsType, ValueDescriptorType } from "../Types";
+import { SpringDefaultAnimationType } from "../Utilities";
+import { interpolateValue } from "../Animation/Runner/Functions";
 
 const DefaultGetValue = (p: any) => p;
 const DefaultDescriptor: ValueDescriptorType = {
@@ -26,7 +24,7 @@ const DefaultDescriptor: ValueDescriptorType = {
   getDisplayValue: AnimationProvider.getDisplayValue,
   getNumericValue: DefaultGetValue,
   defaultAnimation: SpringDefaultAnimationType,
-  extrapolate: 'extend',
+  extrapolate: "extend",
   interpolate: interpolateValue,
 };
 
@@ -79,12 +77,12 @@ const TransitionScrollView = createFluidComponent<ScrollViewProps, ViewStyle>(
     const scrollX = AnimationProvider.createValue(0);
     const scrollY = AnimationProvider.createValue(0);
     return {
-      interpolators: {scrollX, scrollY},
+      interpolators: { scrollX, scrollY },
       props: {
         scrollEventThrottle: 4,
         onScroll: AnimationProvider.Animated.event([
           {
-            nativeEvent: {contentOffset: {x: scrollX, y: scrollY}},
+            nativeEvent: { contentOffset: { x: scrollX, y: scrollY } },
           },
         ]),
       },
@@ -101,6 +99,7 @@ export {
   createFluidComponent,
 };
 
+// import MessageQueue from "react-native/Libraries/BatchedBridge/MessageQueue.js";
 // let nodeCallCount = 0;
 // const spyFunction = (data: SpyData) => {
 //   const m = data.method;
