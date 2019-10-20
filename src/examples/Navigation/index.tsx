@@ -10,7 +10,11 @@ import { StateContext } from "react-native-fluid-transitions";
 import Animated, { Easing } from "react-native-reanimated";
 import Fluid, { useFluidConfig } from "react-native-fluid-transitions";
 import { useNavigation } from "@react-navigation/core";
-import { ConfigStateType } from "src/packages/transitions/src/Configuration";
+import {
+  ConfigStateType,
+  OnFactoryFunction,
+} from "src/packages/transitions/src/Configuration";
+import { NavigationState } from "react-native-fluid-navigation";
 
 const styles = StyleSheet.create({
   container: {
@@ -134,26 +138,67 @@ type Props = {
 };
 const Screen: React.FC<Props> = ({ name, color, next, prev }) => {
   const navigation = useNavigation();
-  const states = useContext(StateContext);
+  const stateContext = useContext(StateContext);
+  if (!stateContext) throw Error("States not found");
 
-  const isNavigating =
-    states && states.states.find(s => s.name === "isNavigating");
+  const isNavigating = getState("isNavigating", stateContext.states);
+  const isForward = getState("isForward", stateContext.states);
+  const isActiveState = getState("isActive", stateContext.states);
+  const navState = getState("navigationState", stateContext.states);
 
-  const isFocusedState =
-    states && states.states.find(s => s.name === "isFocused");
+  console.log(
+    name,
+    "active:",
+    isActiveState.active,
+    "nav:",
+    isNavigating.active,
+    "forward:",
+    isForward.active,
+    "state:",
+    navState.value,
+  );
 
-  const isForward = states && states.states.find(s => s.name === "isForward");
-  const isActive = states && states.states.find(s => s.name === "isActive");
-
-  if (!isFocusedState || !isNavigating || !isForward || !isActive)
-    throw new Error("Missing state");
-
-  console.log(name, "active:", isActive.active);
+  const factoryFunction: OnFactoryFunction = ({
+    screenSize,
+    metrics,
+    stateValue,
+  }) => {
+    let output: Array<number> = [];
+    switch (stateValue) {
+      case NavigationState.ForwardTo: {
+        const value = screenSize.width + metrics.x;
+        output = [value, 0];
+        break;
+      }
+      case NavigationState.ForwardFrom: {
+        const value = -screenSize.width - metrics.x + metrics.width;
+        output = [0, value];
+        break;
+      }
+      case NavigationState.BackTo: {
+        const value = -screenSize.width - metrics.x + metrics.width;
+        output = [value, 0];
+        break;
+      }
+      case NavigationState.BackFrom: {
+        const value = screenSize.width - metrics.x;
+        output = [0, value];
+        break;
+      }
+    }
+    return {
+      interpolation: {
+        styleKey: "transform.translateX",
+        inputRange: [0, 1],
+        outputRange: output,
+      },
+    };
+  };
 
   const config = useFluidConfig({
     when: [
       {
-        state: isActive as ConfigStateType,
+        state: isActiveState as ConfigStateType,
         interpolation: [
           {
             inputRange: [0, 0.45, 0.55, 1],
@@ -176,7 +221,7 @@ const Screen: React.FC<Props> = ({ name, color, next, prev }) => {
         ],
       },
       {
-        state: (isActive as ConfigStateType).negated as ConfigStateType,
+        state: (isActiveState as ConfigStateType).negated as ConfigStateType,
         interpolation: [
           {
             inputRange: [0, 0.45, 0.55, 1],
@@ -200,12 +245,13 @@ const Screen: React.FC<Props> = ({ name, color, next, prev }) => {
       },
     ],
   });
+
   return (
     <Fluid.View
       label={name}
       style={[styles.container, { backgroundColor: color }]}
       config={config}
-      states={isFocusedState}>
+      states={[isActiveState, navState]}>
       <Text>{"Hello world from " + name + "!"}</Text>
       <View style={styles.buttons}>
         {prev && (
@@ -217,6 +263,12 @@ const Screen: React.FC<Props> = ({ name, color, next, prev }) => {
       </View>
     </Fluid.View>
   );
+};
+
+const getState = (name: string, states: ConfigStateType[]): ConfigStateType => {
+  const state = states.find(s => s.name === name);
+  if (!state) throw Error("State " + name + " not found.");
+  return state;
 };
 
 export default NavigationExampleScreen;

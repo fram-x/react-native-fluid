@@ -12,7 +12,11 @@ import {
   StateContextType,
 } from "./src/Components/Types";
 import { useFluidState, useFluidConfig } from "./src/Hooks";
-import { createConfig, createState } from "./src/Configuration";
+import {
+  createConfig,
+  createState,
+  OnFactoryFunction,
+} from "./src/Configuration";
 import {
   interpolateColor,
   interpolateValue,
@@ -68,4 +72,5 @@ export {
   interpolateColor,
   interpolateValue,
   ComponentProps,
+  OnFactoryFunction,
 };
