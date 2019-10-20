@@ -25,6 +25,7 @@ export type OnFactoryFunction = ({
   screenSize: { width: number; height: number };
   metrics: Metrics;
   state: string;
+  stateValue?: number | string | boolean;
   type: OnTypeEnum;
 }) => OnFactoryResult;
 

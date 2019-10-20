@@ -99,6 +99,8 @@ export const useOnConfig = (
         screenSize: { width, height },
         metrics: transitionItem.metrics(),
         state: getResolvedStateName(onConfig.state),
+        stateValue:
+          typeof onConfig.state !== "string" ? onConfig.state.value : undefined,
         type:
           removed.find(p => p === onConfig) !== undefined ? "exit" : "enter",
       });
