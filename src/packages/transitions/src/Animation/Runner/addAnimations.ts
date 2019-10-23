@@ -1,11 +1,11 @@
 import { createAnimationNode } from "./Functions";
 import { AnimationInfo } from "../../Components/Types/AnimationInfo";
-import { Easings } from "../../Components/Types";
+import { Easings, DriverContextType } from "../../Components/Types";
 import { IAnimationNode } from "react-native-fluid-animations";
 
 export const addAnimations = (
   source: IAnimationNode,
-  isExternalDriver: boolean,
+  driverContext: DriverContextType | undefined,
   animations: AnimationInfo[],
 ) => {
   // Skip tracking?
@@ -52,7 +52,7 @@ export const addAnimations = (
       onBegin,
       onEnd,
       interpolate,
-      isExternalDriver,
+      driverContext ? driverContext.isActive : () => false,
     );
   });
 };

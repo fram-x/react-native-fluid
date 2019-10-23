@@ -101,24 +101,12 @@ export const useAnimationContext = (
         );
       }
       // Now lets create animations from all interpolations waiting.
-      // Check if we have a separate driver context available
-      if (driverContext) {
-        commitAnimations(
-          transitionItem,
-          driverContext.driver,
-          driverContext.requestDuration,
-          interpolationInfos.current,
-          isInitialAnimation.current,
-        );
-      } else {
-        commitAnimations(
-          transitionItem,
-          undefined,
-          undefined,
-          interpolationInfos.current,
-          isInitialAnimation.current,
-        );
-      }
+      commitAnimations(
+        transitionItem,
+        driverContext,
+        interpolationInfos.current,
+        isInitialAnimation.current,
+      );
 
       // Turn off first animation indicator
       isInitialAnimation.current = false;

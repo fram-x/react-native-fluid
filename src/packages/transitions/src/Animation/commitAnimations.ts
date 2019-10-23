@@ -4,6 +4,7 @@ import {
   Easings,
   getNextInterpolationInfoId,
   OnAnimationFunction,
+  DriverContextType,
 } from "../Components/Types";
 import { fluidInternalException, LoggerLevel } from "../Types";
 import {
@@ -26,8 +27,7 @@ import { isInterpolationRunning } from "./Runner/interpolationStorage";
 
 export function commitAnimations(
   root: TransitionItem,
-  driverInterpolator: IAnimationValue | undefined,
-  requestDuration: ((duration: number) => void) | undefined,
+  driverContext: DriverContextType | undefined = undefined,
   interpolationInfos: Array<InterpolationInfo>,
   waitForInteractions: boolean = false,
 ) {
@@ -90,7 +90,9 @@ export function commitAnimations(
 
   // Create master interpolator
   const masterInterpolator =
-    driverInterpolator || AnimationProvider.createValue(0);
+    driverContext && driverContext.isActive()
+      ? driverContext.driver
+      : AnimationProvider.createValue(0);
 
   // Create list of animations that should be looped
   const loopAnimations: { [key: number]: InterpolationInfo } = {};
@@ -114,12 +116,7 @@ export function commitAnimations(
           p => !isInterpolationRunning(p.itemId, p.key),
         );
         if (repeatAnimations.length > 0) {
-          commitAnimations(
-            root,
-            driverInterpolator,
-            requestDuration,
-            repeatAnimations,
-          );
+          commitAnimations(root, driverContext, repeatAnimations);
         }
       }
     }
@@ -209,17 +206,13 @@ export function commitAnimations(
   });
 
   // Setup trackers
-  addAnimations(
-    masterInterpolator,
-    driverInterpolator !== undefined,
-    animationInfos,
-  );
+  addAnimations(masterInterpolator, driverContext, animationInfos);
 
   // Setup Animation
   const duration = tree.subtreeDuration;
 
-  if (driverInterpolator && requestDuration) {
-    requestDuration(duration);
+  if (driverContext && driverContext.isActive()) {
+    driverContext.requestDuration(duration);
   } else {
     const runAnimation = () => {
       AnimationProvider.runTiming(masterInterpolator, duration, () => {

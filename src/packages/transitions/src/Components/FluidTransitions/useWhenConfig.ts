@@ -256,7 +256,7 @@ const registerWhenWithFactory = (
       ...when,
       interpolation: interpolations,
       animation: animationType,
-    },
+    } as ConfigWhenInterpolationType,
     styleContext,
     propContext,
     isRemoved,

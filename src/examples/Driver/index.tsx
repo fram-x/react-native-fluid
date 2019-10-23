@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useCallback } from "react";
-import { Text, StyleSheet, Slider } from "react-native";
+import { Text, StyleSheet } from "react-native";
+import Slider from "@react-native-community/slider";
 
 import MovingButton from "./MovingButton";
 import Fluid from "react-native-fluid-transitions";
@@ -13,6 +14,7 @@ const DriverExampleScreen = () => {
   const [active, setActive] = useState(false);
   const [duration, setDuration] = useState(0);
   const driver = useMemo(() => AnimationProvider.createValue(0), []);
+
   const handleSliderChange = useCallback(
     (value: number) => {
       driver.setValue(
@@ -35,13 +37,11 @@ const DriverExampleScreen = () => {
   }, [active, driver]);
 
   const driverContext = useMemo(
-    () =>
-      active
-        ? {
-            requestDuration: setDuration,
-            driver,
-          }
-        : undefined,
+    () => ({
+      requestDuration: setDuration,
+      driver,
+      isActive: () => active,
+    }),
     [driver, setDuration, active],
   );
 
