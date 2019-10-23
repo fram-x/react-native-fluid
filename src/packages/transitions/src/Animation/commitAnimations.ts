@@ -6,7 +6,10 @@ import {
   OnAnimationFunction,
 } from "../Components/Types";
 import { fluidInternalException, LoggerLevel } from "../Types";
-import { AnimationProvider } from "react-native-fluid-animations";
+import {
+  AnimationProvider,
+  IAnimationValue,
+} from "react-native-fluid-animations";
 import { InteractionManager } from "react-native";
 import { getResolvedAnimation } from "./Functions/getResolvedAnimation";
 import { TimingDefaultAnimationType } from "../Utilities";
@@ -23,6 +26,8 @@ import { isInterpolationRunning } from "./Runner/interpolationStorage";
 
 export function commitAnimations(
   root: TransitionItem,
+  driverInterpolator: IAnimationValue | undefined,
+  requestDuration: ((duration: number) => void) | undefined,
   interpolationInfos: Array<InterpolationInfo>,
   waitForInteractions: boolean = false,
 ) {
@@ -84,7 +89,8 @@ export function commitAnimations(
   }
 
   // Create master interpolator
-  const masterInterpolator = AnimationProvider.createValue(0);
+  const masterInterpolator =
+    driverInterpolator || AnimationProvider.createValue(0);
 
   // Create list of animations that should be looped
   const loopAnimations: { [key: number]: InterpolationInfo } = {};
@@ -108,7 +114,12 @@ export function commitAnimations(
           p => !isInterpolationRunning(p.itemId, p.key),
         );
         if (repeatAnimations.length > 0) {
-          commitAnimations(root, repeatAnimations);
+          commitAnimations(
+            root,
+            driverInterpolator,
+            requestDuration,
+            repeatAnimations,
+          );
         }
       }
     }
@@ -198,30 +209,39 @@ export function commitAnimations(
   });
 
   // Setup trackers
-  addAnimations(masterInterpolator, animationInfos);
+  addAnimations(
+    masterInterpolator,
+    driverInterpolator !== undefined,
+    animationInfos,
+  );
 
   // Setup Animation
   const duration = tree.subtreeDuration;
-  const runAnimation = () => {
-    AnimationProvider.runTiming(masterInterpolator, duration, () => {
-      if (__DEV__) {
-        log(
-          root.label,
-          "animc",
-          "Master Animation finished for " +
-            interpolationInfos.length +
-            " animations.",
-          LoggerLevel.Verbose,
-        );
-      }
-    });
-  };
 
-  // Run
-  if (waitForInteractions) {
-    InteractionManager.runAfterInteractions(runAnimation);
+  if (driverInterpolator && requestDuration) {
+    requestDuration(duration);
   } else {
-    runAnimation();
+    const runAnimation = () => {
+      AnimationProvider.runTiming(masterInterpolator, duration, () => {
+        if (__DEV__) {
+          log(
+            root.label,
+            "animc",
+            "Master Animation finished for " +
+              interpolationInfos.length +
+              " animations.",
+            LoggerLevel.Verbose,
+          );
+        }
+      });
+    };
+
+    // Run
+    if (waitForInteractions) {
+      InteractionManager.runAfterInteractions(runAnimation);
+    } else {
+      runAnimation();
+    }
   }
 }
 

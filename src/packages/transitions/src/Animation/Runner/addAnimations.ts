@@ -5,7 +5,8 @@ import { IAnimationNode } from "react-native-fluid-animations";
 
 export const addAnimations = (
   source: IAnimationNode,
-  animations: AnimationInfo[]
+  isExternalDriver: boolean,
+  animations: AnimationInfo[],
 ) => {
   // Skip tracking?
   if (animations.length === 0) return;
@@ -28,7 +29,7 @@ export const addAnimations = (
       offset,
       onBegin,
       onEnd,
-      interpolate
+      interpolate,
     } = animation;
     // Get easing
     const easingFunction = easing || Easings.linear;
@@ -50,7 +51,8 @@ export const addAnimations = (
       extrapolateRight,
       onBegin,
       onEnd,
-      interpolate
+      interpolate,
+      isExternalDriver,
     );
   });
 };

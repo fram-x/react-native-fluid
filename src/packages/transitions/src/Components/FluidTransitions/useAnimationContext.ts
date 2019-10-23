@@ -29,6 +29,7 @@ export const useAnimationContext = (
 
   const logger = useLog(transitionItem.label, "animc");
   const context = useContext(T.AnimationContext);
+  const driverContext = useContext(T.DriverContext);
 
   /******************************************************
    * Context Markers
@@ -99,12 +100,25 @@ export const useAnimationContext = (
             interpolationInfos.current.map(p => p.id).join(", "),
         );
       }
-      // Now lets create animations from all interpolations waiting
-      commitAnimations(
-        transitionItem,
-        interpolationInfos.current,
-        isInitialAnimation.current,
-      );
+      // Now lets create animations from all interpolations waiting.
+      // Check if we have a separate driver context available
+      if (driverContext) {
+        commitAnimations(
+          transitionItem,
+          driverContext.driver,
+          driverContext.requestDuration,
+          interpolationInfos.current,
+          isInitialAnimation.current,
+        );
+      } else {
+        commitAnimations(
+          transitionItem,
+          undefined,
+          undefined,
+          interpolationInfos.current,
+          isInitialAnimation.current,
+        );
+      }
 
       // Turn off first animation indicator
       isInitialAnimation.current = false;

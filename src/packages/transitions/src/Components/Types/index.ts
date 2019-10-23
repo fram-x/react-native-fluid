@@ -13,3 +13,4 @@ export * from "./AnimatedStyleKeys";
 export * from "./AnimationInfo";
 export * from "./Easing";
 export * from "./ValueContextType";
+export * from "./DriverContext";

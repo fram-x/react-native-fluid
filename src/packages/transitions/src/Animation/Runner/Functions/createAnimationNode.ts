@@ -46,6 +46,7 @@ export const createAnimationNode = (
   onBegin: (() => void) | undefined,
   onEnd: (() => void) | undefined,
   interpolate: InterpolateFunction,
+  isExternalDriver: boolean = false,
 ) => {
   // Build interpolations if range has more items than two
   const elements: Array<IAnimationNode> = [];
@@ -143,11 +144,9 @@ export const createAnimationNode = (
   const isRunningFlag = AnimationProvider.createValue(RunningFlags.NotStarted);
 
   // Get statement for removing previous nodes
-  const stopPrevAnimationsNode = getStopPreviousAnimationNode(
-    ownerId,
-    key,
-    animationId,
-  );
+  const stopPrevAnimationsNode = isExternalDriver
+    ? AnimationProvider.Animated.block([])
+    : getStopPreviousAnimationNode(ownerId, key, animationId);
 
   // Build lifecycle function
   const lifecycleFunc = getLifecycleFunc(

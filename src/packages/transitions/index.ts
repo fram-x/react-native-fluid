@@ -10,12 +10,14 @@ import {
   InterpolatorContext,
   StateContext,
   StateContextType,
+  DriverContext,
 } from "./src/Components/Types";
 import { useFluidState, useFluidConfig } from "./src/Hooks";
 import {
   createConfig,
   createState,
   OnFactoryFunction,
+  WhenFactoryFunction,
 } from "./src/Configuration";
 import {
   interpolateColor,
@@ -73,4 +75,6 @@ export {
   interpolateValue,
   ComponentProps,
   OnFactoryFunction,
+  DriverContext,
+  WhenFactoryFunction,
 };
