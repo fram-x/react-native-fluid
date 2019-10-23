@@ -1,12 +1,13 @@
 import React, { useContext, useMemo, useEffect, useState } from "react";
 import { ViewStyle, StyleSheet, View } from "react-native";
-import { TransitionContext } from "@react-navigation/stack/src/utils/StackGestureContext";
+import TransitionContext from "@react-navigation/stack/src/utils/TransitionContext";
 import {
   createFluidComponent,
   StateContext,
 } from "react-native-fluid-transitions";
 import Animated from "react-native-reanimated";
 import { useNavigation } from "@react-navigation/core";
+import { AnimationProvider } from "react-native-fluid-animations";
 
 export enum NavigationState {
   None = "None",
@@ -16,24 +17,14 @@ export enum NavigationState {
   BackFrom = "BackFrom",
 }
 
-/**
-StackGestureContext.tsx:
-export const TransitionContext = React.createContext<any>(undefined);
+type Props = {
+  name: string;
+};
 
-Stack.tsx#416:
-<TransitionContext.Provider
-  value={{
-    progress: progress[focusedRoute.key],
-    index: index,
-    inTransition: this.state.inTransition,
-    isForward: closingRouteKeys.length === 0,
-    active: route.key === focusedRoute.key,
-  }}>   
-  ...
-</TransitionContext.Provider>
- */
-
-export const FluidNavigationContainer: React.FC = ({ ...props }) => {
+export const FluidNavigationContainer: React.FC<Props> = ({
+  name,
+  ...props
+}) => {
   // Context
   const stateContext = useContext(StateContext);
   const transitionContext = useContext(TransitionContext);
@@ -58,18 +49,18 @@ export const FluidNavigationContainer: React.FC = ({ ...props }) => {
       Animated.onChange(
         transitionContext.progress,
         Animated.cond(
-          Animated.eq(isForwardValue, 1),
-          // AnimationProvider.Animated.debug(
-          //   "forward",
-          Animated.set(current, transitionContext.progress),
-          // ),
-          // AnimationProvider.Animated.debug(
-          //   "backwards",
-          Animated.set(current, Animated.sub(1, transitionContext.progress)),
-          // ) as any,
+          Animated.neq(isForwardValue, 1),
+          AnimationProvider.Animated.debug(
+            "backwards " + name,
+            Animated.set(current, Animated.sub(1, transitionContext.progress)),
+          ) as any,
+          AnimationProvider.Animated.debug(
+            "forward " + name,
+            Animated.set(current, transitionContext.progress),
+          ),
         ),
       ),
-    [transitionContext.progress, isForwardValue, current],
+    [transitionContext.progress, isForwardValue, name, current],
   );
 
   class NavigationComponent extends React.PureComponent<{}> {

@@ -19,10 +19,13 @@ import {
   isConfigPropInterpolation,
   getResolvedStateName,
   isConfigWhenValueInterplation,
+  isConfigWhenFactory,
+  ConfigWhenFactoryType,
 } from "../../Configuration";
 import { getAnimationOnEnd } from "../../Animation/Builder/getAnimationOnEnd";
 import { useContext } from "react";
 import { removeInterpolation } from "../../Animation/Runner/addInterpolation";
+import { Dimensions } from "react-native";
 
 export const useWhenConfig = (
   transitionItem: TransitionItem,
@@ -73,6 +76,18 @@ export const useWhenConfig = (
     if (isConfigWhenStyle(cf)) {
       // When with style
       registerWhenStyle(logger, cf, styleContext, isRemoved, animationType);
+    } else if (isConfigWhenFactory(cf)) {
+      // When with factory
+      registerWhenWithFactory(
+        transitionItem,
+        cf,
+        logger,
+        styleContext,
+        propContext,
+        interpolatorContext,
+        isRemoved,
+        animationType,
+      );
     } else {
       // When with interpolation
       registerWhenInterpolations(
@@ -158,11 +173,10 @@ const registerWhenInterpolations = (
           interpolation.extrapolateRight,
         );
         console.log(
+          "adding:",
           transitionItem.label,
-          "Adding interpolation",
-          getResolvedStateName(when.state),
           interpolation.styleKey,
-          interpolation.outputRange.map(p => p.toString()).join(","),
+          interpolation.outputRange.join(", "),
         );
       } else if (isConfigStyleInterpolation(interpolation)) {
         styleContext.addAnimation(
@@ -199,13 +213,6 @@ const registerWhenInterpolations = (
       // Removed
       if (isConfigWhenValueInterplation(interpolation)) {
         removeInterpolation(transitionItem.id, interpolation.styleKey);
-        console.log(
-          transitionItem.label,
-          "Removing interpolation",
-          getResolvedStateName(when.state),
-          interpolation.styleKey,
-          interpolation.outputRange.map(p => p.toString()).join(","),
-        );
       }
       // NO need to stop these I think, we'll just let them finish by themselves.
       // else if (isConfigStyleInterpolation(interpolation)) {
@@ -215,6 +222,47 @@ const registerWhenInterpolations = (
       // }
     }
   });
+};
+
+const registerWhenWithFactory = (
+  transitionItem: TransitionItem,
+  when: ConfigWhenFactoryType,
+  logger: UseLoggerFunction,
+  styleContext: ValueContextType,
+  propContext: ValueContextType,
+  interpolatorContext: InterpolatorContextType | null,
+  isRemoved: boolean,
+  animationType?: ConfigAnimationType,
+) => {
+  const screenSize = Dimensions.get("screen");
+
+  // Register custom interpolation
+  const factoryResults = when.whenFactory({
+    screenSize,
+    metrics: transitionItem.metrics(),
+    state: getResolvedStateName(when.state),
+    stateValue: typeof when.state !== "string" ? when.state.value : undefined,
+  });
+
+  let interpolations =
+    factoryResults.interpolation instanceof Array
+      ? factoryResults.interpolation
+      : [factoryResults.interpolation];
+
+  registerWhenInterpolations(
+    transitionItem,
+    logger,
+    {
+      ...when,
+      interpolation: interpolations,
+      animation: animationType,
+    },
+    styleContext,
+    propContext,
+    isRemoved,
+    interpolatorContext,
+    animationType,
+  );
 };
 
 const registerWhenStyle = (

@@ -83,6 +83,8 @@ export const useOnConfig = (
     (v, i, a) => a.indexOf(v) === i,
   );
 
+  const { width, height } = Dimensions.get("screen");
+
   // Loop through configs
   uniqueConfigs.forEach(onConfig => {
     // Check for shared interpolation
@@ -94,7 +96,6 @@ export const useOnConfig = (
       addInterpolation(onConfig, animationType);
     } else {
       // Register custom interpolation
-      const { width, height } = Dimensions.get("screen");
       const factoryResults = onConfig.onFactory({
         screenSize: { width, height },
         metrics: transitionItem.metrics(),
@@ -104,10 +105,18 @@ export const useOnConfig = (
         type:
           removed.find(p => p === onConfig) !== undefined ? "exit" : "enter",
       });
-      addInterpolation(
-        { state: onConfig.state, interpolation: factoryResults.interpolation },
-        factoryResults.animation,
-      );
+
+      let interpolations =
+        factoryResults.interpolation instanceof Array
+          ? factoryResults.interpolation
+          : [factoryResults.interpolation];
+
+      interpolations.forEach(ip => {
+        addInterpolation(
+          { state: onConfig.state, interpolation: ip },
+          ip.animation || factoryResults.animation || onConfig.animation,
+        );
+      });
     }
   });
 

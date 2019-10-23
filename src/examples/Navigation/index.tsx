@@ -100,7 +100,7 @@ const NavigationExampleScreen = () => {
       <Stack.Screen
         name="screen1"
         component={() => (
-          <FluidNavigationContainer>
+          <FluidNavigationContainer name="screen1">
             <Screen name="Screen 1" color="gold" next="screen2" />
           </FluidNavigationContainer>
         )}
@@ -108,7 +108,7 @@ const NavigationExampleScreen = () => {
       <Stack.Screen
         name="screen2"
         component={() => (
-          <FluidNavigationContainer>
+          <FluidNavigationContainer name="screen2">
             <Screen
               name="Screen 2"
               color="pink"
@@ -121,7 +121,7 @@ const NavigationExampleScreen = () => {
       <Stack.Screen
         name="screen3"
         component={() => (
-          <FluidNavigationContainer>
+          <FluidNavigationContainer name="screen3">
             <Screen name="Screen 3" color="aqua" prev="screen2" />
           </FluidNavigationContainer>
         )}
@@ -141,107 +141,73 @@ const Screen: React.FC<Props> = ({ name, color, next, prev }) => {
   const stateContext = useContext(StateContext);
   if (!stateContext) throw Error("States not found");
 
-  const isNavigating = getState("isNavigating", stateContext.states);
-  const isForward = getState("isForward", stateContext.states);
+  // const isNavigating = getState("isNavigating", stateContext.states);
+  // const isForward = getState("isForward", stateContext.states);
   const isActiveState = getState("isActive", stateContext.states);
   const navState = getState("navigationState", stateContext.states);
 
-  console.log(
-    name,
-    "active:",
-    isActiveState.active,
-    "nav:",
-    isNavigating.active,
-    "forward:",
-    isForward.active,
-    "state:",
-    navState.value,
-  );
-
-  const factoryFunction: OnFactoryFunction = ({
-    screenSize,
-    metrics,
-    stateValue,
-  }) => {
-    let output: Array<number> = [];
-    switch (stateValue) {
-      case NavigationState.ForwardTo: {
-        const value = screenSize.width + metrics.x;
-        output = [value, 0];
-        break;
-      }
-      case NavigationState.ForwardFrom: {
-        const value = -screenSize.width - metrics.x + metrics.width;
-        output = [0, value];
-        break;
-      }
-      case NavigationState.BackTo: {
-        const value = -screenSize.width - metrics.x + metrics.width;
-        output = [value, 0];
-        break;
-      }
-      case NavigationState.BackFrom: {
-        const value = screenSize.width - metrics.x;
-        output = [0, value];
-        break;
-      }
-    }
-    return {
-      interpolation: {
-        styleKey: "transform.translateX",
-        inputRange: [0, 1],
-        outputRange: output,
-      },
-    };
-  };
+  console.log(name, "active:", isActiveState.active, navState.value);
 
   const config = useFluidConfig({
     when: [
       {
-        state: isActiveState as ConfigStateType,
-        interpolation: [
-          {
-            inputRange: [0, 0.45, 0.55, 1],
-            outputRange: [0, 0, 1, 1],
-            styleKey: "opacity",
-            value: {
-              ownerLabel: "navigation",
-              valueName: "current",
-            },
-          },
-          {
-            inputRange: [0, 0.45, 0.55, 1],
-            outputRange: ["45deg", "45deg", "45deg", "0deg"],
-            styleKey: "transform.rotate",
-            value: {
-              ownerLabel: "navigation",
-              valueName: "current",
-            },
-          },
-        ],
-      },
-      {
-        state: (isActiveState as ConfigStateType).negated as ConfigStateType,
-        interpolation: [
-          {
-            inputRange: [0, 0.45, 0.55, 1],
-            outputRange: [1, 1, 0, 0],
-            styleKey: "opacity",
-            value: {
-              ownerLabel: "navigation",
-              valueName: "current",
-            },
-          },
-          {
-            inputRange: [0, 0.45, 0.55, 1],
-            outputRange: [1, 0.8, 0.8, 0.8],
-            styleKey: "transform.scale",
-            value: {
-              ownerLabel: "navigation",
-              valueName: "current",
-            },
-          },
-        ],
+        state: navState,
+        whenFactory: ({ screenSize, metrics, stateValue }) => {
+          let translateX: Array<number> = [];
+          let scale: Array<number> = [];
+          switch (stateValue) {
+            case NavigationState.None: {
+              return { interpolation: [] };
+            }
+            case NavigationState.ForwardTo: {
+              const value = screenSize.width;
+              translateX = [value, 0];
+              scale = [1, 1];
+              break;
+            }
+            case NavigationState.ForwardFrom: {
+              const value = -screenSize.width;
+              translateX = [0, value];
+              scale = [1, 0.8];
+              break;
+            }
+            case NavigationState.BackTo: {
+              const value = -screenSize.width;
+              translateX = [value, 0];
+              scale = [0.8, 1];
+              break;
+            }
+            case NavigationState.BackFrom: {
+              const value = screenSize.width;
+              translateX = [0, value];
+              scale = [1, 1];
+              break;
+            }
+          }
+          console.log(name, stateValue, translateX.join(", "));
+          return {
+            interpolation: [
+              {
+                styleKey: "transform.scale",
+                inputRange: [0, 1],
+                outputRange: scale,
+                value: {
+                  ownerLabel: "navigation",
+                  valueName: "current",
+                },
+              },
+              {
+                styleKey: "transform.translateX",
+                inputRange: [0, 1],
+                outputRange: translateX,
+                value: {
+                  ownerLabel: "navigation",
+                  valueName: "current",
+                },
+              },
+            ],
+          };
+        },
       },
     ],
   });
@@ -251,7 +217,7 @@ const Screen: React.FC<Props> = ({ name, color, next, prev }) => {
       label={name}
       style={[styles.container, { backgroundColor: color }]}
       config={config}
-      states={[isActiveState, navState]}>
+      states={[navState]}>
       <Text>{"Hello world from " + name + "!"}</Text>
       <View style={styles.buttons}>
         {prev && (
