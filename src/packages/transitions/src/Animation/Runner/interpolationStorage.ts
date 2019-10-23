@@ -97,14 +97,14 @@ export const unregisterRunningInterpolation = (
   const runningKey = getKey(itemId, key);
   if (!ensureInterpolation(itemId, key, animationId)) return;
 
-  // console.log(
-  //   "Removing interpolation",
-  //   animationId,
-  //   "for",
-  //   itemId,
-  //   "key:",
-  //   key,
-  // );
+  console.log(
+    "Removing interpolation",
+    animationId,
+    "for",
+    itemId,
+    "key:",
+    key,
+  );
 
   // Detach node
   AnimationProvider.Animated.detach(

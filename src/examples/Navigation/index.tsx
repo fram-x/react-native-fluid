@@ -15,6 +15,7 @@ import {
   OnFactoryFunction,
 } from "src/packages/transitions/src/Configuration";
 import { NavigationState } from "react-native-fluid-navigation";
+import { Easings } from "react-native-fluid-transitions";
 
 const styles = StyleSheet.create({
   container: {
@@ -143,11 +144,11 @@ const Screen: React.FC<Props> = ({ name, color, next, prev }) => {
 
   // const isNavigating = getState("isNavigating", stateContext.states);
   // const isForward = getState("isForward", stateContext.states);
-  const isActiveState = getState("isActive", stateContext.states);
+  // const isActiveState = getState("isActive", stateContext.states);
   const navState = getState("navigationState", stateContext.states);
 
   const onFactory = useCallback<OnFactoryFunction>(
-    ({ screenSize, metrics }) => {
+    ({ screenSize }) => {
       let translateX: Array<number> = [];
       let scale: Array<number> = [];
       switch (navState.value) {
@@ -181,12 +182,13 @@ const Screen: React.FC<Props> = ({ name, color, next, prev }) => {
       }
       console.log(name, navState.value, translateX.join(", "));
       return {
+        animation: Fluid.Animations.Timings.Default,
         interpolation: [
-          {
-            styleKey: "transform.scale",
-            inputRange: [0, 1],
-            outputRange: scale,
-          },
+          // {
+          //   styleKey: "transform.scale",
+          //   inputRange: [0, 1],
+          //   outputRange: scale,
+          // },
           {
             styleKey: "transform.translateX",
             inputRange: [0, 1],

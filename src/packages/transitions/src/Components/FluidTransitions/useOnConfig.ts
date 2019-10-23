@@ -111,6 +111,11 @@ export const useOnConfig = (
           ? factoryResults.interpolation
           : [factoryResults.interpolation];
 
+      console.log(
+        transitionItem.label,
+        "onFactory",
+        interpolations.map(ip => ip.styleKey).join(", "),
+      );
       interpolations.forEach(ip => {
         addInterpolation(
           { state: onConfig.state, interpolation: ip },

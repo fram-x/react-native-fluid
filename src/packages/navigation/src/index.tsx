@@ -18,7 +18,7 @@ export enum NavigationState {
   BackFrom = "BackFrom",
 }
 
-export const NavigationTiming = 2000;
+export const NavigationTiming: number = 2000;
 
 type Props = {
   name: string;
@@ -28,8 +28,6 @@ export const FluidNavigationContainer: React.FC<Props> = ({
   name,
   ...props
 }) => {
-  const [duration, setDuration] = useState(1);
-
   // Context
   const stateContext = useContext(StateContext);
   const transitionContext = useContext(TransitionContext);
@@ -38,15 +36,16 @@ export const FluidNavigationContainer: React.FC<Props> = ({
 
   // Animation interpolator
   const current = useMemo(() => new Animated.Value(1), []);
+  const durationValue = useMemo(() => new Animated.Value(NavigationTiming), []);
 
   // Driver context
   const driverContextValue = useMemo<DriverContextType>(
     () => ({
       isActive: () => transitionContext.inTransition,
       driver: current,
-      requestDuration: setDuration,
+      requestDuration: (duration: number) => durationValue.setValue(duration),
     }),
-    [current, transitionContext.inTransition],
+    [current, durationValue, transitionContext.inTransition],
   );
 
   // Animated value for is forward
@@ -69,22 +68,25 @@ export const FluidNavigationContainer: React.FC<Props> = ({
           //   "backwards " + name,
           Animated.set(
             current,
-            Animated.sub(
-              1,
-              Animated.divide(
-                transitionContext.progress,
-                Animated.divide(NavigationTiming, duration),
-              ),
+            Animated.divide(
+              Animated.sub(1, transitionContext.progress),
+              Animated.divide(1.0, durationValue),
             ),
           ),
           // ) as any,
           // AnimationProvider.Animated.debug(
           //   "forward " + name,
-          Animated.set(current, transitionContext.progress),
-          //),
+          Animated.set(
+            current,
+            Animated.divide(
+              transitionContext.progress,
+              Animated.divide(1.0, durationValue),
+            ),
+          ),
+          // ),
         ),
       ),
-    [transitionContext.progress, isForwardValue, current, duration],
+    [transitionContext.progress, isForwardValue, current, durationValue],
   );
 
   class NavigationComponent extends React.PureComponent<{}> {
