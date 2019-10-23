@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useCallback } from "react";
 import { FluidNavigationContainer } from "react-native-fluid-navigation";
 import { View, StyleSheet, Text, Button } from "react-native";
 import {
@@ -84,14 +84,14 @@ const NavigationExampleScreen = () => {
           open: {
             animation: "timing",
             config: {
-              duration: 4000,
+              duration: 2000,
               easing: Easing.linear,
             },
           },
           close: {
             animation: "timing",
             config: {
-              duration: 4000,
+              duration: 2000,
               easing: Easing.linear,
             },
           },
@@ -146,68 +146,63 @@ const Screen: React.FC<Props> = ({ name, color, next, prev }) => {
   const isActiveState = getState("isActive", stateContext.states);
   const navState = getState("navigationState", stateContext.states);
 
-  console.log(name, "active:", isActiveState.active, navState.value);
+  const onFactory = useCallback<OnFactoryFunction>(
+    ({ screenSize, metrics }) => {
+      let translateX: Array<number> = [];
+      let scale: Array<number> = [];
+      switch (navState.value) {
+        case NavigationState.None: {
+          return { interpolation: [] };
+        }
+        case NavigationState.ForwardTo: {
+          const value = screenSize.width;
+          translateX = [value, 0];
+          scale = [1, 1];
+          break;
+        }
+        case NavigationState.ForwardFrom: {
+          const value = -screenSize.width;
+          translateX = [0, value];
+          scale = [1, 0.8];
+          break;
+        }
+        case NavigationState.BackTo: {
+          const value = -screenSize.width;
+          translateX = [value, 0];
+          scale = [0.8, 1];
+          break;
+        }
+        case NavigationState.BackFrom: {
+          const value = screenSize.width;
+          translateX = [0, value];
+          scale = [1, 1];
+          break;
+        }
+      }
+      console.log(name, navState.value, translateX.join(", "));
+      return {
+        interpolation: [
+          {
+            styleKey: "transform.scale",
+            inputRange: [0, 1],
+            outputRange: scale,
+          },
+          {
+            styleKey: "transform.translateX",
+            inputRange: [0, 1],
+            outputRange: translateX,
+          },
+        ],
+      };
+    },
+    [name, navState],
+  );
 
   const config = useFluidConfig({
-    when: [
+    onEnter: [
       {
         state: navState,
-        whenFactory: ({ screenSize, metrics, stateValue }) => {
-          let translateX: Array<number> = [];
-          let scale: Array<number> = [];
-          switch (stateValue) {
-            case NavigationState.None: {
-              return { interpolation: [] };
-            }
-            case NavigationState.ForwardTo: {
-              const value = screenSize.width;
-              translateX = [value, 0];
-              scale = [1, 1];
-              break;
-            }
-            case NavigationState.ForwardFrom: {
-              const value = -screenSize.width;
-              translateX = [0, value];
-              scale = [1, 0.8];
-              break;
-            }
-            case NavigationState.BackTo: {
-              const value = -screenSize.width;
-              translateX = [value, 0];
-              scale = [0.8, 1];
-              break;
-            }
-            case NavigationState.BackFrom: {
-              const value = screenSize.width;
-              translateX = [0, value];
-              scale = [1, 1];
-              break;
-            }
-          }
-          console.log(name, stateValue, translateX.join(", "));
-          return {
-            interpolation: [
-              {
-                styleKey: "transform.scale",
-                inputRange: [0, 1],
-                outputRange: scale,
-                value: {
-                  ownerLabel: "navigation",
-                  valueName: "current",
-                },
-              },
-              {
-                styleKey: "transform.translateX",
-                inputRange: [0, 1],
-                outputRange: translateX,
-                value: {
-                  ownerLabel: "navigation",
-                  valueName: "current",
-                },
-              },
-            ],
-          };
-        },
+        onFactory,
       },
     ],
   });

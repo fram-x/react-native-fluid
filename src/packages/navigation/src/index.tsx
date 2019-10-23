@@ -1,13 +1,14 @@
-import React, { useContext, useMemo, useEffect, useState } from "react";
+import React, { useContext, useMemo, useState } from "react";
 import { ViewStyle, StyleSheet, View } from "react-native";
 import TransitionContext from "@react-navigation/stack/src/utils/TransitionContext";
 import {
   createFluidComponent,
   StateContext,
+  DriverContext,
 } from "react-native-fluid-transitions";
 import Animated from "react-native-reanimated";
-import { useNavigation } from "@react-navigation/core";
 import { AnimationProvider } from "react-native-fluid-animations";
+import { DriverContextType } from "src/packages/transitions/src/Components/Types";
 
 export enum NavigationState {
   None = "None",
@@ -17,6 +18,8 @@ export enum NavigationState {
   BackFrom = "BackFrom",
 }
 
+export const NavigationTiming = 2000;
+
 type Props = {
   name: string;
 };
@@ -25,6 +28,8 @@ export const FluidNavigationContainer: React.FC<Props> = ({
   name,
   ...props
 }) => {
+  const [duration, setDuration] = useState(1);
+
   // Context
   const stateContext = useContext(StateContext);
   const transitionContext = useContext(TransitionContext);
@@ -33,6 +38,16 @@ export const FluidNavigationContainer: React.FC<Props> = ({
 
   // Animation interpolator
   const current = useMemo(() => new Animated.Value(1), []);
+
+  // Driver context
+  const driverContextValue = useMemo<DriverContextType>(
+    () => ({
+      isActive: () => transitionContext.inTransition,
+      driver: current,
+      requestDuration: setDuration,
+    }),
+    [current, transitionContext.inTransition],
+  );
 
   // Animated value for is forward
   const isForwardValue = useMemo(
@@ -50,17 +65,26 @@ export const FluidNavigationContainer: React.FC<Props> = ({
         transitionContext.progress,
         Animated.cond(
           Animated.neq(isForwardValue, 1),
-          AnimationProvider.Animated.debug(
-            "backwards " + name,
-            Animated.set(current, Animated.sub(1, transitionContext.progress)),
-          ) as any,
-          AnimationProvider.Animated.debug(
-            "forward " + name,
-            Animated.set(current, transitionContext.progress),
+          // AnimationProvider.Animated.debug(
+          //   "backwards " + name,
+          Animated.set(
+            current,
+            Animated.sub(
+              1,
+              Animated.divide(
+                transitionContext.progress,
+                Animated.divide(NavigationTiming, duration),
+              ),
+            ),
           ),
+          // ) as any,
+          // AnimationProvider.Animated.debug(
+          //   "forward " + name,
+          Animated.set(current, transitionContext.progress),
+          //),
         ),
       ),
-    [transitionContext.progress, isForwardValue, name, current],
+    [transitionContext.progress, isForwardValue, current, duration],
   );
 
   class NavigationComponent extends React.PureComponent<{}> {
@@ -87,19 +111,19 @@ export const FluidNavigationContainer: React.FC<Props> = ({
     [],
   );
 
-  const navigation = useNavigation();
-  const [inTransition, setInTransition] = useState(false);
-  const onTransitionStart = () => setInTransition(true);
-  const onTransitionEnd = () => setInTransition(false);
-  useEffect(() => {
-    navigation.addListener("transitionStart", onTransitionStart);
-    navigation.addListener("transitionEnd", onTransitionEnd);
-    return () => {
-      navigation.removeListener("transitionStart", onTransitionStart);
-      navigation.removeListener("transitionEnd", onTransitionEnd);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // const navigation = useNavigation();
+  // const [inTransition, setInTransition] = useState(false);
+  // const onTransitionStart = () => setInTransition(true);
+  // const onTransitionEnd = () => setInTransition(false);
+  // useEffect(() => {
+  //   navigation.addListener("transitionStart", onTransitionStart);
+  //   navigation.addListener("transitionEnd", onTransitionEnd);
+  //   return () => {
+  //     navigation.removeListener("transitionStart", onTransitionStart);
+  //     navigation.removeListener("transitionEnd", onTransitionEnd);
+  //   };
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   const navigationState = !transitionContext.inTransition
     ? NavigationState.None
@@ -138,10 +162,14 @@ export const FluidNavigationContainer: React.FC<Props> = ({
     },
   ];
 
+  console.log(name, driverContextValue.isActive(), navigationState);
+
   // Render
   return (
-    <StateContext.Provider value={{ states }}>
-      <Component label="navigation" {...props} />
-    </StateContext.Provider>
+    <DriverContext.Provider value={driverContextValue}>
+      <StateContext.Provider value={{ states }}>
+        <Component label="navigation" {...props} />
+      </StateContext.Provider>
+    </DriverContext.Provider>
   );
 };
