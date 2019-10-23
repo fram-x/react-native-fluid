@@ -4,11 +4,11 @@ import TransitionContext from "@react-navigation/stack/src/utils/TransitionConte
 import {
   createFluidComponent,
   StateContext,
+  DriverContextType,
   DriverContext,
 } from "react-native-fluid-transitions";
 import Animated from "react-native-reanimated";
 import { AnimationProvider } from "react-native-fluid-animations";
-import { DriverContextType } from "src/packages/transitions/src/Components/Types";
 
 export enum NavigationState {
   None = "None",
@@ -58,35 +58,35 @@ export const FluidNavigationContainer: React.FC<Props> = ({
   // Update to reflect current state
   isForwardValue.setValue(transitionContext.isForward ? 1 : 0);
 
-  const exec = useMemo(
+  const updateCurrentValue = useMemo(
     () =>
       Animated.onChange(
         transitionContext.progress,
         Animated.cond(
           Animated.neq(isForwardValue, 1),
-          // AnimationProvider.Animated.debug(
-          //   "backwards " + name,
-          Animated.set(
-            current,
-            Animated.divide(
-              Animated.sub(1, transitionContext.progress),
-              Animated.divide(1.0, durationValue),
+          AnimationProvider.Animated.debug(
+            "backwards " + name,
+            Animated.set(
+              current,
+              Animated.divide(
+                Animated.sub(1, transitionContext.progress),
+                Animated.divide(1.0, durationValue),
+              ),
+            ),
+          ) as any,
+          AnimationProvider.Animated.debug(
+            "forward " + name,
+            Animated.set(
+              current,
+              Animated.divide(
+                transitionContext.progress,
+                Animated.divide(1.0, durationValue),
+              ),
             ),
           ),
-          // ) as any,
-          // AnimationProvider.Animated.debug(
-          //   "forward " + name,
-          Animated.set(
-            current,
-            Animated.divide(
-              transitionContext.progress,
-              Animated.divide(1.0, durationValue),
-            ),
-          ),
-          // ),
         ),
       ),
-    [transitionContext.progress, isForwardValue, current, durationValue],
+    [transitionContext.progress, name, isForwardValue, current, durationValue],
   );
 
   class NavigationComponent extends React.PureComponent<{}> {
@@ -95,7 +95,7 @@ export const FluidNavigationContainer: React.FC<Props> = ({
       return (
         <View style={StyleSheet.absoluteFill}>
           {children}
-          <Animated.Code key={"navigation"} exec={exec} />
+          <Animated.Code exec={updateCurrentValue} />
         </View>
       );
     }

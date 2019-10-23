@@ -11,6 +11,7 @@ import {
   StateContext,
   StateContextType,
   DriverContext,
+  DriverContextType,
 } from "./src/Components/Types";
 import { useFluidState, useFluidConfig } from "./src/Hooks";
 import {
@@ -76,5 +77,6 @@ export {
   ComponentProps,
   OnFactoryFunction,
   DriverContext,
+  DriverContextType,
   WhenFactoryFunction,
 };
