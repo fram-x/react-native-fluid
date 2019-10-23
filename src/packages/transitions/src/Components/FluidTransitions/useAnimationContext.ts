@@ -1,10 +1,12 @@
 import { useRef, useContext, useEffect } from "react";
 import * as T from "../Types";
-import { commitAnimations, commitInterpolations } from "../../Animation";
+import { commitAnimations } from "../../Animation";
 import { useLog, getFormattedTimeNum } from "../../Hooks/useLog";
 import { LoggerLevel } from "../../Types";
 import { IAnimationNode } from "react-native-fluid-animations";
 import { ConfigAnimationType } from "../../Configuration";
+import { addInterpolation } from "../../Animation/Runner/addInterpolation";
+import { unregisterRunningInterpolation } from "../../Animation/Runner/interpolationStorage";
 
 type AnimationContextStatus = {
   isInAnimationContext: boolean;
@@ -29,7 +31,24 @@ export const useAnimationContext = (
 
   const logger = useLog(transitionItem.label, "animc");
   const context = useContext(T.AnimationContext);
+
+  const externalDriverInfosRef = useRef<T.InterpolationInfo[]>([]);
   const driverContext = useContext(T.DriverContext);
+  const driverContextActiveRef = useRef(false);
+  if (
+    driverContext &&
+    driverContext.isActive() !== driverContextActiveRef.current
+  ) {
+    driverContextActiveRef.current = driverContext.isActive();
+    // If we have a disabled driver context we should remove
+    // interpolations created when the context was active
+    if (!driverContextActiveRef.current) {
+      externalDriverInfosRef.current.forEach(ip => {
+        unregisterRunningInterpolation(ip.itemId, ip.key, ip.id);
+      });
+      externalDriverInfosRef.current = [];
+    }
+  }
 
   /******************************************************
    * Context Markers
@@ -76,7 +95,7 @@ export const useAnimationContext = (
     interpolationInfo: T.InterpolationInfo,
   ) => {
     // We don't care about the context we're in - just register
-    commitInterpolations([{ interpolator, interpolationInfo }]);
+    addInterpolation(interpolator, interpolationInfo);
   };
 
   /******************************************************
@@ -107,6 +126,13 @@ export const useAnimationContext = (
         interpolationInfos.current,
         isInitialAnimation.current,
       );
+
+      // Save animations if we are in a driver context
+      if (driverContextActiveRef.current) {
+        externalDriverInfosRef.current = externalDriverInfosRef.current.concat(
+          interpolationInfos.current,
+        );
+      }
 
       // Turn off first animation indicator
       isInitialAnimation.current = false;
