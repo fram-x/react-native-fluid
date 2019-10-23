@@ -136,7 +136,9 @@ export const createAnimationNode = (
   };
 
   const onEndCallback = (_id: number, _reason: number) => {
-    unregisterRunningInterpolation(ownerId, key, animationId);
+    if (!isExternalDriver) {
+      unregisterRunningInterpolation(ownerId, key, animationId);
+    }
     onEnd && onEnd();
   };
 

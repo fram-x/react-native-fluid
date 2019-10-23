@@ -147,12 +147,8 @@ export const getStopPreviousAnimationNode = (
   // );
   return AnimationProvider.Animated.block(
     // Add stop signal
-    prevInterpolations.map(
-      p =>
-        // AnimationProvider.Animated.debug(
-        //   `Stop ${animationId} ${key} for ${itemId}`,
-        AnimationProvider.Animated.set(p.isRunningFlag, RunningFlags.Stopped),
-      // ),
+    prevInterpolations.map(p =>
+      AnimationProvider.Animated.set(p.isRunningFlag, RunningFlags.Stopped),
     ),
   );
 };

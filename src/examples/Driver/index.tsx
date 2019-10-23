@@ -11,12 +11,18 @@ import { useFluidConfig } from "react-native-fluid-transitions";
 const DriverExampleScreen = () => {
   const [toggled, setToggled] = useState(false);
   const [active, setActive] = useState(false);
+  const [duration, setDuration] = useState(0);
   const driver = useMemo(() => AnimationProvider.createValue(0), []);
   const handleSliderChange = useCallback(
     (value: number) => {
-      driver.setValue(value);
+      driver.setValue(
+        AnimationProvider.Animated.divide(
+          value,
+          AnimationProvider.Animated.divide(1.0, duration),
+        ),
+      );
     },
-    [driver],
+    [driver, duration],
   );
 
   const toggle = useCallback(() => setToggled(p => !p), []);
@@ -28,19 +34,15 @@ const DriverExampleScreen = () => {
     }
   }, [active, driver]);
 
-  const requestDuration = useCallback((duration: number) => {
-    console.log(duration);
-  }, []);
-
   const driverContext = useMemo(
     () =>
       active
         ? {
-            requestDuration,
+            requestDuration: setDuration,
             driver,
           }
         : undefined,
-    [driver, requestDuration, active],
+    [driver, setDuration, active],
   );
 
   const config = useFluidConfig({
@@ -58,7 +60,7 @@ const DriverExampleScreen = () => {
         <Slider
           style={styles.slider}
           minimumValue={0}
-          maximumValue={1000}
+          maximumValue={1}
           onValueChange={handleSliderChange}
         />
         <Text style={styles.text}>Double-tap to tween</Text>
@@ -80,7 +82,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  slider: { alignSelf: "stretch" },
+  slider: {
+    alignSelf: "stretch",
+    margin: 14,
+  },
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
