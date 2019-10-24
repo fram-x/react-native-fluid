@@ -1,4 +1,2 @@
-import { FluidNavigationContainer } from "./src";
-export { FluidNavigationContainer };
-import { NavigationState } from "./src";
-export { NavigationState };
+export { FluidNavigationContainer } from "./src";
+export { NavigationState } from "./src";

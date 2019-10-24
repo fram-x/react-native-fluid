@@ -1,21 +1,20 @@
 import React, { useContext, useCallback } from "react";
 import { FluidNavigationContainer } from "react-native-fluid-navigation";
-import { View, StyleSheet, Text, Button } from "react-native";
+import { View, StyleSheet, Text, Button, Dimensions } from "react-native";
 import {
   createStackNavigator,
   StackCardInterpolationProps,
   StackCardInterpolatedStyle,
 } from "@react-navigation/stack";
-import { StateContext } from "react-native-fluid-transitions";
+import {
+  StateContext,
+  ConfigStateType,
+  OnFactoryFunction,
+} from "react-native-fluid-transitions";
 import Animated, { Easing } from "react-native-reanimated";
 import Fluid, { useFluidConfig } from "react-native-fluid-transitions";
 import { useNavigation } from "@react-navigation/core";
-import {
-  ConfigStateType,
-  OnFactoryFunction,
-} from "src/packages/transitions/src/Configuration";
 import { NavigationState } from "react-native-fluid-navigation";
-import { Easings } from "react-native-fluid-transitions";
 
 const styles = StyleSheet.create({
   container: {
@@ -180,7 +179,6 @@ const Screen: React.FC<Props> = ({ name, color, next, prev }) => {
           break;
         }
       }
-      console.log(name, navState.value, translateX.join(", "));
       return {
         animation: Fluid.Animations.Timings.Default,
         interpolation: [
@@ -200,11 +198,63 @@ const Screen: React.FC<Props> = ({ name, color, next, prev }) => {
     [name, navState],
   );
 
+  const forwardTo = getState(NavigationState.ForwardTo, stateContext.states);
+  const forwardFrom = getState(
+    NavigationState.ForwardFrom,
+    stateContext.states,
+  );
+  const backTo = getState(NavigationState.BackTo, stateContext.states);
+  const backFrom = getState(NavigationState.BackFrom, stateContext.states);
+  const none = getState(NavigationState.None, stateContext.states);
+
+  const screenWidth = Dimensions.get("screen").width;
+
   const config = useFluidConfig({
-    onEnter: [
+    // onEnter: [
+    //   {
+    //     state: navState,
+    //     onFactory,
+    //   },
+    // ],
+    when: [
       {
-        state: navState,
-        onFactory,
+        state: forwardTo,
+        interpolation: [
+          {
+            styleKey: "transform.translateX",
+            inputRange: [0, 1],
+            outputRange: [screenWidth, 0],
+          },
+          {
+            styleKey: "opacity",
+            inputRange: [0, 0.1, 1],
+            outputRange: [0, 1, 1],
+          },
+        ],
+      },
+      {
+        state: forwardFrom,
+        interpolation: {
+          styleKey: "transform.translateX",
+          inputRange: [0, 1],
+          outputRange: [0, -screenWidth],
+        },
+      },
+      {
+        state: backFrom,
+        interpolation: {
+          styleKey: "transform.translateX",
+          inputRange: [0, 1],
+          outputRange: [0, screenWidth],
+        },
+      },
+      {
+        state: backTo,
+        interpolation: {
+          styleKey: "transform.translateX",
+          inputRange: [0, 1],
+          outputRange: [-screenWidth, 0],
+        },
       },
     ],
   });
@@ -214,7 +264,7 @@ const Screen: React.FC<Props> = ({ name, color, next, prev }) => {
       label={name}
       style={[styles.container, { backgroundColor: color }]}
       config={config}
-      states={[navState]}>
+      states={[backFrom, backTo, forwardFrom, forwardTo]}>
       <Text>{"Hello world from " + name + "!"}</Text>
       <View style={styles.buttons}>
         {prev && (
