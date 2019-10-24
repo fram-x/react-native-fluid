@@ -16,6 +16,11 @@ export enum NavigationState {
   ForwardFrom = "ForwardFrom",
   BackTo = "BackTo",
   BackFrom = "BackFrom",
+  Index = "Index",
+  Current = "Current",
+  Active = "Active",
+  Forward = "Forward",
+  InTransition = "InTransition",
 }
 
 export const NavigationTiming: number = 2000;
@@ -156,11 +161,6 @@ export const FluidNavigationContainer: React.FC<Props> = ({
   const states = [
     ...(stateContext ? stateContext.states : []),
     {
-      name: "navigationState",
-      active: true,
-      value: navigationState,
-    },
-    {
       name: NavigationState.None,
       active: navigationState === NavigationState.None,
     },
@@ -181,28 +181,27 @@ export const FluidNavigationContainer: React.FC<Props> = ({
       active: navigationState === NavigationState.BackFrom,
     },
     {
-      name: "isNavigating",
+      name: NavigationState.InTransition,
       active: transitionContext.inTransition,
-      negated: {
-        name: "isNotNavigating",
-        active: !transitionContext.inTransition,
-      },
     },
     {
-      name: "isActive",
+      name: NavigationState.Active,
       active: transitionContext.active,
-      negated: { name: "isNotActive", active: !transitionContext.active },
     },
     {
-      name: "isForward",
+      name: NavigationState.ForwardTo,
       active: transitionContext.isForward,
-      negated: { name: "isBackward", active: !transitionContext.isForward },
+    },
+    {
+      name: NavigationState.Index,
+      active: true,
+      value: transitionContext.index,
     },
   ];
 
   console.log(
     name,
-    transitionContext.progress.__nodeID,
+    // transitionContext.progress.__nodeID,
     "drv:",
     driverContextValue.isActive(),
     "st:",

@@ -1,4 +1,10 @@
-import React, { useContext, useCallback } from "react";
+import React, {
+  useContext,
+  useCallback,
+  useRef,
+  useEffect,
+  useState,
+} from "react";
 import { FluidNavigationContainer } from "react-native-fluid-navigation";
 import { View, StyleSheet, Text, Button, Dimensions } from "react-native";
 import {
@@ -6,11 +12,7 @@ import {
   StackCardInterpolationProps,
   StackCardInterpolatedStyle,
 } from "@react-navigation/stack";
-import {
-  StateContext,
-  ConfigStateType,
-  OnFactoryFunction,
-} from "react-native-fluid-transitions";
+import { StateContext, ConfigStateType } from "react-native-fluid-transitions";
 import Animated, { Easing } from "react-native-reanimated";
 import Fluid, { useFluidConfig } from "react-native-fluid-transitions";
 import { useNavigation } from "@react-navigation/core";
@@ -141,63 +143,6 @@ const Screen: React.FC<Props> = ({ name, color, next, prev }) => {
   const stateContext = useContext(StateContext);
   if (!stateContext) throw Error("States not found");
 
-  // const isNavigating = getState("isNavigating", stateContext.states);
-  // const isForward = getState("isForward", stateContext.states);
-  // const isActiveState = getState("isActive", stateContext.states);
-  const navState = getState("navigationState", stateContext.states);
-
-  const onFactory = useCallback<OnFactoryFunction>(
-    ({ screenSize }) => {
-      let translateX: Array<number> = [];
-      let scale: Array<number> = [];
-      switch (navState.value) {
-        case NavigationState.None: {
-          return { interpolation: [] };
-        }
-        case NavigationState.ForwardTo: {
-          const value = screenSize.width;
-          translateX = [value, 0];
-          scale = [1, 1];
-          break;
-        }
-        case NavigationState.ForwardFrom: {
-          const value = -screenSize.width;
-          translateX = [0, value];
-          scale = [1, 0.8];
-          break;
-        }
-        case NavigationState.BackTo: {
-          const value = -screenSize.width;
-          translateX = [value, 0];
-          scale = [0.8, 1];
-          break;
-        }
-        case NavigationState.BackFrom: {
-          const value = screenSize.width;
-          translateX = [0, value];
-          scale = [1, 1];
-          break;
-        }
-      }
-      return {
-        animation: Fluid.Animations.Timings.Default,
-        interpolation: [
-          // {
-          //   styleKey: "transform.scale",
-          //   inputRange: [0, 1],
-          //   outputRange: scale,
-          // },
-          {
-            styleKey: "transform.translateX",
-            inputRange: [0, 1],
-            outputRange: translateX,
-          },
-        ],
-      };
-    },
-    [name, navState],
-  );
-
   const forwardTo = getState(NavigationState.ForwardTo, stateContext.states);
   const forwardFrom = getState(
     NavigationState.ForwardFrom,
@@ -205,55 +150,43 @@ const Screen: React.FC<Props> = ({ name, color, next, prev }) => {
   );
   const backTo = getState(NavigationState.BackTo, stateContext.states);
   const backFrom = getState(NavigationState.BackFrom, stateContext.states);
-  const none = getState(NavigationState.None, stateContext.states);
-
-  const screenWidth = Dimensions.get("screen").width;
+  // const index = getState(NavigationState.Index, stateContext.states);
+  // const none = getState(NavigationState.None, stateContext.states);
 
   const config = useFluidConfig({
-    // onEnter: [
-    //   {
-    //     state: navState,
-    //     onFactory,
-    //   },
-    // ],
     when: [
       {
         state: forwardTo,
         interpolation: [
           {
-            styleKey: "transform.translateX",
-            inputRange: [0, 1],
-            outputRange: [screenWidth, 0],
-          },
-          {
             styleKey: "opacity",
-            inputRange: [0, 0.1, 1],
-            outputRange: [0, 1, 1],
+            inputRange: [0, 0.45, 0.5, 1],
+            outputRange: [0, 0, 1, 1],
           },
         ],
       },
       {
         state: forwardFrom,
         interpolation: {
-          styleKey: "transform.translateX",
-          inputRange: [0, 1],
-          outputRange: [0, -screenWidth],
+          styleKey: "opacity",
+          inputRange: [0, 0.45, 0.5, 1],
+          outputRange: [1, 1, 0, 0],
         },
       },
       {
         state: backFrom,
         interpolation: {
-          styleKey: "transform.translateX",
-          inputRange: [0, 1],
-          outputRange: [0, screenWidth],
+          styleKey: "opacity",
+          inputRange: [0, 0.45, 0.5, 1],
+          outputRange: [1, 1, 0, 0],
         },
       },
       {
         state: backTo,
         interpolation: {
-          styleKey: "transform.translateX",
-          inputRange: [0, 1],
-          outputRange: [-screenWidth, 0],
+          styleKey: "opacity",
+          inputRange: [0, 0.45, 0.5, 1],
+          outputRange: [0, 0, 1, 1],
         },
       },
     ],
