@@ -196,12 +196,12 @@ const registerWhenInterpolations = (
           runningInterpolations.push(interpolationInfo);
         }
       } else if (isConfigStyleInterpolation(interpolation)) {
-        console.log(
-          transitionItem.label,
-          "Adding",
-          interpolation.styleKey,
-          "[" + interpolation.outputRange.join(", ") + "]",
-        );
+        // console.log(
+        //   transitionItem.label,
+        //   "Adding",
+        //   interpolation.styleKey,
+        //   "[" + interpolation.outputRange.join(", ") + "]",
+        // );
         const interpolationInfo = styleContext.addAnimation(
           interpolation.styleKey,
           interpolation.inputRange,

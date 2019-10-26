@@ -30,3 +30,25 @@ export const useNavigationTransition = (
     ),
   });
 };
+
+export const useAllDirectionTransition = (styleKey: string, value: number) => {
+  return useNavigationTransition(
+    styleKey,
+    [0, 1],
+    [0, -value], // Forward from
+    [value, 0], // Forward to
+    [0, value], // Back from
+    [-value, 0], // Back to
+  );
+};
+
+export const useDirectionTransition = (styleKey: string, value: number) => {
+  return useNavigationTransition(
+    styleKey,
+    [0, 1],
+    [0, value], // Forward from
+    [value, 0], // Forward to
+    [0, value], // Back from
+    [value, 0], // Back to
+  );
+};

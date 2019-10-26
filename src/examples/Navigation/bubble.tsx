@@ -9,7 +9,7 @@ type BubbleProps = {
 
 export const Bubble: React.FC<BubbleProps> = ({ color }) => {
   const horizontalTransition = useHorizontalTransition(
-    Dimensions.get("screen").width,
+    30 + Dimensions.get("screen").width / 2,
   );
 
   return (

@@ -210,6 +210,12 @@ export function commitAnimations(
 
   if (driverContext && driverContext.isActive()) {
     driverContext.requestDuration(duration);
+    console.log(
+      "*** Starting",
+      interpolationInfos.length,
+      "animations in driver context with duration",
+      duration,
+    );
   } else {
     const runAnimation = () => {
       AnimationProvider.runTiming(masterInterpolator, duration, () => {

@@ -16,13 +16,20 @@ type Props = {
   color: string;
   next?: string;
   prev?: string;
+  showBubbles?: boolean;
 };
 
-export const Screen: React.FC<Props> = ({ name, color, next, prev }) => {
+export const Screen: React.FC<Props> = ({
+  name,
+  color,
+  next,
+  prev,
+  showBubbles = true,
+}) => {
   const navigation = useNavigation();
 
   const buttonTransitions = useHorizontalTransition(screenWidth);
-  const headerTransitions = useTopTransition(screenHeight);
+  const headerTransitions = useTopTransition(120);
 
   return (
     <Fluid.View
@@ -44,10 +51,14 @@ export const Screen: React.FC<Props> = ({ name, color, next, prev }) => {
             stagger: 100,
           },
         }}>
-        <Bubble color={ColorA} />
-        <Bubble color={ColorB} />
-        <Bubble color={ColorC} />
-        <Bubble color={ColorE} />
+        {showBubbles && (
+          <>
+            <Bubble color={ColorA} />
+            <Bubble color={ColorB} />
+            <Bubble color={ColorC} />
+            <Bubble color={ColorE} />
+          </>
+        )}
       </Fluid.View>
       <Fluid.View
         label={"buttons_" + name}

@@ -48,32 +48,17 @@ function customInterpolation({
   next,
 }: //layouts: { screen },
 StackCardInterpolationProps): StackCardInterpolatedStyle {
-  // console.log(
-  //   "SPEC NODES",
-  //   index,
-  //   current.progress.__nodeID,
-  //   next ? next.progress.__nodeID : "undefined",
-  // );
-  const overlayOpacity = Animated.interpolate(current.progress, {
-    inputRange: [0, 1],
-    outputRange: [0, 0.07],
-  });
-
-  const shadowOpacity = Animated.interpolate(current.progress, {
-    inputRange: [0, 1],
-    outputRange: [0, 0.3],
-  });
-
   return {
     cardStyle: {
-      // transform: [
-      //   // Translation for the animation of the current card
-      //   { translateX: translateFocused },
-      //   // Translation for the animation of the card on top of this
-      //   { translateX: translateUnfocused },
-      // ],
+      opacity: next
+        ? Animated.interpolate(next.progress, {
+            inputRange: [0, 0.4999, 0.5001, 1],
+            outputRange: [1, 1, 0, 0],
+          })
+        : Animated.interpolate(current.progress, {
+            inputRange: [0, 0.4999, 0.5001, 1],
+            outputRange: [0, 0, 1, 1],
+          }),
     },
-    overlayStyle: { opacity: overlayOpacity },
-    shadowStyle: { shadowOpacity },
   };
 }

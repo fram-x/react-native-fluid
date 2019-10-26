@@ -11,13 +11,16 @@ export const useCurrentValue = (
   transitionContext: TransitionContextType,
 ): {
   duration: Animated.Value<number>;
-  current: Animated.Value<number>;
+  current: Animated.Node<number>;
+  normalizedProgress: Animated.Node<number>;
 } => {
   const currentValue = useMemo(() => new Animated.Value(0), []);
+  const normalizedProgress = useRef<Animated.Node<number>>();
   const durationValue = useMemo(() => new Animated.Value<number>(0), []);
 
   const isForwardValue = useAsAnimatedValue(transitionContext.isForward);
   const inTransitionValue = useAsAnimatedValue(transitionContext.inTransition);
+  const isFocusedValue = useAsAnimatedValue(transitionContext.focused);
 
   const progressRef = useRef<Animated.Node<any>>();
   const updateValueRef = useRef<Animated.Node<any>>();
@@ -35,13 +38,6 @@ export const useCurrentValue = (
     transitionContext.progress !== progressRef.current &&
     transitionContext.inTransition
   ) {
-    console.log(
-      screenName,
-      "UPDATE PROGRESS",
-      // @ts-ignore
-      transitionContext.progress.__nodeID,
-    );
-
     // Save cached value
     progressRef.current = transitionContext.progress;
 
@@ -56,52 +52,52 @@ export const useCurrentValue = (
       return v;
     };
 
+    // Normalize so that the progress always moves from 0..1
+    normalizedProgress.current = Animated.cond(
+      Animated.neq(isForwardValue, 1),
+      Animated.sub(1, transitionContext.progress),
+      transitionContext.progress,
+    );
+
+    // Now split the navigation into two parts, one for the starting screen
+    // and one for the end screen
+    const splitProgress = Animated.cond(
+      Animated.eq(isFocusedValue, 1),
+      // Focused screen
+      Animated.cond(
+        Animated.greaterThan(normalizedProgress.current, 0.5),
+        Animated.multiply(2, Animated.sub(normalizedProgress.current, 0.5)),
+        0,
+      ),
+      // Screen we are moving from
+      Animated.cond(
+        Animated.lessThan(normalizedProgress.current, 0.5),
+        Animated.multiply(normalizedProgress.current, 2),
+        1,
+      ),
+    );
+
     // Set up new
     updateValueRef.current = always(
-      Animated.cond(Animated.eq(inTransitionValue, 1), [
-        Animated.cond(
-          Animated.neq(isForwardValue, 1),
-          [
-            // We are running backwards
-            debug(
-              "<- " +
-                screenName +
-                " backwards " +
-                // @ts-ignore
-                transitionContext.progress.__nodeID,
-              Animated.set(
-                currentValue,
-                Animated.divide(
-                  Animated.sub(1, transitionContext.progress),
-                  Animated.divide(1.0, durationValue),
-                ),
-              ),
-            ),
-          ],
-          [
-            // We are running forwards
-            debug(
-              "-> " +
-                screenName +
-                " forward " +
-                // @ts-ignore
-                transitionContext.progress.__nodeID,
-              Animated.set(
-                currentValue,
-                Animated.divide(
-                  transitionContext.progress,
-                  Animated.divide(1.0, durationValue),
-                ),
-              ),
-            ),
-          ],
+      Animated.cond(
+        Animated.eq(inTransitionValue, 1),
+        debug(
+          screenName,
+          Animated.set(
+            currentValue,
+            Animated.divide(splitProgress, Animated.divide(1.0, durationValue)),
+          ),
         ),
-      ]),
+      ),
     );
 
     // @ts-ignore
     updateValueRef.current.__attach();
   }
 
-  return { current: currentValue, duration: durationValue };
+  return {
+    current: currentValue,
+    duration: durationValue,
+    normalizedProgress: normalizedProgress.current as Animated.Node<number>,
+  };
 };

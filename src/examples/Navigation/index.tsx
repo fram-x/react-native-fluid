@@ -21,6 +21,7 @@ const NavigationExampleScreen = () => {
         component={() => (
           <FluidNavigationContainer name="screen2">
             <Screen
+              showBubbles={false}
               name="Screen 2"
               color="pink"
               prev="screen1"

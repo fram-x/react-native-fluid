@@ -5,13 +5,7 @@ import Fluid, {
   StateContext,
   DriverContext,
 } from "react-native-fluid-transitions";
-import {
-  useVisibilityStyle,
-  useFadeConfig,
-  useNavigationState,
-  useDriverContext,
-  useCurrentValue,
-} from "./Hooks";
+import { useNavigationState, useDriverContext, useCurrentValue } from "./Hooks";
 import { getNavigationStates } from "./Functions";
 
 type Props = {
@@ -31,7 +25,10 @@ export const FluidNavigationContainer: React.FC<Props> = ({
   const navigationState = useNavigationState(transitionContext);
 
   // Current
-  const { current, duration } = useCurrentValue(name, transitionContext);
+  const { current, duration, normalizedProgress } = useCurrentValue(
+    name,
+    transitionContext,
+  );
 
   // Driver context
   const driverContextValue = useDriverContext(
@@ -46,19 +43,21 @@ export const FluidNavigationContainer: React.FC<Props> = ({
     transitionContext,
     stateContext,
   );
-  const config = useFadeConfig(states);
-  const visibilityStyle = useVisibilityStyle(transitionContext.index);
 
-  console.log(name, "NavState", navigationState);
+  console.log(
+    name,
+    "NavState",
+    navigationState,
+    "Focus",
+    transitionContext.focused,
+  );
 
   // Render
   return (
     <DriverContext.Provider value={driverContextValue}>
       <StateContext.Provider value={{ states }}>
         <Fluid.View
-          config={config}
-          staticStyle={StyleSheet.absoluteFill}
-          style={visibilityStyle}
+          staticStyle={[StyleSheet.absoluteFill]}
           label={"__NavContainer_" + name}
           {...props}
         />
