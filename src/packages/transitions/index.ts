@@ -19,7 +19,10 @@ import {
   createState,
   OnFactoryFunction,
   WhenFactoryFunction,
+  ConfigWhenType,
+  ConfigOnType,
   ConfigStateType,
+  ConfigType,
 } from "./src/Configuration";
 import {
   interpolateColor,
@@ -82,4 +85,7 @@ export {
   DriverContextType,
   WhenFactoryFunction,
   ConfigStateType,
+  ConfigWhenType,
+  ConfigOnType,
+  ConfigType,
 };

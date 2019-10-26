@@ -104,7 +104,10 @@ export const getInterpolatorFunction = (
               ),
               [
                 // Interpolate
+                // AnimationProvider.Animated.debug(
+                //   easingKey,
                 set(outputValue as IAnimationValue, interpolateFunc),
+                // ),
               ],
             ),
           ),

@@ -5,6 +5,7 @@ import {
   StackCardInterpolatedStyle,
 } from "@react-navigation/stack";
 import Animated, { Easing } from "react-native-reanimated";
+import { NavigationTiming } from "./types";
 
 export const createFluidStackNavigator = () => {
   const Stack = createStackNavigator();
@@ -19,14 +20,14 @@ export const createFluidStackNavigator = () => {
           open: {
             animation: "timing",
             config: {
-              duration: 2000,
+              duration: NavigationTiming,
               easing: Easing.linear,
             },
           },
           close: {
             animation: "timing",
             config: {
-              duration: 2000,
+              duration: NavigationTiming,
               easing: Easing.linear,
             },
           },

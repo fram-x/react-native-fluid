@@ -52,8 +52,8 @@ export const useCurrentValue = (
     }
 
     const debug = (m: string, v: Animated.Node<number>) => {
-      return AnimationProvider.Animated.debug(m, v) as Animated.Node<number>;
-      // return v;
+      //return AnimationProvider.Animated.debug(m, v) as Animated.Node<number>;
+      return v;
     };
 
     // Set up new
