@@ -7,7 +7,7 @@ import { ConfigType } from "react-native-fluid-transitions";
 
 export const useNavigationTransition = (
   styleKey: string,
-  inputRange: Array<number | string>,
+  inputRange: Array<number>,
   outputRangeForwardFrom: Array<number | string>,
   outputRangeForwardTo: Array<number | string>,
   outputRangeBackFrom: Array<number | string>,
@@ -18,8 +18,8 @@ export const useNavigationTransition = (
     throw Error("State context is missing");
   }
 
-  return useFluidConfig(
-    createWhenConfiguration(
+  return useFluidConfig({
+    when: createWhenConfiguration(
       stateContext.states,
       styleKey,
       inputRange,
@@ -28,5 +28,5 @@ export const useNavigationTransition = (
       outputRangeBackFrom,
       outputRangeBackTo,
     ),
-  );
+  });
 };

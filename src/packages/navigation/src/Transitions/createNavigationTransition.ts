@@ -1,4 +1,4 @@
-import {
+import Fluid, {
   // @ts-ignore
   ConfigWhenType,
   // @ts-ignore
@@ -10,12 +10,12 @@ import { safeGetState } from "../Functions";
 export const createWhenConfiguration = (
   states: ConfigStateType[],
   styleKey: string,
-  inputRange: Array<number | string>,
+  inputRange: Array<number>,
   outputRangeForwardFrom: Array<number | string>,
   outputRangeForwardTo: Array<number | string>,
   outputRangeBackFrom: Array<number | string>,
   outputRangeBackTo: Array<number | string>,
-): ConfigWhenType => {
+): ConfigWhenType[] => {
   const { forwardTo, forwardFrom, backTo, backFrom } = getNavigationStates(
     states,
   );
@@ -34,14 +34,12 @@ export const createWhenConfiguration = (
     ],
   });
 
-  return {
-    when: [
-      interpolationForState(forwardTo, outputRangeForwardTo),
-      interpolationForState(forwardFrom, outputRangeForwardFrom),
-      interpolationForState(backTo, outputRangeBackTo),
-      interpolationForState(backFrom, outputRangeBackFrom),
-    ],
-  };
+  return [
+    interpolationForState(forwardTo, outputRangeForwardTo),
+    interpolationForState(forwardFrom, outputRangeForwardFrom),
+    interpolationForState(backTo, outputRangeBackTo),
+    interpolationForState(backFrom, outputRangeBackFrom),
+  ];
 };
 
 const getNavigationStates = (states: ConfigStateType[]) => {
