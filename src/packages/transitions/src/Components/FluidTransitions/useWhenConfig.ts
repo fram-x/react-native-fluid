@@ -23,9 +23,11 @@ import {
   ConfigWhenFactoryType,
 } from "../../Configuration";
 import { getAnimationOnEnd } from "../../Animation/Builder/getAnimationOnEnd";
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import { removeInterpolation } from "../../Animation/Runner/addInterpolation";
 import { Dimensions } from "react-native";
+import { InterpolationInfo } from "../Types";
+import { unregisterRunningInterpolation } from "../../Animation/Runner/interpolationStorage";
 
 export const useWhenConfig = (
   transitionItem: TransitionItem,
@@ -37,6 +39,8 @@ export const useWhenConfig = (
 ) => {
   const logger = useLog(transitionItem.label, "cwhen");
   const interpolatorContext = useContext(InterpolatorContext);
+  const runningInterpolationsRef = useRef<InterpolationInfo[]>([]);
+
   const configs = configuration.when;
 
   const added = configs.filter(
@@ -71,6 +75,19 @@ export const useWhenConfig = (
     (v, i, a) => a.indexOf(v) === i,
   );
 
+  console.log(
+    transitionItem.label,
+    uniqueConfigs
+      .map(
+        cf =>
+          getResolvedStateName(cf.state) +
+          " (" +
+          (removed.indexOf(cf) > -1 ? "removed" : "added") +
+          ")",
+      )
+      .join(", "),
+  );
+
   uniqueConfigs.forEach(cf => {
     const isRemoved = removed.indexOf(cf) > -1;
     if (isConfigWhenStyle(cf)) {
@@ -84,6 +101,7 @@ export const useWhenConfig = (
         logger,
         styleContext,
         propContext,
+        runningInterpolationsRef.current,
         interpolatorContext,
         isRemoved,
         animationType,
@@ -97,6 +115,7 @@ export const useWhenConfig = (
         styleContext,
         propContext,
         isRemoved,
+        runningInterpolationsRef.current,
         interpolatorContext,
         animationType,
       );
@@ -111,6 +130,7 @@ const registerWhenInterpolations = (
   styleContext: ValueContextType,
   propContext: ValueContextType,
   isRemoved: boolean,
+  runningInterpolations: InterpolationInfo[],
   interpolatorContext: InterpolatorContextType | null,
   animationType?: ConfigAnimationType,
 ) => {
@@ -163,7 +183,7 @@ const registerWhenInterpolations = (
               interpolation.value.ownerLabel,
           );
         }
-        styleContext.addInterpolation(
+        const interpolationInfo = styleContext.addInterpolation(
           interpolator,
           interpolation.styleKey,
           interpolation.inputRange,
@@ -172,14 +192,17 @@ const registerWhenInterpolations = (
           interpolation.extrapolateLeft,
           interpolation.extrapolateRight,
         );
-        console.log(
-          "adding:",
-          transitionItem.label,
-          interpolation.styleKey,
-          interpolation.outputRange.join(", "),
-        );
+        if (interpolationInfo) {
+          runningInterpolations.push(interpolationInfo);
+        }
       } else if (isConfigStyleInterpolation(interpolation)) {
-        styleContext.addAnimation(
+        console.log(
+          transitionItem.label,
+          "Adding",
+          interpolation.styleKey,
+          "[" + interpolation.outputRange.join(", ") + "]",
+        );
+        const interpolationInfo = styleContext.addAnimation(
           interpolation.styleKey,
           interpolation.inputRange,
           interpolation.outputRange,
@@ -193,8 +216,11 @@ const registerWhenInterpolations = (
           when.flip,
           when.yoyo,
         );
+        if (interpolationInfo) {
+          runningInterpolations.push(interpolationInfo);
+        }
       } else if (isConfigPropInterpolation(interpolation)) {
-        propContext.addAnimation(
+        const interpolationInfo = propContext.addAnimation(
           interpolation.propName,
           interpolation.inputRange,
           interpolation.outputRange,
@@ -208,6 +234,9 @@ const registerWhenInterpolations = (
           when.flip,
           when.yoyo,
         );
+        if (interpolationInfo) {
+          runningInterpolations.push(interpolationInfo);
+        }
       }
     } else {
       // Removed
@@ -215,11 +244,35 @@ const registerWhenInterpolations = (
         removeInterpolation(transitionItem.id, interpolation.styleKey);
       }
       // NO need to stop these I think, we'll just let them finish by themselves.
-      // else if (isConfigStyleInterpolation(interpolation)) {
-      //   stopAnimation(transitionItem.id, interpolation.styleKey);
-      // } else if (isConfigPropInterpolation(interpolation)) {
-      //   stopAnimation(transitionItem.id, interpolation.propName);
-      // }
+      else if (isConfigStyleInterpolation(interpolation)) {
+        console.log(
+          transitionItem.label,
+          "Adding",
+          interpolation.styleKey,
+          "[" + interpolation.outputRange.join(", ") + "]",
+        );
+        const interpolationInfo = runningInterpolations.find(
+          p => p.key === interpolation.styleKey,
+        );
+        if (interpolationInfo) {
+          unregisterRunningInterpolation(
+            transitionItem.id,
+            interpolation.styleKey,
+            interpolationInfo.id,
+          );
+        }
+      } else if (isConfigPropInterpolation(interpolation)) {
+        const interpolationInfo = runningInterpolations.find(
+          p => p.key === interpolation.propName,
+        );
+        if (interpolationInfo) {
+          unregisterRunningInterpolation(
+            transitionItem.id,
+            interpolation.propName,
+            interpolationInfo.id,
+          );
+        }
+      }
     }
   });
 };
@@ -230,6 +283,7 @@ const registerWhenWithFactory = (
   logger: UseLoggerFunction,
   styleContext: ValueContextType,
   propContext: ValueContextType,
+  runningInterpolations: InterpolationInfo[],
   interpolatorContext: InterpolatorContextType | null,
   isRemoved: boolean,
   animationType?: ConfigAnimationType,
@@ -260,6 +314,7 @@ const registerWhenWithFactory = (
     styleContext,
     propContext,
     isRemoved,
+    runningInterpolations,
     interpolatorContext,
     animationType,
   );

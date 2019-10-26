@@ -19,6 +19,7 @@ import {
   createState,
   OnFactoryFunction,
   WhenFactoryFunction,
+  ConfigStateType,
 } from "./src/Configuration";
 import {
   interpolateColor,
@@ -61,6 +62,7 @@ const Fluid = {
 
 export default Fluid;
 export {
+  Fluid,
   useFluidState,
   createConfig,
   createState,
@@ -79,4 +81,5 @@ export {
   DriverContext,
   DriverContextType,
   WhenFactoryFunction,
+  ConfigStateType,
 };

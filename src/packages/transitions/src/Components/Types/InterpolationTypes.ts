@@ -42,19 +42,6 @@ export type InterpolationInfo = {
   yoyo?: number;
 };
 
-export type InterpolationType = {
-  input?: number[];
-  output: number[] | string[];
-  stylekey: string;
-  extrapolate?: ExtrapolateType;
-  extrapolateLeft?: ExtrapolateType;
-  extrapolateRight?: ExtrapolateType;
-  label?: string;
-  name?: string;
-  animation?: ConfigAnimationType;
-  interpolator?: ConfigInterpolatorType;
-};
-
 export type OnAnimationFunction = () => void;
 
 export type SharedInterpolationInfo = {

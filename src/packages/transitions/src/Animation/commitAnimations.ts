@@ -7,10 +7,7 @@ import {
   DriverContextType,
 } from "../Components/Types";
 import { fluidInternalException, LoggerLevel } from "../Types";
-import {
-  AnimationProvider,
-  IAnimationValue,
-} from "react-native-fluid-animations";
+import { AnimationProvider } from "react-native-fluid-animations";
 import { InteractionManager } from "react-native";
 import { getResolvedAnimation } from "./Functions/getResolvedAnimation";
 import { TimingDefaultAnimationType } from "../Utilities";
