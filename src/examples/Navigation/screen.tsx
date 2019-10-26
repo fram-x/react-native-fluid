@@ -78,7 +78,7 @@ export const Screen: React.FC<Props> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginVertical: 80,
+    marginVertical: 20,
     marginHorizontal: 20,
     paddingVertical: 20,
     overflow: "hidden",
