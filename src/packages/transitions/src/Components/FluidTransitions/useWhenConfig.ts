@@ -251,30 +251,32 @@ const registerWhenInterpolations = (
           interpolation.styleKey,
           "[" + interpolation.outputRange.join(", ") + "]",
         );
-        const interpolationInfo = runningInterpolations.find(
-          p => p.key === interpolation.styleKey,
+        removePossibleInterpolation(
+          transitionItem.id,
+          interpolation.styleKey,
+          runningInterpolations,
         );
-        if (interpolationInfo) {
-          unregisterRunningInterpolation(
-            transitionItem.id,
-            interpolation.styleKey,
-            interpolationInfo.id,
-          );
-        }
       } else if (isConfigPropInterpolation(interpolation)) {
-        const interpolationInfo = runningInterpolations.find(
-          p => p.key === interpolation.propName,
+        removePossibleInterpolation(
+          transitionItem.id,
+          interpolation.propName,
+          runningInterpolations,
         );
-        if (interpolationInfo) {
-          unregisterRunningInterpolation(
-            transitionItem.id,
-            interpolation.propName,
-            interpolationInfo.id,
-          );
-        }
       }
     }
   });
+};
+
+const removePossibleInterpolation = (
+  id: number,
+  key: string,
+  runningInterpolations: InterpolationInfo[],
+) => {
+  const index = runningInterpolations.findIndex(p => p.key === key);
+  if (index > -1) {
+    unregisterRunningInterpolation(id, key, runningInterpolations[index].id);
+    runningInterpolations.splice(index, 1);
+  }
 };
 
 const registerWhenWithFactory = (

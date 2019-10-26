@@ -31,7 +31,10 @@ export const useCurrentValue = (
     [],
   );
 
-  if (transitionContext.progress !== progressRef.current) {
+  if (
+    transitionContext.progress !== progressRef.current &&
+    transitionContext.inTransition
+  ) {
     console.log(
       screenName,
       "UPDATE PROGRESS",
@@ -48,23 +51,19 @@ export const useCurrentValue = (
       updateValueRef.current.__detach();
     }
 
+    const debug = (m: string, v: Animated.Node<number>) => {
+      return AnimationProvider.Animated.debug(m, v) as Animated.Node<number>;
+      // return v;
+    };
+
     // Set up new
     updateValueRef.current = always(
       Animated.cond(Animated.eq(inTransitionValue, 1), [
-        // AnimationProvider.Animated.debug(
-        //   "-- " +
-        //     screenName +
-        //     " progressvalue (" +
-        //     // @ts-ignore
-        //     transitionContext.progress.__nodeID +
-        //     "):",
-        //   transitionContext.progress,
-        // ) as Animated.Node<number>,
         Animated.cond(
           Animated.neq(isForwardValue, 1),
           [
             // We are running backwards
-            AnimationProvider.Animated.debug(
+            debug(
               "<- " +
                 screenName +
                 " backwards " +
@@ -77,11 +76,11 @@ export const useCurrentValue = (
                   Animated.divide(1.0, durationValue),
                 ),
               ),
-            ) as any,
+            ),
           ],
           [
             // We are running forwards
-            AnimationProvider.Animated.debug(
+            debug(
               "-> " +
                 screenName +
                 " forward " +

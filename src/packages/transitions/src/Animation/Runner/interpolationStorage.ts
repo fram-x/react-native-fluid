@@ -45,7 +45,14 @@ export const registerRunningInterpolation = (
     isRunningShadow: isRunningValue,
   };
 
-  // console.log("Added interpolation", animationId, "for", itemId, "key:", key);
+  // console.log(
+  //   "Registered interpolation",
+  //   animationId,
+  //   "for",
+  //   itemId,
+  //   "key:",
+  //   key,
+  // );
 };
 
 /**
@@ -95,7 +102,17 @@ export const unregisterRunningInterpolation = (
   animationId: number,
 ) => {
   const runningKey = getKey(itemId, key);
-  if (!ensureInterpolation(itemId, key, animationId)) return;
+  if (!ensureInterpolation(itemId, key, animationId)) {
+    console.warn(
+      "**** Could not find interpolation",
+      animationId,
+      "for",
+      itemId,
+      "key:",
+      key,
+    );
+    return;
+  }
 
   // console.log(
   //   "Removing interpolation",
