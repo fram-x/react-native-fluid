@@ -26,6 +26,7 @@ const Stack = createStackNavigator();
 const App = () => {
   return (
     <NavigationNativeContainer>
+      {/* <NavigationExampleScreen /> */}
       <Stack.Navigator
         screenOptions={{ cardStyle: { backgroundColor: "#FFF" } }}>
         <Stack.Screen name="Home" component={HomeScreen} />
