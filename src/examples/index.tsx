@@ -26,8 +26,7 @@ const Stack = createStackNavigator();
 const App = () => {
   return (
     <NavigationNativeContainer>
-      <NavigationExampleScreen />
-      {/* <Stack.Navigator
+      <Stack.Navigator
         screenOptions={{ cardStyle: { backgroundColor: "#FFF" } }}>
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="styles" component={StylesExampleScreen} />
@@ -50,7 +49,7 @@ const App = () => {
         <Stack.Screen name="dragging" component={DraggingExampleScreen} />
         <Stack.Screen name="navigation" component={NavigationExampleScreen} />
         <Stack.Screen name="driver" component={DriverExampleScreen} />
-      </Stack.Navigator> */}
+      </Stack.Navigator>
     </NavigationNativeContainer>
   );
 };
