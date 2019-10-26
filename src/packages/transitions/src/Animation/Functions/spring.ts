@@ -1,6 +1,6 @@
 import {
   AnimationProvider,
-  IAnimationNode
+  IAnimationNode,
 } from "react-native-fluid-animations";
 import { EasingFunction } from "../../Components/Types/Easing";
 
@@ -12,7 +12,7 @@ const {
   divide,
   add,
   multiply,
-  sub
+  sub,
 } = AnimationProvider.Animated;
 
 export type SpringEasingInfo = {
@@ -26,7 +26,7 @@ export const createSpring = (
   mass: number,
   stiffness: number,
   damping: number,
-  velocity?: number
+  velocity?: number,
 ): SpringEasingInfo => {
   const key = JSON.stringify({ from, to, damping, stiffness, mass });
   if (!springCache[key]) {
@@ -37,7 +37,7 @@ export const createSpring = (
       mass,
       stiffness,
       damping,
-      velocity
+      velocity,
     );
     const springFunction = createSpringFunction(
       key,
@@ -45,12 +45,12 @@ export const createSpring = (
       mass,
       stiffness,
       damping,
-      0
+      0,
     );
     Object.defineProperty(springFunction, "name", { value: key });
     springCache[key] = {
       easing: springFunction,
-      duration
+      duration,
     };
   }
   return springCache[key];
@@ -62,7 +62,7 @@ const createSpringFunction = (
   mass: number,
   stiffness: number,
   damping: number,
-  initialVelocity: number
+  initialVelocity: number,
 ) => {
   const w0 = Math.sqrt(stiffness / mass);
   const zeta = damping / (2 * Math.sqrt(stiffness * mass));
@@ -83,8 +83,8 @@ const createSpringFunction = (
         exp(multiply(multiply(multiply(-1, progress), zeta), w0)),
         add(
           multiply(a, cos(multiply(wd, progress))),
-          multiply(b, sin(multiply(wd, progress)))
-        )
+          multiply(b, sin(multiply(wd, progress))),
+        ),
       );
     } else {
       /*
@@ -92,7 +92,7 @@ const createSpringFunction = (
       */
       result = multiply(
         add(a, multiply(b, progress)),
-        exp(multiply(multiply(-1, progress), w0))
+        exp(multiply(multiply(-1, progress), w0)),
       );
     }
     // return 1 - progress;
@@ -110,7 +110,7 @@ export const getCachedSpring = (
   mass: number,
   stiffness: number,
   damping: number,
-  initialVelocity: number = 0
+  initialVelocity: number = 0,
 ): SpringEasingInfo => {
   const key = JSON.stringify({ from, to, damping, stiffness, mass });
   if (!springCache[key]) {
@@ -145,7 +145,7 @@ export const getCachedSpring = (
         elapsed += frame;
         if (springFunction(elapsed) === 1) {
           rest++;
-          if (rest >= 16) {
+          if (rest >= 2) {
             break;
           }
         } else {
@@ -160,7 +160,7 @@ export const getCachedSpring = (
     const duration = getDuration();
     springCache[key] = {
       easing: (t: any) => springFunction(t, duration),
-      duration
+      duration,
     };
   }
 
