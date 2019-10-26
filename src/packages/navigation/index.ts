@@ -1,2 +1,2 @@
 export { FluidNavigationContainer } from "./src";
-export { NavigationState } from "./src";
+export { NavigationState } from "./src/types";
