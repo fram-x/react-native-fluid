@@ -23,6 +23,7 @@ import {
   ConfigOnType,
   ConfigStateType,
   ConfigType,
+  ChildAnimationDirection,
 } from "./src/Configuration";
 import {
   interpolateColor,
@@ -88,4 +89,5 @@ export {
   ConfigWhenType,
   ConfigOnType,
   ConfigType,
+  ChildAnimationDirection,
 };

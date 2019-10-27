@@ -7,9 +7,11 @@ import {
   useHorizontalTransition,
 } from "react-native-fluid-navigation";
 import { Bubble } from "./bubble";
-import { ColorA, ColorB, ColorC, ColorE } from "../colors";
+import { ColorA, ColorB, ColorC, ColorE, ColorD } from "../colors";
+import { Box } from "./box";
+import { useNavigationDirection } from "react-native-fluid-navigation";
 
-const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
+const { width: screenWidth } = Dimensions.get("screen");
 
 type Props = {
   name: string;
@@ -27,6 +29,7 @@ export const Screen: React.FC<Props> = ({
   showBubbles = true,
 }) => {
   const navigation = useNavigation();
+  const direction = useNavigationDirection();
 
   const buttonTransitions = useHorizontalTransition(screenWidth);
   const headerTransitions = useTopTransition(120);
@@ -43,23 +46,37 @@ export const Screen: React.FC<Props> = ({
           {"Hello world from " + name + "!"}
         </Text>
       </Fluid.View>
-      <Fluid.View
-        style={styles.content}
-        config={{
-          childAnimation: {
-            type: "staggered",
-            stagger: 100,
-          },
-        }}>
-        {showBubbles && (
-          <>
-            <Bubble color={ColorA} />
-            <Bubble color={ColorB} />
-            <Bubble color={ColorC} />
-            <Bubble color={ColorE} />
-          </>
-        )}
-      </Fluid.View>
+      {showBubbles && (
+        <Fluid.View
+          style={styles.verticalContent}
+          config={{
+            childAnimation: {
+              type: "staggered",
+              stagger: 100,
+            },
+          }}>
+          <Bubble color={ColorA} />
+          <Bubble color={ColorB} />
+          <Bubble color={ColorC} />
+          <Bubble color={ColorE} />
+        </Fluid.View>
+      )}
+      {!showBubbles && (
+        <Fluid.View
+          style={styles.horizontalContent}
+          config={{
+            childAnimation: {
+              type: "staggered",
+              stagger: 100,
+              direction,
+            },
+          }}>
+          <Box color={ColorD} />
+          <Box color={ColorE} />
+          <Box color={ColorC} />
+          <Box color={ColorB} />
+        </Fluid.View>
+      )}
       <Fluid.View
         label={"buttons_" + name}
         config={buttonTransitions}
@@ -92,8 +109,14 @@ const styles = StyleSheet.create({
   headerSubText: {
     color: "#4c4c4c",
   },
-  content: {
+  verticalContent: {
     flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  horizontalContent: {
+    flex: 1,
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
   },

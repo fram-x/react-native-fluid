@@ -47,7 +47,12 @@ const NavigationExampleScreen = () => {
         name="screen4"
         component={() => (
           <FluidNavigationContainer name="screen4">
-            <Screen name="Screen 4" color="beige" prev="screen3" />
+            <Screen
+              name="Screen 4"
+              color="beige"
+              prev="screen3"
+              showBubbles={false}
+            />
           </FluidNavigationContainer>
         )}
       />

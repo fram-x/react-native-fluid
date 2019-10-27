@@ -7,7 +7,7 @@ type Props = {
   color: string;
 };
 
-export const Bubble: React.FC<Props> = ({ color }) => {
+export const Box: React.FC<Props> = ({ color }) => {
   const horizontalTransition = useHorizontalTransition(
     30 + Dimensions.get("screen").width / 2,
   );
@@ -22,9 +22,8 @@ export const Bubble: React.FC<Props> = ({ color }) => {
 
 const styles = StyleSheet.create({
   container: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    margin: 20,
+    width: 40,
+    height: 40,
+    margin: 10,
   },
 });
