@@ -24,6 +24,9 @@ import {
   ConfigStateType,
   ConfigType,
   ChildAnimationDirection,
+  ConfigAnimationType,
+  ConfigWhenFactoryType,
+  ConfigOnFactoryType,
 } from "./src/Configuration";
 import {
   interpolateColor,
@@ -53,6 +56,14 @@ const States = {
   StateMounted,
 };
 
+export type StateConfig = ConfigStateType;
+export type When = ConfigWhenType;
+export type OnConfig = ConfigOnType;
+export type DirectionConfig = ChildAnimationDirection;
+export type AnimationConfig = ConfigAnimationType;
+export type WhenFactoryConfig = ConfigWhenFactoryType;
+export type OnFactoryConfig = ConfigOnFactoryType;
+
 const Fluid = {
   View: TransitionView,
   Text: TransitionText,
@@ -81,9 +92,9 @@ export {
   interpolateColor,
   interpolateValue,
   ComponentProps,
-  OnFactoryFunction,
   DriverContext,
   DriverContextType,
+  OnFactoryFunction,
   WhenFactoryFunction,
   ConfigStateType,
   ConfigWhenType,

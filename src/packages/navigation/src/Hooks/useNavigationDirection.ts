@@ -2,9 +2,9 @@ import { useContext } from "react";
 import { StateContext } from "react-native-fluid-transitions";
 import { safeGetState } from "../Functions";
 import { NavigationState } from "../types";
-import { ChildAnimationDirection } from "react-native-fluid-transitions";
+import { DirectionConfig } from "react-native-fluid-transitions";
 
-export const useNavigationDirection = (): ChildAnimationDirection => {
+export const useNavigationDirection = (): DirectionConfig => {
   const stateContext = useContext(StateContext);
   if (!stateContext) {
     throw Error("State context is missing");
