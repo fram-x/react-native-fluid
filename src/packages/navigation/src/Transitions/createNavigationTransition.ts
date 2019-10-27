@@ -22,13 +22,11 @@ export const createWhenConfiguration = (
 
   const interpolationForState = (
     state: ConfigStateType,
-    isForward: boolean,
+    _isForward: boolean,
     outputRange: Array<number | string>,
   ) => ({
     state: state.name,
-    animation: isForward
-      ? Fluid.Animations.Springs.Gentle
-      : Fluid.Animations.Timings.Default,
+    animation: Fluid.Animations.Springs.Gentle,
     interpolation: [
       {
         styleKey,

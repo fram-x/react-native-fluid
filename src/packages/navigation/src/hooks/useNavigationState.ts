@@ -17,9 +17,9 @@ export const useNavigationState = (
     : NavigationState.BackFrom;
 
   if (navigationStateRef.current !== nextNavigationState) {
-    if (nextNavigationState !== NavigationState.None) {
-      navigationStateRef.current = nextNavigationState;
-    }
+    //if (nextNavigationState !== NavigationState.None) {
+    navigationStateRef.current = nextNavigationState;
+    // }
   }
   return navigationStateRef.current;
 };

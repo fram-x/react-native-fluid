@@ -1,8 +1,6 @@
 import { useContext } from "react";
 import { StateContext, useFluidConfig } from "react-native-fluid-transitions";
 import { createWhenConfiguration } from "./createNavigationTransition";
-// @ts-ignore
-import { ConfigWhenType } from "react-native-fluid-transitions";
 import { ConfigType } from "react-native-fluid-transitions";
 
 export const useNavigationTransition = (

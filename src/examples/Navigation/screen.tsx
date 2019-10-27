@@ -37,10 +37,10 @@ export const Screen: React.FC<Props> = ({
   return (
     <Fluid.View
       label={name}
-      style={{ ...styles.container, backgroundColor: color }}
+      staticStyle={{ ...styles.container, backgroundColor: color }}
       // config={config}
     >
-      <Fluid.View config={headerTransitions} style={styles.header}>
+      <Fluid.View config={headerTransitions} staticStyle={styles.header}>
         <Text style={styles.headerText}>{name}</Text>
         <Text style={styles.headerSubText}>
           {"Hello world from " + name + "!"}
@@ -48,7 +48,8 @@ export const Screen: React.FC<Props> = ({
       </Fluid.View>
       {showBubbles && (
         <Fluid.View
-          style={styles.verticalContent}
+          label={"content-" + name}
+          staticStyle={styles.verticalContent}
           config={{
             childAnimation: {
               type: "staggered",
@@ -63,7 +64,7 @@ export const Screen: React.FC<Props> = ({
       )}
       {!showBubbles && (
         <Fluid.View
-          style={styles.horizontalContent}
+          staticStyle={styles.horizontalContent}
           config={{
             childAnimation: {
               type: "staggered",
@@ -80,7 +81,7 @@ export const Screen: React.FC<Props> = ({
       <Fluid.View
         label={"buttons_" + name}
         config={buttonTransitions}
-        style={styles.footer}>
+        staticStyle={styles.footer}>
         {prev && (
           <Button title={"Back"} onPress={() => navigation.navigate(prev)} />
         )}
@@ -97,7 +98,9 @@ const styles = StyleSheet.create({
     flex: 1,
     marginVertical: 20,
     marginHorizontal: 20,
-    paddingVertical: 20,
+    paddingVertical: 0,
+    paddingBottom: 0,
+    marginBottom: 40,
     overflow: "hidden",
   },
   header: {
@@ -125,5 +128,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flexDirection: "row",
     padding: 14,
+    backgroundColor: "beige",
   },
 });

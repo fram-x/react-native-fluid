@@ -44,13 +44,13 @@ export const FluidNavigationContainer: React.FC<Props> = ({
     stateContext,
   );
 
-  console.log(
-    name,
-    "NavState",
-    navigationState,
-    "Focus",
-    transitionContext.focused,
-  );
+  // console.log(
+  //   name,
+  //   "NavState",
+  //   navigationState,
+  //   "Focus",
+  //   transitionContext.focused,
+  // );
 
   // Render
   return (

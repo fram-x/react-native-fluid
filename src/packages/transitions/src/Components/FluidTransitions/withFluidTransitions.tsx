@@ -284,6 +284,7 @@ export function withFluidTransitions<BasePropType, StyleType>(
       ref: componentRef,
     };
 
+    // Without children we don't need any context either
     if (React.Children.count(children) === 0) {
       return renderTouchable(
         renderSharedOverlay(Component, props, hasChildren),

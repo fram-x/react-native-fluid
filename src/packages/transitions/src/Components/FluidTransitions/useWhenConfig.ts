@@ -75,18 +75,18 @@ export const useWhenConfig = (
     (v, i, a) => a.indexOf(v) === i,
   );
 
-  console.log(
-    transitionItem.label,
-    uniqueConfigs
-      .map(
-        cf =>
-          getResolvedStateName(cf.state) +
-          " (" +
-          (removed.indexOf(cf) > -1 ? "removed" : "added") +
-          ")",
-      )
-      .join(", "),
-  );
+  // console.log(
+  //   transitionItem.label,
+  //   uniqueConfigs
+  //     .map(
+  //       cf =>
+  //         getResolvedStateName(cf.state) +
+  //         " (" +
+  //         (removed.indexOf(cf) > -1 ? "removed" : "added") +
+  //         ")",
+  //     )
+  //     .join(", "),
+  // );
 
   uniqueConfigs.forEach(cf => {
     const isRemoved = removed.indexOf(cf) > -1;
@@ -245,12 +245,12 @@ const registerWhenInterpolations = (
       }
       // NO need to stop these I think, we'll just let them finish by themselves.
       else if (isConfigStyleInterpolation(interpolation)) {
-        console.log(
-          transitionItem.label,
-          "Adding",
-          interpolation.styleKey,
-          "[" + interpolation.outputRange.join(", ") + "]",
-        );
+        // console.log(
+        //   transitionItem.label,
+        //   "Adding",
+        //   interpolation.styleKey,
+        //   "[" + interpolation.outputRange.join(", ") + "]",
+        // );
         removePossibleInterpolation(
           transitionItem.id,
           interpolation.styleKey,

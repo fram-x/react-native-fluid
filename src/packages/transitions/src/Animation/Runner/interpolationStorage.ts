@@ -103,7 +103,7 @@ export const unregisterRunningInterpolation = (
 ) => {
   const runningKey = getKey(itemId, key);
   if (!ensureInterpolation(itemId, key, animationId)) {
-    console.warn(
+    console.log(
       "**** Could not find interpolation",
       animationId,
       "for",
