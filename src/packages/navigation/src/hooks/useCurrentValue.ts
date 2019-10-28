@@ -47,47 +47,16 @@ export const useCurrentValue = (
       updateValueRef.current.__detach();
     }
 
-    const debug = (m: string, v: Animated.Node<number>) => {
-      //return AnimationProvider.Animated.debug(m, v) as Animated.Node<number>;
-      return v;
-    };
-
-    // Normalize so that the progress always moves from 0..1
-    normalizedProgress.current = Animated.cond(
-      Animated.neq(isForwardValue, 1),
-      Animated.sub(1, transitionContext.progress),
-      transitionContext.progress,
-    );
-
-    // Now split the navigation into two parts, one for the starting screen
-    // and one for the end screen
-    const splitProgress = Animated.cond(
-      Animated.eq(isFocusedValue, 1),
-      // Focused screen
-      Animated.cond(
-        Animated.greaterThan(normalizedProgress.current, 0.5),
-        Animated.multiply(2, Animated.sub(normalizedProgress.current, 0.5)),
-        0,
-      ),
-      // Screen we are moving from
-      Animated.cond(
-        Animated.lessThan(normalizedProgress.current, 0.5),
-        Animated.multiply(normalizedProgress.current, 2),
-        1,
-      ),
-    );
-
     // Set up new
     updateValueRef.current = always(
-      Animated.cond(
-        Animated.eq(inTransitionValue, 1),
-        debug(
-          screenName,
-          Animated.set(
-            currentValue,
-            Animated.divide(splitProgress, Animated.divide(1.0, durationValue)),
-          ),
+      updateCurrentProc(
+        currentValue,
+        splitProgressProc(
+          normalizeProgressProc(transitionContext.progress, isForwardValue),
+          isFocusedValue,
         ),
+        inTransitionValue,
+        durationValue,
       ),
     );
 
@@ -101,3 +70,40 @@ export const useCurrentValue = (
     normalizedProgress: normalizedProgress.current as Animated.Node<number>,
   };
 };
+
+const normalizeProgressProc = Animated.proc((progress, isForward) =>
+  Animated.cond(
+    Animated.neq(isForward, 1),
+    Animated.sub(1, progress),
+    progress,
+  ),
+);
+
+const splitProgressProc = Animated.proc((normalizedProgress, isFocused) =>
+  Animated.cond(
+    Animated.eq(isFocused, 1),
+    // Focused screen
+    Animated.cond(
+      Animated.greaterThan(normalizedProgress, 0.5),
+      Animated.multiply(2, Animated.sub(normalizedProgress, 0.5)),
+      0,
+    ),
+    // Screen we are moving from
+    Animated.cond(
+      Animated.lessThan(normalizedProgress, 0.5),
+      Animated.multiply(normalizedProgress, 2),
+      1,
+    ),
+  ),
+);
+
+const updateCurrentProc = Animated.proc(
+  (current, splitProgress, inTransition, duration) =>
+    Animated.cond(
+      Animated.eq(inTransition, 1),
+      Animated.set(
+        current,
+        Animated.divide(splitProgress, Animated.divide(1.0, duration)),
+      ),
+    ),
+);
