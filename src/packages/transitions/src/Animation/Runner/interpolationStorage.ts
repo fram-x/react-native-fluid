@@ -103,14 +103,17 @@ export const unregisterRunningInterpolation = (
 ) => {
   const runningKey = getKey(itemId, key);
   if (!ensureInterpolation(itemId, key, animationId)) {
-    console.log(
-      "**** Could not find interpolation",
-      animationId,
-      "for",
-      itemId,
-      "key:",
-      key,
-    );
+    // console.log(
+    //   "**** Could not find interpolation",
+    //   animationId,
+    //   "for",
+    //   itemId,
+    //   "key:",
+    //   key,
+    // );
+    // Just return when there is no animation to remove.
+    // These methods aren't necessarily symetric - since we
+    // have multiple ways of trying to clean up.
     return;
   }
 
