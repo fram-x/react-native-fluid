@@ -9,7 +9,7 @@ type Props = {
 
 export const Box: React.FC<Props> = ({ color }) => {
   const horizontalTransition = useHorizontalTransition(
-    90 + Dimensions.get("screen").width / 2,
+    Dimensions.get("screen").width,
   );
 
   return (

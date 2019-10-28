@@ -112,7 +112,12 @@ export {
 //   ) {
 //     if (data.args.length === 2 && data.args[1].hasOwnProperty("type")) {
 //       nodeCallCount++;
-//       console.log(nodeCallCount, data.args[1].type);
+//       const type = data.args[1].type;
+//       if (type === "callfunc") {
+//         console.log(nodeCallCount, type);
+//       } else {
+//         console.log(nodeCallCount, type);
+//       }
 //     }
 //   }
 // };

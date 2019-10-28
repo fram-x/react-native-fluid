@@ -96,11 +96,11 @@ export const Screen: React.FC<Props> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginVertical: 20,
-    marginHorizontal: 20,
-    paddingVertical: 0,
+    // marginVertical: 20,
+    // marginHorizontal: 20,
+    // paddingVertical: 0,
+    // marginBottom: 40,
     paddingBottom: 0,
-    marginBottom: 40,
     overflow: "hidden",
   },
   header: {
