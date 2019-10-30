@@ -9,14 +9,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 14,
-    margin: 24,
-    borderRadius: 8,
   },
   active: {
     backgroundColor: ColorE,
+    width: 200,
+    height: 50,
+    borderRadius: 25,
   },
   inactive: {
     backgroundColor: ColorC,
+    width: 300,
+    height: 50,
+    borderRadius: 0,
   },
 });
 

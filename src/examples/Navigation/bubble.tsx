@@ -22,9 +22,9 @@ export const Bubble: React.FC<Props> = ({ color }) => {
 
 const styles = StyleSheet.create({
   container: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     margin: 20,
   },
 });

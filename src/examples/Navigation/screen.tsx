@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Dimensions, Text, Button, View } from "react-native";
 import { useNavigation } from "react-navigation-hooks";
-import Fluid from "react-native-fluid-transitions";
+import Fluid, { useFluidConfig } from "react-native-fluid-transitions";
 import {
   useTopTransition,
   useHorizontalTransition,
@@ -11,12 +11,14 @@ import { ColorA, ColorB, ColorC, ColorE, ColorD } from "../colors";
 import { Box } from "./box";
 import { useNavigationDirection } from "react-native-fluid-navigation";
 import { AnimatedButton } from "./button";
+import { useNavigationStates } from "react-native-fluid-navigation";
 
 const { width: screenWidth } = Dimensions.get("screen");
 
 type Props = {
   name: string;
   color: string;
+  interpolationColor: string;
   next?: string;
   prev?: string;
   showBubbles?: boolean;
@@ -25,15 +27,29 @@ type Props = {
 export const Screen: React.FC<Props> = ({
   name,
   color,
+  interpolationColor,
   next,
   prev,
   showBubbles = true,
 }) => {
   const navigation = useNavigation();
   const direction = useNavigationDirection();
-
+  const { forwardFrom, forwardTo, backFrom, backTo } = useNavigationStates();
   const buttonTransitions = useHorizontalTransition(screenWidth);
   const headerTransitions = useTopTransition(120);
+
+  const sharedTransition = useFluidConfig({
+    onEnter: [
+      {
+        state: forwardTo,
+        fromLabel: next || "",
+      },
+      {
+        state: backTo,
+        fromLabel: next || "",
+      },
+    ],
+  });
 
   return (
     <Fluid.View
@@ -84,9 +100,19 @@ export const Screen: React.FC<Props> = ({
           <Box color={ColorB} />
         </Fluid.View>
       )}
-      <AnimatedButton>
-        <Text>{name}</Text>
-      </AnimatedButton>
+      {/* <View style={styles.interpolationContainer}>
+        <Fluid.View
+          staticStyle={styles.interpolationBox}
+          style={{ backgroundColor: interpolationColor }}
+          label={name}
+          config={sharedTransition}
+        />
+      </View> */}
+      <View style={styles.buttonContainer}>
+        <AnimatedButton>
+          <Text>{name}</Text>
+        </AnimatedButton>
+      </View>
       <View style={styles.footer}>
         <Fluid.View
           staticStyle={styles.footerInner}
@@ -133,6 +159,20 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+  },
+  interpolationContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 24,
+  },
+  interpolationBox: {
+    width: 40,
+    height: 40,
+  },
+  buttonContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 24,
   },
   footer: {
     padding: 14,

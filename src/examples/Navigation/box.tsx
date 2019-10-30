@@ -24,6 +24,6 @@ const styles = StyleSheet.create({
   container: {
     width: 40,
     height: 40,
-    margin: 10,
+    margin: 20,
   },
 });
