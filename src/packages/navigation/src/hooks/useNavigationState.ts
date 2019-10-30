@@ -1,11 +1,23 @@
 import { NavigationState } from "../types";
-import { useRef, useState } from "react";
+import {
+  useRef,
+  useState,
+  useContext,
+  useMemo,
+  useEffect,
+  useCallback,
+} from "react";
 import { useNavigation, useNavigationEvents } from "react-navigation-hooks";
 import {
   NavigationScreenProp,
   NavigationRoute,
   NavigationParams,
 } from "react-navigation";
+import { StackAnimationIsSwipingContext } from "react-navigation-stack";
+
+// @ts-ignore
+import { always } from "react-native-reanimated/src/base";
+import Animated from "react-native-reanimated";
 
 export const useNavigationState = (
   name: string,
@@ -17,6 +29,33 @@ export const useNavigationState = (
   const navigation = useNavigation();
   const myIndexRef = useRef(getMyIndex(navigation));
   const prevIndexRef = useRef(getIndex(navigation));
+
+  // Set up node for tracking swiping
+  const isSwipingValue = useContext(StackAnimationIsSwipingContext);
+
+  const updateSwiping = useCallback((args: readonly (0 | 1)[]) => {
+    const isSwiping = args[0];
+    const isClosing = args[1];
+    if (isSwiping) {
+      setNavigationState(NavigationState.BackFrom);
+    }
+  }, []);
+
+  const updateSwipingNode = useMemo(
+    () =>
+      always(
+        Animated.onChange(isSwipingValue, [
+          Animated.call([isSwipingValue], updateSwiping),
+        ]),
+      ),
+    [isSwipingValue, updateSwiping],
+  );
+
+  useEffect(() => {
+    updateSwipingNode.__attach();
+    return () => updateSwipingNode.__detach();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useNavigationEvents(p => {
     console.log(name, p.action.type);
@@ -49,7 +88,15 @@ export const useNavigationState = (
           : NavigationState.BackFrom;
 
       if (nextNavigationState !== navigationState) {
-        setNavigationState(nextNavigationState);
+        if (
+          forward &&
+          !focused &&
+          nextNavigationState === NavigationState.None
+        ) {
+          // DO nothing - we'd like to keep the state
+        } else {
+          setNavigationState(nextNavigationState);
+        }
       }
     }
   });

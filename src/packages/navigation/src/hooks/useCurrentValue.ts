@@ -82,7 +82,6 @@ export const useCurrentValue = (
           new Animated.Value(inTransition ? 1 : 0),
           durationValue,
         ),
-        // AnimationProvider.Animated.debug(name, currentValue),
       ]),
     );
 
