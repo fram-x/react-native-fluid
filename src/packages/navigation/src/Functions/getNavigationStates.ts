@@ -1,14 +1,10 @@
 import { NavigationState } from "../types";
-import { StateContextType } from "react-native-fluid-transitions";
-import { TransitionContextType } from "react-navigation-stack/src/utils/TransitionContext";
 
 export const getNavigationStates = (
+  index: number,
   navigationState: NavigationState,
-  transitionContext: TransitionContextType,
-  stateContext: StateContextType | null,
 ) => {
   const states = [
-    ...(stateContext ? stateContext.states : []),
     {
       name: NavigationState.None,
       active: navigationState === NavigationState.None,
@@ -31,20 +27,18 @@ export const getNavigationStates = (
     },
     {
       name: NavigationState.InTransition,
-      active: transitionContext.inTransition,
-    },
-    {
-      name: NavigationState.Focused,
-      active: transitionContext.focused,
+      active: navigationState !== NavigationState.None,
     },
     {
       name: NavigationState.Forward,
-      active: transitionContext.isForward,
+      active:
+        navigationState === NavigationState.ForwardFrom ||
+        navigationState === NavigationState.ForwardTo,
     },
     {
       name: NavigationState.Index,
       active: true,
-      value: transitionContext.index,
+      value: index,
     },
   ];
   return states;

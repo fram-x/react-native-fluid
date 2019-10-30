@@ -3,7 +3,6 @@ import { useMemo } from "react";
 import { DriverContextType } from "react-native-fluid-transitions";
 import { NavigationState } from "../types";
 import { useAsAnimatedValue } from "./useAsAnimatedValue";
-import { TransitionContextType } from "react-navigation-stack/src/utils/TransitionContext";
 import { AnimationProvider } from "react-native-fluid-animations";
 
 export const useDriverContext = (

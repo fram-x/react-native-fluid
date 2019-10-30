@@ -1,53 +1,69 @@
-import Reactfrom "react";
+import React, { useState } from "react";
 import {
   createStackNavigator,
-  StackCardInterpolationProps,
-  StackCardInterpolatedStyle,
+  NavigationStackOptions,
+  NavigationStackProp,
+  NavigationStackConfig,
 } from "react-navigation-stack";
 import Animated, { Easing } from "react-native-reanimated";
 import { NavigationTiming } from "./types";
+import {
+  NavigationRouteConfigMap,
+  CreateNavigatorConfig,
+  NavigationStackRouterConfig,
+} from "react-navigation";
+import {
+  CardInterpolationProps,
+  CardInterpolatedStyle,
+} from "react-navigation-stack/lib/typescript/src/types";
 
-export const createFluidStackNavigator = () => {
-  const Stack = createStackNavigator();
-  const Navigator: React.FC = ({ children }) => (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-        cardTransparent: true,
-        cardOverlayEnabled: false,
-        cardStyleInterpolator: customInterpolation,
-        transitionSpec: {
-          open: {
-            animation: "timing",
-            config: {
-              duration: NavigationTiming,
-              easing: Easing.linear,
-            },
-          },
-          close: {
-            animation: "timing",
-            config: {
-              duration: NavigationTiming,
-              easing: Easing.linear,
-            },
+export const createFluidStackNavigator = (
+  routeConfigMap: NavigationRouteConfigMap<
+    NavigationStackOptions,
+    NavigationStackProp
+  >,
+  stackConfig?: CreateNavigatorConfig<
+    NavigationStackConfig,
+    NavigationStackRouterConfig,
+    NavigationStackOptions,
+    NavigationStackProp
+  >,
+): React.ComponentType<{}> => {
+  return createStackNavigator(routeConfigMap, {
+    ...stackConfig,
+    headerMode: "none",
+    defaultNavigationOptions: {
+      cardShadowEnabled: false,
+      cardOverlayEnabled: false,
+      cardTransparent: true,
+      cardStyle: { backgroundColor: "#FFF" },
+      onTransitionStart: () => {},
+      onTransitionEnd: () => {},
+      cardStyleInterpolator: customInterpolation,
+      transitionSpec: {
+        open: {
+          animation: "timing",
+          config: {
+            duration: NavigationTiming,
+            easing: Easing.linear,
           },
         },
-      }}>
-      {children}
-    </Stack.Navigator>
-  );
-  return {
-    Navigator,
-    Screen: Stack.Screen,
-  };
+        close: {
+          animation: "timing",
+          config: {
+            duration: NavigationTiming,
+            easing: Easing.linear,
+          },
+        },
+      },
+    },
+  });
 };
 
 function customInterpolation({
-  index,
   current,
   next,
-}: //layouts: { screen },
-StackCardInterpolationProps): StackCardInterpolatedStyle {
+}: CardInterpolationProps): CardInterpolatedStyle {
   return {
     cardStyle: {
       opacity: next

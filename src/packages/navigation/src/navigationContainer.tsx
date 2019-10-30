@@ -1,12 +1,13 @@
 import React, { useContext } from "react";
 import { StyleSheet } from "react-native";
-import TransitionContext from "react-navigation-stack/src/utils/TransitionContext";
 import Fluid, {
   StateContext,
   DriverContext,
 } from "react-native-fluid-transitions";
 import { useNavigationState, useDriverContext, useCurrentValue } from "./Hooks";
 import { getNavigationStates } from "./Functions";
+import { useNavigation, useNavigationEvents } from "react-navigation-hooks";
+import { StackAnimationProgressContext } from "react-navigation-stack";
 
 type Props = {
   name: string;
@@ -16,18 +17,12 @@ export const FluidNavigationContainer: React.FC<Props> = ({
   name,
   ...props
 }) => {
-  // Context
-  const stateContext = useContext(StateContext);
-  const transitionContext = useContext(TransitionContext);
-
-  if (!transitionContext) throw Error("No transition context found.");
-
-  const navigationState = useNavigationState(transitionContext);
+  const { navigationState, index } = useNavigationState(name);
 
   // Current
   const { current, duration, normalizedProgress } = useCurrentValue(
     name,
-    transitionContext,
+    navigationState,
   );
 
   // Driver context
@@ -38,19 +33,8 @@ export const FluidNavigationContainer: React.FC<Props> = ({
     current,
   );
 
-  const states = getNavigationStates(
-    navigationState,
-    transitionContext,
-    stateContext,
-  );
-
-  // console.log(
-  //   name,
-  //   "NavState",
-  //   navigationState,
-  //   "Focus",
-  //   transitionContext.focused,
-  // );
+  const states = getNavigationStates(index, navigationState);
+  console.log(name, "NavState", navigationState);
 
   // Render
   return (

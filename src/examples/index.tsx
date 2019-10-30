@@ -19,7 +19,7 @@ import InteractionsExampleScreen from "./Interactions";
 import SvgExampleScreen from "./SVG";
 import RepeatExampleScreen from "./Repeating";
 import DraggingExampleScreen from "./Dragging";
-//import NavigationExampleScreen from "./Navigation";
+import NavigationExampleScreen from "./Navigation";
 import DriverExampleScreen from "./Driver";
 
 const Stack = createStackNavigator({
@@ -35,7 +35,7 @@ const Stack = createStackNavigator({
   svg: SvgExampleScreen,
   repeat: RepeatExampleScreen,
   dragging: DraggingExampleScreen,
-  //navigation: NavigationExampleScreen,
+  navigation: NavigationExampleScreen,
   interactions: InteractionsExampleScreen,
   driver: DriverExampleScreen,
   children: ChildExampleScreen,

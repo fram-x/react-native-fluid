@@ -1,6 +1,6 @@
 import React from "react";
-import { StyleSheet, Dimensions, Text, View, Button } from "react-native";
-import { useNavigation } from "@react-navigation/core";
+import { StyleSheet, Dimensions, Text, Button } from "react-native";
+import { useNavigation } from "react-navigation-hooks";
 import Fluid from "react-native-fluid-transitions";
 import {
   useTopTransition,

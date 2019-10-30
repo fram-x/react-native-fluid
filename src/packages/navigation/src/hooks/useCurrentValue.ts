@@ -1,33 +1,54 @@
 import Animated from "react-native-reanimated";
 import { useRef, useEffect, useMemo, useContext } from "react";
-import { AnimationProvider } from "react-native-fluid-animations";
-import { useAsAnimatedValue } from "./useAsAnimatedValue";
-import {
-  StackAnimationProgressContext,
-  StackAnimationIsClosingContext,
-} from "react-navigation-stack";
+import { StackAnimationProgressContext } from "react-navigation-stack";
 // @ts-ignore
 import { always } from "react-native-reanimated/src/base";
+import { NavigationState } from "../types";
 
-export const useCurrentValue = (): {
+export const useCurrentValue = (
+  name: string,
+  navigationState: NavigationState,
+): {
   duration: Animated.Value<number>;
   current: Animated.Node<number>;
   normalizedProgress: Animated.Node<number>;
 } => {
-  const progressValue = useContext(StackAnimationProgressContext);
-  const isClosingValue = useContext(StackAnimationIsClosingContext);
+  // Save navigation state
+  const prevNavigationStateRef = useRef(navigationState);
 
+  // Get progress from stack navigation context
+  const progressValue = useContext(StackAnimationProgressContext);
+
+  // Set up some values to track
   const currentValue = useMemo(() => new Animated.Value(0), []);
   const normalizedProgress = useRef<Animated.Node<number>>();
   const durationValue = useMemo(() => new Animated.Value<number>(0), []);
 
-  const isForwardValue = useAsAnimatedValue(transitionContext.isForward);
-  const inTransitionValue = useAsAnimatedValue(transitionContext.inTransition);
-  const isFocusedValue = useAsAnimatedValue(transitionContext.focused);
+  // States
+  const isForward =
+    navigationState === NavigationState.ForwardFrom ||
+    navigationState === NavigationState.ForwardTo;
 
-  const progressRef = useRef<Animated.Node<any>>();
+  const inTransition = navigationState !== NavigationState.None;
+
+  const isFocused =
+    navigationState === NavigationState.ForwardTo ||
+    navigationState === NavigationState.BackTo;
+
+  console.log(
+    name,
+    "in transition:",
+    inTransition,
+    "focused:",
+    isFocused,
+    "forward:",
+    isForward,
+  );
+
+  // Remember some values
   const updateValueRef = useRef<Animated.Node<any>>();
 
+  // Cleanup nodes
   useEffect(
     () => () => {
       // @ts-ignore
@@ -37,12 +58,9 @@ export const useCurrentValue = (): {
     [],
   );
 
-  if (
-    transitionContext.progress !== progressRef.current &&
-    transitionContext.inTransition
-  ) {
+  if (prevNavigationStateRef.current !== navigationState) {
     // Save cached value
-    progressRef.current = transitionContext.progress;
+    prevNavigationStateRef.current = navigationState;
 
     // Detach old
     if (updateValueRef.current) {
@@ -52,15 +70,20 @@ export const useCurrentValue = (): {
 
     // Set up new
     updateValueRef.current = always(
-      updateCurrentProc(
-        currentValue,
-        splitProgressProc(
-          normalizeProgressProc(transitionContext.progress, isForwardValue),
-          isFocusedValue,
+      Animated.block([
+        updateCurrentProc(
+          currentValue,
+          splitProgressProc(
+            normalizeProgressProc(
+              progressValue,
+              new Animated.Value(isForward ? 1 : 0),
+            ),
+            new Animated.Value(isFocused ? 1 : 0),
+          ),
+          new Animated.Value(inTransition ? 1 : 0),
+          durationValue,
         ),
-        inTransitionValue,
-        durationValue,
-      ),
+      ]),
     );
 
     // @ts-ignore
@@ -102,11 +125,13 @@ const splitProgressProc = Animated.proc((normalizedProgress, isFocused) =>
 
 const updateCurrentProc = Animated.proc(
   (current, splitProgress, inTransition, duration) =>
-    Animated.cond(
-      Animated.eq(inTransition, 1),
-      Animated.set(
-        current,
-        Animated.divide(splitProgress, Animated.divide(1.0, duration)),
+    Animated.block([
+      Animated.cond(
+        Animated.eq(1, 1),
+        Animated.set(
+          current,
+          Animated.divide(splitProgress, Animated.divide(1.0, duration)),
+        ),
       ),
-    ),
+    ]),
 );

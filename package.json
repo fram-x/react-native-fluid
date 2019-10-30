@@ -12,9 +12,6 @@
   "dependencies": {
     "@react-native-community/masked-view": "^0.1.1",
     "@react-native-community/slider": "react-native-community/react-native-slider",
-    "react-navigation": "^4.0.7",
-    "react-navigation-drawer": "^2.2.2",
-    "react-navigation-tabs": "^2.5.5",
     "react": "16.8.6",
     "react-native": "0.60.5",
     "react-native-gesture-handler": "^1.5.0",
@@ -23,7 +20,11 @@
     "react-native-screens": "^2.0.0-alpha.3",
     "react-native-svg": "^9.9.3",
     "react-native-vector-icons": "^6.6.0",
-    "react-navigation-stack": "file:///Users/christianfalch/Projects/libs/stack"
+    "react-navigation": "^4.0.7",
+    "react-navigation-drawer": "^2.2.2",
+    "react-navigation-hooks": "^1.1.0",
+    "react-navigation-stack": "file:///Users/christianfalch/Projects/libs/stack",
+    "react-navigation-tabs": "^2.5.5"
   },
   "devDependencies": {
     "@babel/core": "^7.5.0",
