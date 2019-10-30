@@ -2,8 +2,6 @@ import Animated from "react-native-reanimated";
 import { useMemo } from "react";
 import { DriverContextType } from "react-native-fluid-transitions";
 import { NavigationState } from "../types";
-import { useAsAnimatedValue } from "./useAsAnimatedValue";
-import { AnimationProvider } from "react-native-fluid-animations";
 
 export const useDriverContext = (
   screenName: string,
@@ -17,9 +15,9 @@ export const useDriverContext = (
       driver: current,
       requestDuration: (duration: number) => {
         durationValue.setValue(duration);
-        // console.log("---", screenName, "got duration", duration);
+        console.log("---", screenName, "got duration", duration);
       },
     }),
-    [current, durationValue, navigationState],
+    [current, durationValue, navigationState, screenName],
   );
 };

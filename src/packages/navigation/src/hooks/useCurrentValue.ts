@@ -4,6 +4,7 @@ import { StackAnimationProgressContext } from "react-navigation-stack";
 // @ts-ignore
 import { always } from "react-native-reanimated/src/base";
 import { NavigationState } from "../types";
+import { AnimationProvider } from "react-native-fluid-animations";
 
 export const useCurrentValue = (
   name: string,
@@ -81,6 +82,7 @@ export const useCurrentValue = (
           new Animated.Value(inTransition ? 1 : 0),
           durationValue,
         ),
+        // AnimationProvider.Animated.debug(name, currentValue),
       ]),
     );
 
@@ -124,7 +126,7 @@ const updateCurrentProc = Animated.proc(
   (current, splitProgress, inTransition, duration) =>
     Animated.block([
       Animated.cond(
-        Animated.eq(1, 1),
+        Animated.eq(inTransition, 1),
         Animated.set(
           current,
           Animated.divide(splitProgress, Animated.divide(1.0, duration)),

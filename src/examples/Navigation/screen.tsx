@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Dimensions, Text, Button } from "react-native";
+import { StyleSheet, Dimensions, Text, Button, View } from "react-native";
 import { useNavigation } from "react-navigation-hooks";
 import Fluid from "react-native-fluid-transitions";
 import {
@@ -87,17 +87,19 @@ export const Screen: React.FC<Props> = ({
       <AnimatedButton>
         <Text>{name}</Text>
       </AnimatedButton>
-      <Fluid.View
-        label={"buttons_" + name}
-        config={buttonTransitions}
-        staticStyle={styles.footer}>
-        {prev && (
-          <Button title={"Back"} onPress={() => navigation.navigate(prev)} />
-        )}
-        {next && (
-          <Button title={"Next"} onPress={() => navigation.navigate(next)} />
-        )}
-      </Fluid.View>
+      <View style={styles.footer}>
+        <Fluid.View
+          staticStyle={styles.footerInner}
+          label={"buttons_" + name}
+          config={buttonTransitions}>
+          {prev && (
+            <Button title={"Back"} onPress={() => navigation.navigate(prev)} />
+          )}
+          {next && (
+            <Button title={"Next"} onPress={() => navigation.navigate(next)} />
+          )}
+        </Fluid.View>
+      </View>
     </Fluid.View>
   );
 };
@@ -133,11 +135,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   footer: {
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "row",
     padding: 14,
     paddingBottom: 34,
     backgroundColor: "beige",
+  },
+  footerInner: {
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
   },
 });
