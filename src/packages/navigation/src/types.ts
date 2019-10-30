@@ -11,4 +11,4 @@ export enum NavigationState {
   InTransition = "InTransition",
 }
 
-export const NavigationTiming: number = 1250;
+export const NavigationTiming: number = 4250;

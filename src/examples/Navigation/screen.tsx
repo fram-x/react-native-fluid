@@ -10,6 +10,7 @@ import { Bubble } from "./bubble";
 import { ColorA, ColorB, ColorC, ColorE, ColorD } from "../colors";
 import { Box } from "./box";
 import { useNavigationDirection } from "react-native-fluid-navigation";
+import { AnimatedButton } from "./button";
 
 const { width: screenWidth } = Dimensions.get("screen");
 
@@ -38,8 +39,13 @@ export const Screen: React.FC<Props> = ({
     <Fluid.View
       label={name}
       staticStyle={{ ...styles.container, backgroundColor: color }}
-      // config={config}
-    >
+      config={{
+        childAnimation: {
+          type: "staggered",
+          stagger: 100,
+          direction,
+        },
+      }}>
       <Fluid.View config={headerTransitions} staticStyle={styles.header}>
         <Text style={styles.headerText}>{name}</Text>
         <Text style={styles.headerSubText}>
@@ -78,6 +84,9 @@ export const Screen: React.FC<Props> = ({
           <Box color={ColorB} />
         </Fluid.View>
       )}
+      <AnimatedButton>
+        <Text>{name}</Text>
+      </AnimatedButton>
       <Fluid.View
         label={"buttons_" + name}
         config={buttonTransitions}
@@ -128,6 +137,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flexDirection: "row",
     padding: 14,
+    paddingBottom: 34,
     backgroundColor: "beige",
   },
 });

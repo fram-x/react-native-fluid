@@ -11,7 +11,6 @@ export const useCurrentValue = (
 ): {
   duration: Animated.Value<number>;
   current: Animated.Node<number>;
-  normalizedProgress: Animated.Node<number>;
 } => {
   // Save navigation state
   const prevNavigationStateRef = useRef(navigationState);
@@ -21,7 +20,6 @@ export const useCurrentValue = (
 
   // Set up some values to track
   const currentValue = useMemo(() => new Animated.Value(0), []);
-  const normalizedProgress = useRef<Animated.Node<number>>();
   const durationValue = useMemo(() => new Animated.Value<number>(0), []);
 
   // States
@@ -35,15 +33,15 @@ export const useCurrentValue = (
     navigationState === NavigationState.ForwardTo ||
     navigationState === NavigationState.BackTo;
 
-  console.log(
-    name,
-    "in transition:",
-    inTransition,
-    "focused:",
-    isFocused,
-    "forward:",
-    isForward,
-  );
+  // console.log(
+  //   name,
+  //   "in transition:",
+  //   inTransition,
+  //   "focused:",
+  //   isFocused,
+  //   "forward:",
+  //   isForward,
+  // );
 
   // Remember some values
   const updateValueRef = useRef<Animated.Node<any>>();
@@ -93,7 +91,6 @@ export const useCurrentValue = (
   return {
     current: currentValue,
     duration: durationValue,
-    normalizedProgress: normalizedProgress.current as Animated.Node<number>,
   };
 };
 

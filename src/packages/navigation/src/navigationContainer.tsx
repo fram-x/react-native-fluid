@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { StyleSheet } from "react-native";
 import Fluid, {
   StateContext,
@@ -6,8 +6,6 @@ import Fluid, {
 } from "react-native-fluid-transitions";
 import { useNavigationState, useDriverContext, useCurrentValue } from "./Hooks";
 import { getNavigationStates } from "./Functions";
-import { useNavigation, useNavigationEvents } from "react-navigation-hooks";
-import { StackAnimationProgressContext } from "react-navigation-stack";
 
 type Props = {
   name: string;
@@ -20,10 +18,7 @@ export const FluidNavigationContainer: React.FC<Props> = ({
   const { navigationState, index } = useNavigationState(name);
 
   // Current
-  const { current, duration, normalizedProgress } = useCurrentValue(
-    name,
-    navigationState,
-  );
+  const { current, duration } = useCurrentValue(name, navigationState);
 
   // Driver context
   const driverContextValue = useDriverContext(
@@ -34,7 +29,7 @@ export const FluidNavigationContainer: React.FC<Props> = ({
   );
 
   const states = getNavigationStates(index, navigationState);
-  console.log(name, "NavState", navigationState);
+  // console.log(name, "NavState", navigationState);
 
   // Render
   return (
