@@ -1,19 +1,22 @@
 import Animated from "react-native-reanimated";
-import { useRef, useEffect, useMemo } from "react";
+import { useRef, useEffect, useMemo, useContext } from "react";
 import { AnimationProvider } from "react-native-fluid-animations";
 import { useAsAnimatedValue } from "./useAsAnimatedValue";
+import {
+  StackAnimationProgressContext,
+  StackAnimationIsClosingContext,
+} from "react-navigation-stack";
 // @ts-ignore
 import { always } from "react-native-reanimated/src/base";
-import { TransitionContextType } from "@react-navigation/stack/src/utils/TransitionContext";
 
-export const useCurrentValue = (
-  screenName: string,
-  transitionContext: TransitionContextType,
-): {
+export const useCurrentValue = (): {
   duration: Animated.Value<number>;
   current: Animated.Node<number>;
   normalizedProgress: Animated.Node<number>;
 } => {
+  const progressValue = useContext(StackAnimationProgressContext);
+  const isClosingValue = useContext(StackAnimationIsClosingContext);
+
   const currentValue = useMemo(() => new Animated.Value(0), []);
   const normalizedProgress = useRef<Animated.Node<number>>();
   const durationValue = useMemo(() => new Animated.Value<number>(0), []);

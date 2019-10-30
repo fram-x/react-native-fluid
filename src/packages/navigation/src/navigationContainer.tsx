@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { StyleSheet } from "react-native";
-import TransitionContext from "@react-navigation/stack/src/utils/TransitionContext";
+import TransitionContext from "react-navigation-stack/src/utils/TransitionContext";
 import Fluid, {
   StateContext,
   DriverContext,

@@ -1,9 +1,9 @@
-import React, { Children } from "react";
+import Reactfrom "react";
 import {
   createStackNavigator,
   StackCardInterpolationProps,
   StackCardInterpolatedStyle,
-} from "@react-navigation/stack";
+} from "react-navigation-stack";
 import Animated, { Easing } from "react-native-reanimated";
 import { NavigationTiming } from "./types";
 

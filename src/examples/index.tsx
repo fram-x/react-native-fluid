@@ -1,6 +1,7 @@
 import React from "react";
-import { NavigationNativeContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
+
+import { createStackNavigator } from "react-navigation-stack";
+import { createAppContainer } from "react-navigation";
 
 import HomeScreen from "./HomeScreen";
 import StylesExampleScreen from "./Styles";
@@ -18,40 +19,28 @@ import InteractionsExampleScreen from "./Interactions";
 import SvgExampleScreen from "./SVG";
 import RepeatExampleScreen from "./Repeating";
 import DraggingExampleScreen from "./Dragging";
-import NavigationExampleScreen from "./Navigation";
+//import NavigationExampleScreen from "./Navigation";
 import DriverExampleScreen from "./Driver";
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator({
+  home: HomeScreen,
+  styles: StylesExampleScreen,
+  text: TextExampleScreen,
+  interpolate: InterpolateExampleScreen,
+  maze: MazeExampleScreen,
+  parallax: ParallaxExampleScreen,
+  stagger: StaggerExampleScreen,
+  easings: EasingsExampleScreen,
+  style: StyleExampleScreen,
+  svg: SvgExampleScreen,
+  repeat: RepeatExampleScreen,
+  dragging: DraggingExampleScreen,
+  //navigation: NavigationExampleScreen,
+  interactions: InteractionsExampleScreen,
+  driver: DriverExampleScreen,
+  children: ChildExampleScreen,
+  appStore: AppStoreExampleScreen,
+  list: ListExampleScreen,
+});
 
-const App = () => {
-  return (
-    <NavigationNativeContainer>
-      <Stack.Navigator
-        screenOptions={{ cardStyle: { backgroundColor: "#FFF" } }}>
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="styles" component={StylesExampleScreen} />
-        <Stack.Screen name="text" component={TextExampleScreen} />
-        <Stack.Screen name="appStore" component={AppStoreExampleScreen} />
-        <Stack.Screen name="interpolate" component={InterpolateExampleScreen} />
-        <Stack.Screen name="list" component={ListExampleScreen} />
-        <Stack.Screen name="maze" component={MazeExampleScreen} />
-        <Stack.Screen name="parallax" component={ParallaxExampleScreen} />
-        <Stack.Screen name="children" component={ChildExampleScreen} />
-        <Stack.Screen name="stagger" component={StaggerExampleScreen} />
-        <Stack.Screen name="easings" component={EasingsExampleScreen} />
-        <Stack.Screen name="style" component={StyleExampleScreen} />
-        <Stack.Screen
-          name="interactions"
-          component={InteractionsExampleScreen}
-        />
-        <Stack.Screen name="svg" component={SvgExampleScreen} />
-        <Stack.Screen name="repeat" component={RepeatExampleScreen} />
-        <Stack.Screen name="dragging" component={DraggingExampleScreen} />
-        <Stack.Screen name="navigation" component={NavigationExampleScreen} />
-        <Stack.Screen name="driver" component={DriverExampleScreen} />
-      </Stack.Navigator>
-    </NavigationNativeContainer>
-  );
-};
-
-export default App;
+export default createAppContainer(Stack);

@@ -1,5 +1,5 @@
 import { NavigationState } from "../types";
-import { TransitionContextType } from "@react-navigation/stack/src/utils/TransitionContext";
+import { TransitionContextType } from "react-navigation-stack/src/utils/TransitionContext";
 import { useRef } from "react";
 
 export const useNavigationState = (

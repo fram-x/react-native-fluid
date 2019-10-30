@@ -1,7 +1,4 @@
-import {
-  // @ts-ignore
-  ConfigStateType,
-} from "react-native-fluid-transitions";
+import { ConfigStateType } from "react-native-fluid-transitions";
 
 export const safeGetState = (
   name: string,

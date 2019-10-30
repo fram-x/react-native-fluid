@@ -1,6 +1,6 @@
 import { NavigationState } from "../types";
 import { StateContextType } from "react-native-fluid-transitions";
-import { TransitionContextType } from "@react-navigation/stack/src/utils/TransitionContext";
+import { TransitionContextType } from "react-navigation-stack/src/utils/TransitionContext";
 
 export const getNavigationStates = (
   navigationState: NavigationState,
