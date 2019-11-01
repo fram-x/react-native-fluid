@@ -39,10 +39,14 @@ export const useOnConfig = (
 
   // Register shared config info
   sharedOnConfigs.forEach(p => {
-    const state = configuration.states.find(s => s.name === p.state);
+    const state = configuration.states.find(
+      s => s.name === getResolvedStateName(p.state),
+    );
     if (!state) {
       throw fluidException(
-        `Could not find state ${p.state} for shared interpolation.`,
+        `Could not find state ${getResolvedStateName(
+          p.state,
+        )} for shared interpolation.`,
       );
     }
     sharedInterpolationContext.registerSharedInterpolationInfo(

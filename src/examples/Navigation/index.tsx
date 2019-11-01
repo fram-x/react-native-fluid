@@ -12,6 +12,7 @@ const NavigationExampleScreen = createFluidStackNavigator({
         name="Screen 1"
         color="gold"
         next="screen2"
+        interpolatorPosition={"flex-start"}
         interpolationColor={ColorE}
       />
     </FluidNavigationContainer>
@@ -23,6 +24,7 @@ const NavigationExampleScreen = createFluidStackNavigator({
         showBubbles={false}
         name="Screen 2"
         interpolationColor={ColorA}
+        interpolatorPosition={"flex-end"}
         color="pink"
         prev="screen1"
         next="screen3"
@@ -37,6 +39,7 @@ const NavigationExampleScreen = createFluidStackNavigator({
         color="aqua"
         prev="screen2"
         next="screen4"
+        interpolatorPosition={"flex-start"}
         interpolationColor={ColorB}
       />
     </FluidNavigationContainer>
@@ -49,6 +52,7 @@ const NavigationExampleScreen = createFluidStackNavigator({
         name="Screen 4"
         color="beige"
         prev="screen3"
+        interpolatorPosition={"flex-end"}
         showBubbles={false}
       />
     </FluidNavigationContainer>

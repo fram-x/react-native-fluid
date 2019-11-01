@@ -21,6 +21,8 @@ import RepeatExampleScreen from "./Repeating";
 import DraggingExampleScreen from "./Dragging";
 import NavigationExampleScreen from "./Navigation";
 import DriverExampleScreen from "./Driver";
+import Fluid from "react-native-fluid-transitions";
+import { StyleSheet } from "react-native";
 
 const Stack = createStackNavigator({
   home: HomeScreen,
@@ -43,4 +45,12 @@ const Stack = createStackNavigator({
   list: ListExampleScreen,
 });
 
-export default createAppContainer(Stack);
+const AppNavigator = createAppContainer(Stack);
+
+export default () => {
+  return (
+    <Fluid.View staticStyle={StyleSheet.absoluteFill} label={"container"}>
+      <AppNavigator />
+    </Fluid.View>
+  );
+};

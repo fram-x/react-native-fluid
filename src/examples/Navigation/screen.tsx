@@ -19,6 +19,7 @@ type Props = {
   name: string;
   color: string;
   interpolationColor: string;
+  interpolatorPosition: "flex-start" | "flex-end";
   next?: string;
   prev?: string;
   showBubbles?: boolean;
@@ -28,6 +29,7 @@ export const Screen: React.FC<Props> = ({
   name,
   color,
   interpolationColor,
+  interpolatorPosition,
   next,
   prev,
   showBubbles = true,
@@ -35,6 +37,7 @@ export const Screen: React.FC<Props> = ({
   const navigation = useNavigation();
   const direction = useNavigationDirection();
   const { forwardFrom, forwardTo, backFrom, backTo } = useNavigationStates();
+
   const buttonTransitions = useHorizontalTransition(screenWidth);
   const headerTransitions = useTopTransition(120);
 
@@ -42,11 +45,11 @@ export const Screen: React.FC<Props> = ({
     onEnter: [
       {
         state: forwardTo,
-        fromLabel: next || "",
+        fromLabel: "Shared_" + next || "",
       },
       {
         state: backTo,
-        fromLabel: next || "",
+        fromLabel: "Shared_" + next || "",
       },
     ],
   });
@@ -62,7 +65,7 @@ export const Screen: React.FC<Props> = ({
           direction,
         },
       }}>
-      <Fluid.View config={headerTransitions} staticStyle={styles.header}>
+      {/* <Fluid.View config={headerTransitions} staticStyle={styles.header}>
         <Text style={styles.headerText}>{name}</Text>
         <Text style={styles.headerSubText}>
           {"Hello world from " + name + "!"}
@@ -99,20 +102,23 @@ export const Screen: React.FC<Props> = ({
           <Box color={ColorC} />
           <Box color={ColorB} />
         </Fluid.View>
-      )}
-      {/* <View style={styles.interpolationContainer}>
+      )} */}
+      <View style={styles.interpolationContainer}>
         <Fluid.View
           staticStyle={styles.interpolationBox}
-          style={{ backgroundColor: interpolationColor }}
-          label={name}
+          style={{
+            backgroundColor: interpolationColor,
+            alignSelf: interpolatorPosition,
+          }}
+          label={"Shared_" + name}
           config={sharedTransition}
         />
-      </View> */}
-      <View style={styles.buttonContainer}>
+      </View>
+      {/* <View style={styles.buttonContainer}>
         <AnimatedButton>
           <Text>{name}</Text>
         </AnimatedButton>
-      </View>
+      </View> */}
       <View style={styles.footer}>
         <Fluid.View
           staticStyle={styles.footerInner}

@@ -37,12 +37,21 @@ import {
   ConfigType,
 } from "../../Configuration";
 
+type PendingSharedInterpolation = {
+  item: TransitionItem;
+  fromLabel: string;
+  toLabel: string;
+  animation?: ConfigAnimationType;
+  onBegin?: OnAnimationFunction;
+  onEnd?: OnAnimationFunction;
+};
+
 export const useSharedInterpolation = (
   transitionItem: TransitionItem,
   transitionItemContext: TransitionItemContextType,
   configuration: SafeStateConfigType,
   stateContext: StateContextType,
-  currentDirection?: ChildAnimationDirection,
+  currentDirection: ChildAnimationDirection | undefined,
 ) => {
   const sharedInterpolations = useRef<Array<SharedInterpolationType>>([]);
   const [sharedInterpolationInfos, setSharedInterpolationInfos] = useState<
@@ -116,6 +125,7 @@ export const useSharedInterpolation = (
       const fromItem = transitionItemContext.getTransitionItemByLabel(
         fromLabel,
       );
+
       if (fromItem && toItem) {
         if (__DEV__) {
           logger(
@@ -211,11 +221,11 @@ export const useSharedInterpolation = (
       }
     },
     [
-      currentDirection,
-      forceUpdate,
-      logger,
-      sharedInterpolatorContext,
       transitionItemContext,
+      sharedInterpolatorContext,
+      currentDirection,
+      logger,
+      forceUpdate,
     ],
   );
 
