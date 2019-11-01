@@ -20,13 +20,38 @@ export type OnFactoryFunction = ({
   screenSize,
   metrics,
   state,
+  stateValue,
   type,
 }: {
   screenSize: { width: number; height: number };
   metrics: Metrics;
   state: string;
+  stateValue?: number | string | boolean;
   type: OnTypeEnum;
 }) => OnFactoryResult;
+
+export type WhenFactoryResult = {
+  interpolation:
+    | ConfigPropInterpolationType
+    | ConfigPropInterpolationType[]
+    | ConfigStyleInterpolationType
+    | ConfigStyleInterpolationType[]
+    | ConfigValueInterpolationType
+    | ConfigValueInterpolationType[];
+  animation?: ConfigAnimationType;
+};
+
+export type WhenFactoryFunction = ({
+  screenSize,
+  metrics,
+  state,
+  stateValue,
+}: {
+  screenSize: { width: number; height: number };
+  metrics: Metrics;
+  state: string;
+  stateValue?: number | string | boolean;
+}) => WhenFactoryResult;
 
 export type StateType = {
   active?: boolean;
@@ -49,6 +74,7 @@ export type ConfigStateType = {
   name: string;
   active?: boolean;
   value?: number | string | boolean;
+  negated?: ConfigStateType;
 };
 
 export const isConfigStateType = (obj: any): obj is ConfigStateType => {
@@ -165,7 +191,7 @@ export type ConfigValueInterpolationType = ConfigStyleInterpolationType & {
   value: ConfigInterpolatorType;
 };
 
-type BaseConfigType = {
+export type BaseConfigType = {
   animation?: ConfigAnimationType;
   onBegin?: OnAnimationFunction;
   onEnd?: OnAnimationFunction;
@@ -194,7 +220,15 @@ export type ConfigWhenInterpolationType = BaseConfigType & {
     | ConfigValueInterpolationType[];
 };
 
-export type ConfigWhenType = ConfigWhenStyleType | ConfigWhenInterpolationType;
+export type ConfigWhenFactoryType = BaseConfigType & {
+  state: string | ConfigStateType;
+  whenFactory: WhenFactoryFunction;
+};
+
+export type ConfigWhenType =
+  | ConfigWhenStyleType
+  | ConfigWhenInterpolationType
+  | ConfigWhenFactoryType;
 
 export const isConfigWhenStyle = (
   obj: ConfigWhenType,
@@ -206,6 +240,12 @@ export const isConfigWhenInterpolation = (
   obj: ConfigWhenType,
 ): obj is ConfigWhenInterpolationType => {
   return (obj as ConfigWhenInterpolationType).interpolation !== undefined;
+};
+
+export const isConfigWhenFactory = (
+  obj: ConfigWhenType,
+): obj is ConfigWhenFactoryType => {
+  return (obj as ConfigWhenFactoryType).whenFactory !== undefined;
 };
 
 /**

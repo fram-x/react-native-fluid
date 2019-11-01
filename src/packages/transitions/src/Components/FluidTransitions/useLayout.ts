@@ -7,7 +7,7 @@ import { useLog } from "../../Hooks";
 
 export const useLayout = (
   transitionItem: TransitionItem,
-  onLayout?: (event: LayoutChangeEvent) => void
+  onLayout?: (event: LayoutChangeEvent) => void,
 ) => {
   const isFirstMeasure = useRef(true);
   const metrics = useRef(new Metrics(-1, -1, -1, -1));
@@ -40,12 +40,13 @@ export const useLayout = (
 
     // Call old onLayout
     onLayout && onLayout(evt);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const measureAsync = useCallback(() => {
     // Set up new promise
     waitForLayout.current = new Promise(
-      resolve => (waitForLayoutResolve.current = resolve)
+      resolve => (waitForLayoutResolve.current = resolve),
     );
 
     return measureItemInWindow(transitionItem.ref()).then(
@@ -54,20 +55,20 @@ export const useLayout = (
           logger(
             () =>
               `Measured ${transitionItem.label}: (${x.toFixed(0)}, ${y.toFixed(
-                0
+                0,
               )}, ${w.toFixed(0)}, ${h.toFixed(0)})`,
-            LoggerLevel.Verbose
+            LoggerLevel.Verbose,
           );
         }
         metrics.current.setValues(x, y, w, h);
         waitForLayoutResolve.current && waitForLayoutResolve.current();
-      }
+      },
     );
-  }, []);
+  }, [logger, transitionItem]);
 
   return {
     handleOnLayout: handleOnLayout,
     metrics: metrics.current,
-    waitForLayout: waitForLayout.current
+    waitForLayout: waitForLayout.current,
   };
 };

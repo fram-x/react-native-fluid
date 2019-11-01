@@ -1,11 +1,12 @@
 import { createAnimationNode } from "./Functions";
 import { AnimationInfo } from "../../Components/Types/AnimationInfo";
-import { Easings } from "../../Components/Types";
+import { Easings, DriverContextType } from "../../Components/Types";
 import { IAnimationNode } from "react-native-fluid-animations";
 
 export const addAnimations = (
   source: IAnimationNode,
-  animations: AnimationInfo[]
+  driverContext: DriverContextType | undefined,
+  animations: AnimationInfo[],
 ) => {
   // Skip tracking?
   if (animations.length === 0) return;
@@ -28,7 +29,7 @@ export const addAnimations = (
       offset,
       onBegin,
       onEnd,
-      interpolate
+      interpolate,
     } = animation;
     // Get easing
     const easingFunction = easing || Easings.linear;
@@ -50,7 +51,8 @@ export const addAnimations = (
       extrapolateRight,
       onBegin,
       onEnd,
-      interpolate
+      interpolate,
+      driverContext ? driverContext.isActive : () => false,
     );
   });
 };

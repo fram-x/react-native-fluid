@@ -39,10 +39,14 @@ export const useOnConfig = (
 
   // Register shared config info
   sharedOnConfigs.forEach(p => {
-    const state = configuration.states.find(s => s.name === p.state);
+    const state = configuration.states.find(
+      s => s.name === getResolvedStateName(p.state),
+    );
     if (!state) {
       throw fluidException(
-        `Could not find state ${p.state} for shared interpolation.`,
+        `Could not find state ${getResolvedStateName(
+          p.state,
+        )} for shared interpolation.`,
       );
     }
     sharedInterpolationContext.registerSharedInterpolationInfo(
@@ -83,6 +87,8 @@ export const useOnConfig = (
     (v, i, a) => a.indexOf(v) === i,
   );
 
+  const { width, height } = Dimensions.get("screen");
+
   // Loop through configs
   uniqueConfigs.forEach(onConfig => {
     // Check for shared interpolation
@@ -94,18 +100,27 @@ export const useOnConfig = (
       addInterpolation(onConfig, animationType);
     } else {
       // Register custom interpolation
-      const { width, height } = Dimensions.get("screen");
       const factoryResults = onConfig.onFactory({
         screenSize: { width, height },
         metrics: transitionItem.metrics(),
         state: getResolvedStateName(onConfig.state),
+        stateValue:
+          typeof onConfig.state !== "string" ? onConfig.state.value : undefined,
         type:
           removed.find(p => p === onConfig) !== undefined ? "exit" : "enter",
       });
-      addInterpolation(
-        { state: onConfig.state, interpolation: factoryResults.interpolation },
-        factoryResults.animation,
-      );
+
+      let interpolations =
+        factoryResults.interpolation instanceof Array
+          ? factoryResults.interpolation
+          : [factoryResults.interpolation];
+
+      interpolations.forEach(ip => {
+        addInterpolation(
+          { state: onConfig.state, interpolation: ip },
+          ip.animation || factoryResults.animation || onConfig.animation,
+        );
+      });
     }
   });
 

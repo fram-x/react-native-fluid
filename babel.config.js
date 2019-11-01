@@ -11,6 +11,7 @@ module.exports = api => {
             "react-native-fluid-animations": "./src/packages/animated",
             "react-native-fluid-svg": "./src/packages/svg",
             "react-native-fluid-gestures": "./src/packages/gestures",
+            "react-native-fluid-navigation": "./src/packages/navigation",
           },
         },
       ],

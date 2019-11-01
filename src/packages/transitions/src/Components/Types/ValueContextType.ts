@@ -3,7 +3,7 @@ import {
   IAnimationNode,
   ExtrapolateType,
 } from "react-native-fluid-animations";
-import { OnAnimationFunction } from "./InterpolationTypes";
+import { OnAnimationFunction, InterpolationInfo } from "./InterpolationTypes";
 import { ConfigAnimationType } from "../../Configuration";
 import { ValueDescriptorsType } from "../../Types";
 
@@ -25,7 +25,7 @@ export type ValueContextType = {
     extrapolate?: ExtrapolateType,
     extrapolateLeft?: ExtrapolateType,
     extrapolateRight?: ExtrapolateType,
-  ) => void;
+  ) => InterpolationInfo | undefined;
   addAnimation: (
     key: string,
     inputRange: Array<number> | undefined,
@@ -39,7 +39,7 @@ export type ValueContextType = {
     loop?: number,
     flip?: number,
     yoyo?: number,
-  ) => void;
+  ) => InterpolationInfo | undefined;
 };
 
 export type ValueType = {

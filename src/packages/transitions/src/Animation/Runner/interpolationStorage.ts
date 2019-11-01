@@ -45,7 +45,14 @@ export const registerRunningInterpolation = (
     isRunningShadow: isRunningValue,
   };
 
-  // console.log("Added interpolation", animationId, "for", itemId, "key:", key);
+  // console.log(
+  //   "Registered interpolation",
+  //   animationId,
+  //   "for",
+  //   itemId,
+  //   "key:",
+  //   key,
+  // );
 };
 
 /**
@@ -95,7 +102,20 @@ export const unregisterRunningInterpolation = (
   animationId: number,
 ) => {
   const runningKey = getKey(itemId, key);
-  if (!ensureInterpolation(itemId, key, animationId)) return;
+  if (!ensureInterpolation(itemId, key, animationId)) {
+    // console.log(
+    //   "**** Could not find interpolation",
+    //   animationId,
+    //   "for",
+    //   itemId,
+    //   "key:",
+    //   key,
+    // );
+    // Just return when there is no animation to remove.
+    // These methods aren't necessarily symetric - since we
+    // have multiple ways of trying to clean up.
+    return;
+  }
 
   // console.log(
   //   "Removing interpolation",
@@ -147,12 +167,8 @@ export const getStopPreviousAnimationNode = (
   // );
   return AnimationProvider.Animated.block(
     // Add stop signal
-    prevInterpolations.map(
-      p =>
-        // AnimationProvider.Animated.debug(
-        //   `Stop ${animationId} ${key} for ${itemId}`,
-        AnimationProvider.Animated.set(p.isRunningFlag, RunningFlags.Stopped),
-      // ),
+    prevInterpolations.map(p =>
+      AnimationProvider.Animated.set(p.isRunningFlag, RunningFlags.Stopped),
     ),
   );
 };

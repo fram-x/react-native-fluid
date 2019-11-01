@@ -1,42 +1,43 @@
 import { AnimationNode } from "./types";
 
 export const dumpTree = (
-  tree: AnimationNode,
+  node: AnimationNode,
   output: (message?: any, ...optionalParams: any[]) => void,
-  indent: number = 0
+  indent: number = 0,
 ) => {
   const indentStr = new Array(indent).map(_ => "").join(" ");
   // @ts-ignore
-  if (tree.childDirection === "-") {
+  if (node.childDirection === "-") {
     output(
       indentStr,
       indentStr,
-      getNodeName(tree),
+      getNodeName(node),
       "subduration:",
       // @ts-ignore
-      tree.subtreeDuration.toFixed(2)
+      node.subtreeDuration.toFixed(2),
     );
   } else {
     output(
       indentStr,
-      getNodeName(tree),
+      getNodeName(node),
       "dur:",
-      // @ts-ignore
-      tree.duration.toFixed(2),
+      node.duration.toFixed(2),
+      "anim:",
+      node.animation ? node.animation.type : "unknown",
       "subdur:",
       // @ts-ignore
-      tree.subtreeDuration.toFixed(2),
+      node.subtreeDuration.toFixed(2),
       "delay:",
-      tree.delay,
+      node.delay,
       "offset:",
-      tree.offset,
+      node.offset,
       "stgr:",
-      tree.stagger,
-      tree.childAnimation,
-      tree.childDirection
+      node.stagger,
+      node.childAnimation,
+      node.childDirection,
     );
   }
-  tree.children.forEach(c => dumpTree(c, output, indent + 2));
+  node.children.forEach(c => dumpTree(c, output, indent + 2));
 };
 
 const getNodeName = (node: AnimationNode) => {

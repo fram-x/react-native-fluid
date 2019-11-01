@@ -101,7 +101,7 @@ export const useValueContext = (
         } else {
           valuesRef.current[key].isSet = false;
         }
-        return;
+        return undefined;
       }
 
       markAsChanged();
@@ -112,69 +112,66 @@ export const useValueContext = (
             "Output value must contain at least 2 elements.",
           );
         }
-
-        // TODO: Check that input is in ascending range
-
-        // Check if the key exists in our list of styles interpolations
-        if (!valuesRef.current[key]) {
-          valuesRef.current[key] = createValue(
-            outputValues[0],
-            valueDescriptors[key],
-          );
-        }
-
-        // Resolve input range
-        let inputRange = new Array<number>(outputValues.length);
-        if (inputValues === undefined) {
-          outputValues.forEach(
-            (_, index) =>
-              (inputRange[index] = index * (1 / outputValues.length)),
-          );
-        } else {
-          inputValues.forEach((v, index) => (inputRange[index] = v));
-        }
-
-        let outputRange = new Array<number | string>(outputValues.length);
-        outputValues.forEach(
-          (_, index) =>
-            (outputRange[index] = valueDescriptors[key].getNumericValue(
-              outputValues[index],
-            )),
-        );
-
-        // We should create an animation using interpolators
-        // Let us set up interpolation!
-        const interpolationConfig: InterpolationConfig = {
-          inputRange,
-          outputRange,
-          extrapolate,
-          extrapolateLeft,
-          extrapolateRight,
-        };
-
-        const interpolationInfo: InterpolationInfo = {
-          id: getNextInterpolationInfoId(),
-          itemId: transitionItem.id,
-          key,
-          label: transitionItem.label,
-          interpolator: valuesRef.current[key].interpolator,
-          interpolationConfig,
-          interpolate: valueDescriptors[key].interpolate,
-          loop,
-          flip,
-          yoyo,
-        };
-
-        if (__DEV__) {
-          logger(
-            () => `Register interpolation for ${key}.`,
-            LoggerLevel.Verbose,
-          );
-        }
-
-        // Register
-        animationContext.registerInterpolation(interpolator, interpolationInfo);
       }
+
+      // TODO: Check that input is in ascending range
+
+      // Check if the key exists in our list of styles interpolations
+      if (!valuesRef.current[key]) {
+        valuesRef.current[key] = createValue(
+          outputValues[0],
+          valueDescriptors[key],
+        );
+      }
+
+      // Resolve input range
+      let inputRange = new Array<number>(outputValues.length);
+      if (inputValues === undefined) {
+        outputValues.forEach(
+          (_, index) => (inputRange[index] = index * (1 / outputValues.length)),
+        );
+      } else {
+        inputValues.forEach((v, index) => (inputRange[index] = v));
+      }
+
+      let outputRange = new Array<number | string>(outputValues.length);
+      outputValues.forEach(
+        (_, index) =>
+          (outputRange[index] = valueDescriptors[key].getNumericValue(
+            outputValues[index],
+          )),
+      );
+
+      // We should create an animation using interpolators
+      // Let us set up interpolation!
+      const interpolationConfig: InterpolationConfig = {
+        inputRange,
+        outputRange,
+        extrapolate,
+        extrapolateLeft,
+        extrapolateRight,
+      };
+
+      const interpolationInfo: InterpolationInfo = {
+        id: getNextInterpolationInfoId(),
+        itemId: transitionItem.id,
+        key,
+        label: transitionItem.label,
+        interpolator: valuesRef.current[key].interpolator,
+        interpolationConfig,
+        interpolate: valueDescriptors[key].interpolate,
+        loop,
+        flip,
+        yoyo,
+      };
+
+      if (__DEV__) {
+        logger(() => `Register interpolation for ${key}.`, LoggerLevel.Verbose);
+      }
+
+      // Register
+      animationContext.registerInterpolation(interpolator, interpolationInfo);
+      return interpolationInfo;
     };
 
     /**
@@ -291,6 +288,7 @@ export const useValueContext = (
 
       // Register
       animationContext.registerAnimation(interpolationInfo);
+      return interpolationInfo;
     };
 
     // Set up next style context

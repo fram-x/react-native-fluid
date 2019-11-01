@@ -96,6 +96,16 @@ class HomeScreen extends React.PureComponent<any> {
             icon="chevron-double-right"
             onPress={() => this.openExample("repeat")}
           />
+          <HomeScreenButton
+            text="Navigation"
+            icon="chevron-right"
+            onPress={() => this.openExample("navigation")}
+          />
+          <HomeScreenButton
+            text="Driver"
+            icon="car"
+            onPress={() => this.openExample("driver")}
+          />
         </View>
       </ScrollView>
     );

@@ -70,7 +70,7 @@ export const GestureContainer: React.FC<DraggableProps> = ({ ...props }) => {
     () =>
       createFluidComponent<DraggableProps, ViewStyle>(
         GestureComponent,
-        false,
+        true,
         () => {
           return {
             interpolators: {

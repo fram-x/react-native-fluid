@@ -129,6 +129,7 @@ const evalAnimationNode = (
     () => {},
     () => {},
     interpolateValue,
+    () => false,
   );
   // @ts-ignore
   node.evaluate();

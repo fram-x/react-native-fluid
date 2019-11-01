@@ -10,9 +10,24 @@ import {
   InterpolatorContext,
   StateContext,
   StateContextType,
+  DriverContext,
+  DriverContextType,
 } from "./src/Components/Types";
 import { useFluidState, useFluidConfig } from "./src/Hooks";
-import { createConfig, createState } from "./src/Configuration";
+import {
+  createConfig,
+  createState,
+  OnFactoryFunction,
+  WhenFactoryFunction,
+  ConfigWhenType,
+  ConfigOnType,
+  ConfigStateType,
+  ConfigType,
+  ChildAnimationDirection,
+  ConfigAnimationType,
+  ConfigWhenFactoryType,
+  ConfigOnFactoryType,
+} from "./src/Configuration";
 import {
   interpolateColor,
   interpolateValue,
@@ -41,6 +56,16 @@ const States = {
   StateMounted,
 };
 
+export type StateConfig = ConfigStateType;
+export type WhenConfig = ConfigWhenType;
+export type OnConfig = ConfigOnType;
+export type DirectionConfig = ChildAnimationDirection;
+export type AnimationConfig = ConfigAnimationType;
+export type WhenFactoryConfig = ConfigWhenFactoryType;
+export type OnFactoryConfig = ConfigOnFactoryType;
+
+export * from "./src/Hooks";
+
 const Fluid = {
   View: TransitionView,
   Text: TransitionText,
@@ -54,10 +79,9 @@ const Fluid = {
 
 export default Fluid;
 export {
-  useFluidState,
+  Fluid,
   createConfig,
   createState,
-  useFluidConfig,
   Easings,
   MetricsInfo,
   InterpolatorContext,
@@ -68,4 +92,13 @@ export {
   interpolateColor,
   interpolateValue,
   ComponentProps,
+  DriverContext,
+  DriverContextType,
+  OnFactoryFunction,
+  WhenFactoryFunction,
+  ConfigStateType,
+  ConfigWhenType,
+  ConfigOnType,
+  ConfigType,
+  ChildAnimationDirection,
 };

@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"cd src/packages/animated && tsc --watch\" \"cd src/packages/transitions && tsc --watch\" \"cd src/packages/gestures && tsc --watch\"",
+    "dev": "concurrently \"cd src/packages/animated && tsc --watch\" \"cd src/packages/transitions && tsc --watch\" \"cd src/packages/gestures && tsc --watch\" \"cd src/packages/navigation && tsc --watch\"",
     "run-ios": "react-native run-ios",
     "run-android": "react-native run-android",
     "start": "react-native start",
@@ -11,16 +11,20 @@
   },
   "dependencies": {
     "@react-native-community/masked-view": "^0.1.1",
-    "@react-navigation/core": "^5.0.0-alpha.8",
-    "@react-navigation/native": "^5.0.0-alpha.7",
-    "@react-navigation/stack": "^5.0.0-alpha.15",
+    "@react-native-community/slider": "react-native-community/react-native-slider",
     "react": "16.8.6",
     "react-native": "0.60.5",
-    "react-native-gesture-handler": "^1.4.1",
+    "react-native-gesture-handler": "^1.5.0",
     "react-native-reanimated": "^1.3.0",
+    "react-native-safe-area-context": "^0.5.0",
     "react-native-screens": "^2.0.0-alpha.3",
     "react-native-svg": "^9.9.3",
-    "react-native-vector-icons": "^6.6.0"
+    "react-native-vector-icons": "^6.6.0",
+    "react-navigation": "^4.0.7",
+    "react-navigation-drawer": "^2.2.2",
+    "react-navigation-hooks": "^1.1.0",
+    "react-navigation-stack": "file:///Users/christianfalch/Projects/libs/stack",
+    "react-navigation-tabs": "^2.5.5"
   },
   "devDependencies": {
     "@babel/core": "^7.5.0",
