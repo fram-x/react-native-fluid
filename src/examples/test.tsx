@@ -1,6 +1,8 @@
 import React, { useState, useRef, useMemo, useEffect } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { View, StyleSheet, Animated, Easing } from "react-native";
+import { useMergedConfigs } from "react-native-fluid-transitions";
+import { WhenState } from "react-native-fluid-transitions";
 
 const styles = StyleSheet.create({
   activeContainer: {},
