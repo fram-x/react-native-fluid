@@ -57,12 +57,14 @@ const States = {
 };
 
 export type StateConfig = ConfigStateType;
-export type When = ConfigWhenType;
+export type WhenConfig = ConfigWhenType;
 export type OnConfig = ConfigOnType;
 export type DirectionConfig = ChildAnimationDirection;
 export type AnimationConfig = ConfigAnimationType;
 export type WhenFactoryConfig = ConfigWhenFactoryType;
 export type OnFactoryConfig = ConfigOnFactoryType;
+
+export * from "./src/Hooks";
 
 const Fluid = {
   View: TransitionView,
@@ -78,10 +80,8 @@ const Fluid = {
 export default Fluid;
 export {
   Fluid,
-  useFluidState,
   createConfig,
   createState,
-  useFluidConfig,
   Easings,
   MetricsInfo,
   InterpolatorContext,

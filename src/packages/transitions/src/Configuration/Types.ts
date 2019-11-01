@@ -191,7 +191,7 @@ export type ConfigValueInterpolationType = ConfigStyleInterpolationType & {
   value: ConfigInterpolatorType;
 };
 
-type BaseConfigType = {
+export type BaseConfigType = {
   animation?: ConfigAnimationType;
   onBegin?: OnAnimationFunction;
   onEnd?: OnAnimationFunction;

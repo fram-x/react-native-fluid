@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Dimensions, Text, Button, View } from "react-native";
 import { useNavigation } from "react-navigation-hooks";
-import Fluid, { useFluidConfig } from "react-native-fluid-transitions";
+import Fluid from "react-native-fluid-transitions";
 import {
   useTopTransition,
   useHorizontalTransition,
@@ -12,6 +12,11 @@ import { Box } from "./box";
 import { useNavigationDirection } from "react-native-fluid-navigation";
 import { AnimatedButton } from "./button";
 import { useNavigationStates } from "react-native-fluid-navigation";
+import {
+  useMergedConfigs,
+  useOnEnterState,
+  useOnExitState,
+} from "react-native-fluid-transitions";
 
 const { width: screenWidth } = Dimensions.get("screen");
 
@@ -41,18 +46,10 @@ export const Screen: React.FC<Props> = ({
   const buttonTransitions = useHorizontalTransition(screenWidth);
   const headerTransitions = useTopTransition(120);
 
-  const sharedTransition = useFluidConfig({
-    onEnter: [
-      {
-        state: forwardTo,
-        fromLabel: "Shared_" + next || "",
-      },
-      {
-        state: backTo,
-        fromLabel: "Shared_" + next || "",
-      },
-    ],
-  });
+  const sharedTransition = useMergedConfigs(
+    useOnEnterState(forwardTo, "Shared_" + next || ""),
+    useOnEnterState(backTo, "Shared_" + prev || ""),
+  );
 
   return (
     <Fluid.View
