@@ -1,8 +1,8 @@
 import React, { useState, useRef, useMemo, useEffect } from "react";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { View, StyleSheet, Animated, Easing } from "react-native";
-import { useMergedConfigs } from "react-native-fluid-transitions";
-import { WhenState } from "react-native-fluid-transitions";
+import Fluid, { useMergedConfigs } from "react-native-fluid-transitions";
+import { InterpolationValue } from "react-native-fluid-transitions";
+import { Interpolation } from "react-native-fluid-transitions";
 
 const styles = StyleSheet.create({
   activeContainer: {},
@@ -50,11 +50,20 @@ export const MyComponent: React.FC = ({ children }) => {
     });
   }, [active, animatedValue]);
 
+  const value = InterpolationValue("myScrollView", "scrollY");
+  const config = useMergedConfigs(
+    Interpolation(value, {
+      inputRange: [0, 10],
+      outputRange: [1, 1.1],
+      styleKey: "transform.scale",
+    }),
+  );
+
   return (
-    <TouchableOpacity onPress={toggleActive}>
-      <View style={active ? styles.activeContainer : styles.container}>
-        {children}      
-      </View>
-    </TouchableOpacity>
+    <Fluid.ScrollView label="myScrollView">
+      <Fluid.View config={config} staticStyle={styles.container}>
+        {children}
+      </Fluid.View>
+    </Fluid.ScrollView>
   );
 };
