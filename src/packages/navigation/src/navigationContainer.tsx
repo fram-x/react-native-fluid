@@ -18,7 +18,7 @@ export const FluidNavigationContainer: React.FC<Props> = ({
   const { navigationState, index } = useNavigationState(name);
 
   // Current
-  const { current, duration } = useCurrentValue(name, navigationState);
+  const { current, duration } = useCurrentValue(navigationState);
 
   // Driver context
   const driverContextValue = useDriverContext(

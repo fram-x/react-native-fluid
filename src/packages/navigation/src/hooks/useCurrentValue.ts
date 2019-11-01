@@ -4,10 +4,8 @@ import { StackAnimationProgressContext } from "react-navigation-stack";
 // @ts-ignore
 import { always } from "react-native-reanimated/src/base";
 import { NavigationState } from "../types";
-import { AnimationProvider } from "react-native-fluid-animations";
 
 export const useCurrentValue = (
-  name: string,
   navigationState: NavigationState,
 ): {
   duration: Animated.Value<number>;
