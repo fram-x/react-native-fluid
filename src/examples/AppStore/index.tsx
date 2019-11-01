@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, { useState, useRef } from "react";
 import {
   ScrollView,
   Image,
@@ -6,30 +6,32 @@ import {
   View,
   Text,
   StyleSheet,
-} from 'react-native';
-import Fluid from 'react-native-fluid-transitions';
-import {generateRandomImageUri} from '../helpers';
+} from "react-native";
+import Fluid from "react-native-fluid-transitions";
+import { generateRandomImageUri } from "../helpers";
+import { WhenState } from "react-native-fluid-transitions";
+import { useFluidState } from "react-native-fluid-transitions";
 
 const loremText =
-  'Lorem ipsum dolor sit amet, eam magna molestiae vituperata ex, exerci vivendum mediocritatem pri ne. Usu et fuisset pertinax repudiandae, at habemus definitiones eam, mea id quodsi convenire corrumpit. At has nemore mentitum, est putant intellegam repudiandae at, id illum omnium tincidunt vel. Id dolor invenire duo. Cum paulo labores ut. Ut tritani dignissim delicatissimi mei.';
+  "Lorem ipsum dolor sit amet, eam magna molestiae vituperata ex, exerci vivendum mediocritatem pri ne. Usu et fuisset pertinax repudiandae, at habemus definitiones eam, mea id quodsi convenire corrumpit. At has nemore mentitum, est putant intellegam repudiandae at, id illum omnium tincidunt vel. Id dolor invenire duo. Cum paulo labores ut. Ut tritani dignissim delicatissimi mei.";
 const cardItems = [
   {
     id: 1,
-    title: 'GET STARTED',
+    title: "GET STARTED",
     subtitle: "Let's code",
     image: generateRandomImageUri(),
   },
   {
     id: 2,
     title: "TODAY'S LIST",
-    subtitle: 'Engaging games',
+    subtitle: "Engaging games",
 
     image: generateRandomImageUri(),
   },
   {
     id: 3,
     title: "HOW TO'S",
-    subtitle: 'For small businesses',
+    subtitle: "For small businesses",
     image: generateRandomImageUri(),
   },
 ];
@@ -40,11 +42,13 @@ const Card: React.FunctionComponent<{
   image: string;
   selected: boolean;
   onPress: () => void;
-}> = ({title, subTitle, image, selected, onPress}) => {
-  const config = Fluid.createConfig({
+}> = ({ title, subTitle, image, selected, onPress }) => {
+  const [pressed, setPressed] = useFluidState(false);
+  const config = WhenState(pressed, styles.cardPressed, {
     animation: Fluid.Animations.Springs.Gentle,
-    when: {state: 'pressed', style: styles.cardPressed},
   });
+  const onPressIn = () => setPressed(true);
+  const onPressOut = () => setPressed(false);
 
   return (
     <Fluid.View
@@ -52,10 +56,13 @@ const Card: React.FunctionComponent<{
         styles.cardContainer,
         selected ? styles.cardContainerSelected : {},
       ]}
+      states={pressed}
       config={config}
+      onPressIn={onPressIn}
+      onPressOut={onPressOut}
       onPress={onPress}>
       <Fluid.View style={[styles.card, selected ? styles.cardSelected : {}]}>
-        <Image source={{uri: image}} style={StyleSheet.absoluteFill} />
+        <Image source={{ uri: image }} style={StyleSheet.absoluteFill} />
         <View style={styles.cardTitleContainer}>
           <Text style={styles.textTitle}>{title}</Text>
           <Text style={styles.textSubtitle}>{subTitle}</Text>
@@ -105,12 +112,12 @@ const AppStoreExampleScreen = () => {
 };
 
 AppStoreExampleScreen.navigationOptions = {
-  title: 'AppStore',
+  title: "AppStore",
 };
 
 const cardHeight = 324;
 const cardPadding = 14;
-const cardFullHeight = Dimensions.get('window').height;
+const cardFullHeight = Dimensions.get("window").height;
 
 const styles = StyleSheet.create({
   scrollView: {},
@@ -120,19 +127,19 @@ const styles = StyleSheet.create({
   cardContainer: {
     height: cardHeight + cardPadding,
     marginBottom: 20,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   cardContainerSelected: {
     height: cardFullHeight,
   },
   cardPressed: {
-    transform: [{scale: 0.98}],
+    transform: [{ scale: 0.98 }],
   },
   card: {
     borderRadius: 8,
-    overflow: 'hidden',
+    overflow: "hidden",
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: '#CCC',
+    borderColor: "#CCC",
     height: cardHeight,
     margin: cardPadding,
   },
@@ -145,16 +152,16 @@ const styles = StyleSheet.create({
   },
   textTitle: {
     fontSize: 14,
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
   },
   textSubtitle: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: 'white',
+    fontWeight: "bold",
+    color: "white",
   },
   cardTextContainer: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     padding: 14,
     height: 0,
   },

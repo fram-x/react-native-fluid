@@ -1,10 +1,9 @@
 import React from "react";
 import { StyleSheet, Text } from "react-native";
-import Fluid, {
-  useFluidState,
-  useFluidConfig,
-} from "react-native-fluid-transitions";
+import Fluid, { useFluidState } from "react-native-fluid-transitions";
 import * as Colors from "../colors";
+import { useMergedConfigs } from "react-native-fluid-transitions";
+import { WhenState, AnimationType } from "react-native-fluid-transitions";
 
 const MovingButton: React.FunctionComponent<{}> = () => {
   const [activeState, setActive] = useFluidState(false);
@@ -16,18 +15,14 @@ const MovingButton: React.FunctionComponent<{}> = () => {
   const onPressIn = () => setPressed(true);
   const onPressOut = () => setPressed(false);
 
-  const config = useFluidConfig({
-    animation: Fluid.Animations.Springs.WobblySlow,
-    when: [
-      {
-        state: pressedState,
-        style: styles.pressed,
-        animation: Fluid.Animations.Timings.Default,
-      },
-      { state: activeState, style: styles.activeButton },
-      { state: "nottoggled", style: styles.inactiveButton },
-    ],
-  });
+  const config = useMergedConfigs(
+    AnimationType(Fluid.Animations.Springs.WobblySlow),
+    WhenState(pressedState, styles.pressed, {
+      animation: Fluid.Animations.Timings.Default,
+    }),
+    WhenState(activeState, styles.activeButton),
+    WhenState("nottoggled", styles.inactiveButton),
+  );
 
   return (
     <Fluid.View

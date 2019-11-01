@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { View, StyleSheet } from "react-native";
 import * as Colors from "../colors";
-import Fluid, { MetricsInfo } from "react-native-fluid-transitions";
+import Fluid, { MetricsInfo, Staggered } from "react-native-fluid-transitions";
 
 type BoxProps = {
   active: boolean;
@@ -57,18 +57,11 @@ const StaggerExampleScreen = () => {
     [index],
   );
 
-  const config = Fluid.createConfig({
-    childAnimation: {
-      type: "staggered",
-      stagger: customStaggerFunc,
-    },
-  });
-
   return (
     <View style={styles.container}>
       <Fluid.View
         style={styles.boxContainer}
-        config={config}
+        config={Staggered(customStaggerFunc)}
         onPress={() => toggle(0)}>
         {items.map((_, i) => (
           <Box key={i} active={toggled} onPress={() => toggle(i)} />

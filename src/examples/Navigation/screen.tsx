@@ -12,11 +12,7 @@ import { Box } from "./box";
 import { useNavigationDirection } from "react-native-fluid-navigation";
 import { AnimatedButton } from "./button";
 import { useNavigationStates } from "react-native-fluid-navigation";
-import {
-  useMergedConfigs,
-  useOnEnterState,
-  useOnExitState,
-} from "react-native-fluid-transitions";
+import { useMergedConfigs, OnEnterState } from "react-native-fluid-transitions";
 
 const { width: screenWidth } = Dimensions.get("screen");
 
@@ -47,8 +43,8 @@ export const Screen: React.FC<Props> = ({
   const headerTransitions = useTopTransition(120);
 
   const sharedTransition = useMergedConfigs(
-    useOnEnterState(forwardTo, "Shared_" + next || ""),
-    useOnEnterState(backTo, "Shared_" + prev || ""),
+    OnEnterState(forwardTo, "Shared_" + next || ""),
+    OnEnterState(backTo, "Shared_" + prev || ""),
   );
 
   return (

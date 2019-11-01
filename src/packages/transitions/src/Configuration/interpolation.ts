@@ -1,13 +1,11 @@
-import { ConfigType } from "../Configuration";
-
-import { useFluidConfig } from "./useFluidConfig";
+import { ConfigType } from ".";
 import {
   ConfigValueInterpolationType,
   ConfigInterpolatorType,
   ConfigStyleInterpolationType,
-} from "../Configuration/Types";
+} from "./Types";
 
-export const useInterpolation = (
+export const Interpolation = (
   value: ConfigInterpolatorType,
   interpolation:
     | ConfigStyleInterpolationType
@@ -15,7 +13,7 @@ export const useInterpolation = (
 ): ConfigType => {
   const resolvedInterpolations =
     interpolation instanceof Array ? interpolation : [interpolation];
-  return useFluidConfig({
+  return {
     interpolation: resolvedInterpolations.map(
       i =>
         ({
@@ -23,5 +21,5 @@ export const useInterpolation = (
           value,
         } as ConfigValueInterpolationType),
     ),
-  });
+  };
 };

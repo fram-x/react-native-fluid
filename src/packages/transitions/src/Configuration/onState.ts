@@ -1,14 +1,14 @@
-import { useFluidConfig } from "./useFluidConfig";
 import {
   ConfigPropInterpolationType,
   ConfigStyleInterpolationType,
   ConfigStateType,
   ConfigType,
   OnFactoryFunction,
-} from "../Configuration/Types";
-import { createConfig } from "../Configuration";
+  BaseConfigOnType,
+} from "./Types";
+import { createConfig } from ".";
 
-const useOnState = (
+const createOnState = (
   key: "onEnter" | "onExit",
   state: ConfigStateType | string,
   param:
@@ -19,12 +19,14 @@ const useOnState = (
         | ConfigStyleInterpolationType
         | ConfigStyleInterpolationType[])
     | string,
+  options?: BaseConfigOnType,
 ): ConfigType => {
   let retVal: ConfigType;
   if (typeof param === "string") {
     retVal = createConfig({
       [key]: {
         state,
+        ...(options ? options : {}),
         fromLabel: param,
       },
     });
@@ -32,6 +34,7 @@ const useOnState = (
     retVal = createConfig({
       [key]: {
         state,
+        ...(options ? options : {}),
         onFactory: param,
       },
     });
@@ -39,6 +42,7 @@ const useOnState = (
     retVal = createConfig({
       [key]: {
         state,
+        ...(options ? options : {}),
         interpolation: param as (
           | ConfigPropInterpolationType
           | ConfigPropInterpolationType[]
@@ -47,29 +51,32 @@ const useOnState = (
       },
     });
   }
-  return useFluidConfig(retVal);
+  return retVal;
 };
 
-export function useOnEnterState(
+export function OnEnterState(
   state: ConfigStateType | string,
   fromLabel: string,
+  options?: BaseConfigOnType,
 ): ConfigType;
 
-export function useOnEnterState(
+export function OnEnterState(
   state: ConfigStateType | string,
   onFactory: OnFactoryFunction,
+  options?: BaseConfigOnType,
 ): ConfigType;
 
-export function useOnEnterState(
+export function OnEnterState(
   state: ConfigStateType | string,
   interpolation:
     | ConfigPropInterpolationType
     | ConfigPropInterpolationType[]
     | ConfigStyleInterpolationType
     | ConfigStyleInterpolationType[],
+  options?: BaseConfigOnType,
 ): ConfigType;
 
-export function useOnEnterState(
+export function OnEnterState(
   state: ConfigStateType | string,
   param:
     | OnFactoryFunction
@@ -79,30 +86,34 @@ export function useOnEnterState(
         | ConfigStyleInterpolationType
         | ConfigStyleInterpolationType[])
     | string,
+  options?: BaseConfigOnType,
 ): ConfigType {
-  return useOnState("onEnter", state, param);
+  return createOnState("onEnter", state, param, options);
 }
 
-export function useOnExitState(
+export function OnExitState(
   state: ConfigStateType | string,
   fromLabel: string,
+  options?: BaseConfigOnType,
 ): ConfigType;
 
-export function useOnExitState(
+export function OnExitState(
   state: ConfigStateType | string,
   onFactory: OnFactoryFunction,
+  options?: BaseConfigOnType,
 ): ConfigType;
 
-export function useOnExitState(
+export function OnExitState(
   state: ConfigStateType | string,
   interpolation:
     | ConfigPropInterpolationType
     | ConfigPropInterpolationType[]
     | ConfigStyleInterpolationType
     | ConfigStyleInterpolationType[],
+  options?: BaseConfigOnType,
 ): ConfigType;
 
-export function useOnExitState(
+export function OnExitState(
   state: ConfigStateType | string,
   param:
     | OnFactoryFunction
@@ -112,8 +123,7 @@ export function useOnExitState(
         | ConfigStyleInterpolationType
         | ConfigStyleInterpolationType[])
     | string,
+  options?: BaseConfigOnType,
 ): ConfigType {
-  return useOnState("onExit", state, param);
+  return createOnState("onExit", state, param, options);
 }
-
-export {};

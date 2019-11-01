@@ -13,7 +13,7 @@ import {
   DriverContext,
   DriverContextType,
 } from "./src/Components/Types";
-import { useFluidState, useFluidConfig } from "./src/Hooks";
+
 import {
   createConfig,
   createState,
@@ -27,6 +27,16 @@ import {
   ConfigAnimationType,
   ConfigWhenFactoryType,
   ConfigOnFactoryType,
+  WhenState,
+  OnEnterState,
+  OnExitState,
+  AnimationType,
+  Interpolation,
+  useInterpolationValue,
+  ChildAnimation,
+  Parallel,
+  Sequential,
+  Staggered,
 } from "./src/Configuration";
 import {
   interpolateColor,
@@ -52,8 +62,8 @@ const Animations = {
 };
 
 const States = {
-  StateUnmounted,
-  StateMounted,
+  Umounted: StateUnmounted,
+  Mounted: StateMounted,
 };
 
 export type StateConfig = ConfigStateType;
@@ -64,7 +74,7 @@ export type AnimationConfig = ConfigAnimationType;
 export type WhenFactoryConfig = ConfigWhenFactoryType;
 export type OnFactoryConfig = ConfigOnFactoryType;
 
-export * from "./src/Hooks";
+export { useFluidConfig, useMergedConfigs, useFluidState } from "./src/Hooks";
 
 const Fluid = {
   View: TransitionView,
@@ -101,4 +111,14 @@ export {
   ConfigOnType,
   ConfigType,
   ChildAnimationDirection,
+  WhenState,
+  OnEnterState,
+  OnExitState,
+  AnimationType,
+  Interpolation,
+  useInterpolationValue,
+  ChildAnimation,
+  Parallel,
+  Sequential,
+  Staggered,
 };

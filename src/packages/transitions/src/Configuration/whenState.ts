@@ -3,23 +3,22 @@ import {
   WhenFactoryFunction,
   createConfig,
   ConfigType,
-} from "../Configuration";
+} from ".";
 import {
   BaseConfigType,
   ConfigPropInterpolationType,
   ConfigStyleInterpolationType,
   ConfigValueInterpolationType,
-} from "../Configuration/Types";
+} from "./Types";
 import { StyleProp } from "react-native";
-import { useFluidConfig } from "./useFluidConfig";
 
-export function useWhenState(
+export function WhenState(
   state: ConfigStateType | string,
   style: StyleProp<any>,
   options?: BaseConfigType,
 ): ConfigType;
 
-export function useWhenState(
+export function WhenState(
   state: ConfigStateType | string,
   interpolation:
     | ConfigPropInterpolationType
@@ -28,13 +27,13 @@ export function useWhenState(
   options?: BaseConfigType,
 ): ConfigType;
 
-export function useWhenState(
+export function WhenState(
   state: ConfigStateType | string,
   whenFactory: WhenFactoryFunction,
   options?: BaseConfigType,
 ): ConfigType;
 
-export function useWhenState(
+export function WhenState(
   state: ConfigStateType | string,
   param:
     | StyleProp<any>
@@ -58,7 +57,7 @@ export function useWhenState(
     retVal = createConfig({
       when: {
         state,
-        style: param,
+        interpolation: param,
         ...(options ? options : {}),
       },
     });
@@ -66,10 +65,10 @@ export function useWhenState(
     retVal = createConfig({
       when: {
         state,
-        interpolation: param,
+        style: param,
         ...(options ? options : {}),
       },
     });
   }
-  return useFluidConfig(retVal);
+  return retVal;
 }

@@ -75,14 +75,13 @@ export const useInterpolatorContext = (
     ) {
       return interpolatorEntry.current.interpolators[name];
     }
-    if (!isMounted.current) {
-      forceUpdate();
-      return;
+    if (isMounted.current) {
+      throw fluidException(
+        "Could not find interpolator " + lbl + "." + name + ".",
+      );
+    } else {
+      return undefined;
     }
-
-    throw fluidException(
-      "Could not find interpolator " + lbl + "." + name + ".",
-    );
   };
 
   useEffect(() => {

@@ -3,7 +3,3 @@ export * from "./useForceUpdate";
 export * from "./useFluidState";
 export * from "./useFluidConfig";
 export * from "./useMergedConfigs";
-export * from "./useInterpolationValue";
-export * from "./useInterpolationValue";
-export * from "./useOnState";
-export * from "./useWhenState";

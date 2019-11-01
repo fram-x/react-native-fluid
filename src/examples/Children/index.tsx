@@ -2,73 +2,24 @@ import React, { useState } from "react";
 import { Text, View, StyleSheet } from "react-native";
 import * as Colors from "../colors";
 
-import Fluid from "react-native-fluid-transitions";
-
-const config = Fluid.createConfig({
-  animation: Fluid.Animations.Springs.Gentle,
-  when: {
-    state: "active",
-    style: {
-      opacity: 0,
-      transform: [{ scale: 0.009 }, { translateY: -64 }],
-    },
-  },
-  onEnter: {
-    state: Fluid.States.StateMounted,
-    interpolation: {
-      inputRange: [0, 0.5, 1],
-      outputRange: [1, 0.5, 1],
-      styleKey: "transform.scaleY",
-    },
-  },
-});
-
-const Bubble: React.FunctionComponent<{
-  label: string;
-  color: string;
-  active: boolean;
-}> = ({ label, color, active }) => {
-  const activeState = { name: "active", active };
-  return (
-    <Fluid.View
-      label={"inner-" + label}
-      initialStyle={{
-        opacity: 0,
-        transform: [{ scale: 0.009 }, { translateY: -64 }],
-      }}
-      states={activeState}
-      config={config}
-      staticStyle={[styles.circle, { backgroundColor: color }]}
-      style={{ opacity: 1 }}
-    />
-  );
-};
+import Fluid, { ChildAnimation } from "react-native-fluid-transitions";
+import { Bubble } from "./bubble";
 
 const Frame: React.FunctionComponent<{
   label: string;
   active: boolean;
   color: string;
-  childAnimation: "staggered" | "parallel" | "sequential";
+  childAnimation: any;
 }> = ({ label, childAnimation, active, color }) => {
-  const config = Fluid.createConfig({
-    childAnimation: {
-      type: childAnimation,
-    },
+  const config = ChildAnimation({
+    type: childAnimation,
   });
 
   return (
     <Fluid.View
       label={"container-" + label}
       config={config}
-      style={{
-        borderColor: "#CCC",
-        borderWidth: 0.5,
-        borderRadius: 4,
-        padding: 20,
-        paddingHorizontal: 40,
-        flexDirection: "row",
-        marginBottom: 14,
-      }}>
+      staticStyle={styles.bubbleContainer}>
       <Bubble active={active} label={label + "-inner-1"} color={color} />
       <Bubble active={active} label={label + "-inner-2"} color={color} />
       <Bubble active={active} label={label + "-inner-3"} color={color} />
@@ -93,14 +44,7 @@ const TextExampleScreen = () => {
         label="container"
         onPress={toggelActive}
         config={config}
-        style={{
-          borderColor: "#CCC",
-          borderWidth: 0.5,
-          padding: 14,
-          margin: 14,
-          borderRadius: 4,
-          overflow: "hidden",
-        }}>
+        style={styles.bubble}>
         <Text style={styles.text}>Sequential</Text>
         <Frame
           label="B"
@@ -136,15 +80,27 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 10,
   },
+  bubbleContainer: {
+    borderColor: "#CCC",
+    borderWidth: 0.5,
+    borderRadius: 4,
+    padding: 20,
+    paddingHorizontal: 40,
+    flexDirection: "row",
+    marginBottom: 14,
+  },
   text: {
     fontSize: 11,
     margin: 6,
   },
-  circle: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    margin: 10,
+
+  bubble: {
+    borderColor: "#CCC",
+    borderWidth: 0.5,
+    padding: 14,
+    margin: 14,
+    borderRadius: 4,
+    overflow: "hidden",
   },
 });
 

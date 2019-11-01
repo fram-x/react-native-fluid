@@ -12,5 +12,5 @@ export interface StateContextType {
 }
 
 export const StateContext: Context<StateContextType | null> = React.createContext<StateContextType | null>(
-  null
+  null,
 );
