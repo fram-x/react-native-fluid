@@ -65,7 +65,7 @@ export const Screen: React.FC<Props> = ({
           direction,
         },
       }}>
-      {/* <Fluid.View config={headerTransitions} staticStyle={styles.header}>
+      <Fluid.View config={headerTransitions} staticStyle={styles.header}>
         <Text style={styles.headerText}>{name}</Text>
         <Text style={styles.headerSubText}>
           {"Hello world from " + name + "!"}
@@ -102,7 +102,7 @@ export const Screen: React.FC<Props> = ({
           <Box color={ColorC} />
           <Box color={ColorB} />
         </Fluid.View>
-      )} */}
+      )}
       <View style={styles.interpolationContainer}>
         <Fluid.View
           staticStyle={styles.interpolationBox}
@@ -114,11 +114,11 @@ export const Screen: React.FC<Props> = ({
           config={sharedTransition}
         />
       </View>
-      {/* <View style={styles.buttonContainer}>
+      <View style={styles.buttonContainer}>
         <AnimatedButton>
           <Text>{name}</Text>
         </AnimatedButton>
-      </View> */}
+      </View>
       <View style={styles.footer}>
         <Fluid.View
           staticStyle={styles.footerInner}
