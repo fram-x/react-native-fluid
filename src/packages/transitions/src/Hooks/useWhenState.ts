@@ -71,5 +71,5 @@ export function useWhenState(
       },
     });
   }
-  return useFluidConfig(retVal);
+  return retVal;
 }

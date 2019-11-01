@@ -252,7 +252,6 @@ export const isConfigWhenFactory = (
  * @type Defines an interpolation that will be added when a given state enters or exits.
  */
 export type BaseConfigOnType = {
-  state: string | ConfigStateType;
   animation?: ConfigAnimationType;
   onBegin?: OnAnimationFunction;
   onEnd?: OnAnimationFunction;
@@ -269,6 +268,7 @@ export const getResolvedStateName = (state: string | ConfigStateType) => {
 };
 
 export type ConfigOnInterpolationType = BaseConfigOnType & {
+  state: string | ConfigStateType;
   interpolation:
     | ConfigPropInterpolationType
     | ConfigPropInterpolationType[]
@@ -277,10 +277,12 @@ export type ConfigOnInterpolationType = BaseConfigOnType & {
 };
 
 export type ConfigOnFactoryType = BaseConfigOnType & {
+  state: string | ConfigStateType;
   onFactory: OnFactoryFunction;
 };
 
 export type ConfigOnSharedType = BaseConfigOnType & {
+  state: string | ConfigStateType;
   fromLabel: string;
 };
 

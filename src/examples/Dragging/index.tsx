@@ -6,71 +6,65 @@ import Fluid, {
 import { GestureContainer } from "react-native-fluid-gestures";
 import { StyleSheet, View } from "react-native";
 import * as Colors from "../colors";
-
-const valueDragX = {
-  ownerLabel: "gestureContainer",
-  valueName: "translateX",
-};
-
-const valueDragY = {
-  ownerLabel: "gestureContainer",
-  valueName: "translateY",
-};
+import { useMergedConfigs } from "react-native-fluid-transitions";
+import { useOnEnterState } from "react-native-fluid-transitions";
+import { useOnExitState } from "react-native-fluid-transitions";
+import { useWhenState } from "react-native-fluid-transitions";
+import { useInterpolationValue } from "react-native-fluid-transitions";
 
 const DraggingExampleScreen = () => {
   const [isSnappingState, setIsSnapping] = useFluidState(false);
-  const config = useFluidConfig({
-    onEnter: {
-      state: "dragging",
-      onBegin: () => setIsSnapping(false),
-      interpolation: {
+
+  const valueDragX = useInterpolationValue("gestureContainer", "translateX");
+
+  const valueDragY = useInterpolationValue("gestureContainer", "translateY");
+
+  const config = useMergedConfigs(
+    useOnEnterState(
+      "dragging",
+      {
         inputRange: [0, 1],
         outputRange: [Colors.ColorA, Colors.ColorB],
         styleKey: "backgroundColor",
       },
-    },
-    onExit: [
+      { onBegin: () => setIsSnapping(false) },
+    ),
+    useOnExitState(
+      "dragging",
       {
-        state: "dragging",
-        onBegin: () => setIsSnapping(true),
-        interpolation: {
-          inputRange: [0, 1],
-          outputRange: [Colors.ColorB, Colors.ColorA],
-          styleKey: "backgroundColor",
-        },
+        inputRange: [0, 1],
+        outputRange: [Colors.ColorB, Colors.ColorA],
+        styleKey: "backgroundColor",
       },
-    ],
-    when: [
+      { onBegin: () => setIsSnapping(true) },
+    ),
+    useWhenState("dragging", {
+      styleKey: "transform.translateX",
+      inputRange: [0, 1],
+      outputRange: [0, 1],
+      extrapolate: "extend",
+      value: valueDragX,
+    }),
+    useWhenState("dragging", {
+      styleKey: "transform.translateY",
+      inputRange: [0, 1],
+      outputRange: [0, 1],
+      extrapolate: "extend",
+      value: valueDragY,
+    }),
+    useWhenState(
+      isSnappingState,
       {
-        state: "dragging",
-        interpolation: [
-          {
-            styleKey: "transform.translateX",
-            inputRange: [0, 1],
-            outputRange: [0, 1],
-            extrapolate: "extend",
-            value: valueDragX,
-          },
-          {
-            styleKey: "transform.translateY",
-            inputRange: [0, 1],
-            outputRange: [0, 1],
-            extrapolate: "extend",
-            value: valueDragY,
-          },
-        ],
+        opacity: 1,
+        transform: [{ translateX: 0 }, { translateY: 0 }],
       },
       {
-        state: isSnappingState,
-        onEnd: () => setIsSnapping(false),
-        style: {
-          opacity: 1,
-          transform: [{ translateX: 0 }, { translateY: 0 }],
-        },
         animation: Fluid.Animations.Springs.spring(1, 100, 4),
+        onEnd: () => setIsSnapping(false),
       },
-    ],
-  });
+    ),
+  );
+
   return (
     <View style={styles.container}>
       <GestureContainer label="gestureContainer" style={styles.box}>

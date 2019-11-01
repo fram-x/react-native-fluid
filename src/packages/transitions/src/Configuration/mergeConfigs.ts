@@ -3,7 +3,7 @@ import {
   ConfigWhenType,
   ConfigOnType,
   ConfigValueInterpolationType,
-  SafeConfigType
+  SafeConfigType,
 } from "./Types";
 import { createConfig } from "./createConfig";
 
@@ -16,7 +16,7 @@ export const mergeConfigs = (...configs: ConfigType[]): SafeConfigType => {
     when: [],
     onEnter: [],
     onExit: [],
-    interpolation: []
+    interpolation: [],
   };
 
   // Check if we have no configs to merge
@@ -30,21 +30,21 @@ export const mergeConfigs = (...configs: ConfigType[]): SafeConfigType => {
   retVal.animation = getLastValueDefined(allConfigs, c => c.animation);
   retVal.childAnimation = getLastValueDefined(
     allConfigs,
-    c => c.childAnimation
+    c => c.childAnimation,
   );
 
   // Merge
   retVal.when = mergeArrays<ConfigWhenType>(
-    allConfigs.map(c => resolveToArray(c.when))
+    allConfigs.map(c => resolveToArray(c.when)),
   );
   retVal.onEnter = mergeArrays<ConfigOnType>(
-    allConfigs.map(c => resolveToArray(c.onEnter))
+    allConfigs.map(c => resolveToArray(c.onEnter)),
   );
   retVal.onExit = mergeArrays<ConfigOnType>(
-    allConfigs.map(c => resolveToArray(c.onExit))
+    allConfigs.map(c => resolveToArray(c.onExit)),
   );
   retVal.interpolation = mergeArrays<ConfigValueInterpolationType>(
-    allConfigs.map(c => resolveToArray(c.interpolation))
+    allConfigs.map(c => resolveToArray(c.interpolation)),
   );
 
   return retVal;
@@ -60,7 +60,7 @@ function mergeArrays<T>(arrs: Array<Array<T>>) {
 
 const getLastValueDefined = (
   arr: Array<ConfigType>,
-  cb: (config: ConfigType) => any | undefined
+  cb: (config: ConfigType) => any | undefined,
 ) => {
   for (let i = arr.length - 1; i >= 0; i--) {
     const v = cb(arr[i]);
