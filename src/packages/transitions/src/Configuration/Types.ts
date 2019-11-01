@@ -95,6 +95,7 @@ export type ConfigStaggerFunction = (
 type BaseConfigChildAnimationType = {
   direction?: ChildAnimationDirection;
 };
+
 /**
  * @type Describes the animation type animating children
  */

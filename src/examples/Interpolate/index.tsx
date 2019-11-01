@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import { Text, StyleSheet } from "react-native";
 import Fluid, { Easings } from "react-native-fluid-transitions";
 import * as Colors from "../colors";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";

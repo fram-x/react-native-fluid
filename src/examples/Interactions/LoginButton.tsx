@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { StyleSheet, TextStyle, Text, Dimensions } from "react-native";
 import Fluid, {
   createFluidComponent,

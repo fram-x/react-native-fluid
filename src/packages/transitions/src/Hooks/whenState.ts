@@ -12,13 +12,13 @@ import {
 } from "../Configuration/Types";
 import { StyleProp } from "react-native";
 
-export function useWhenState(
+export function WhenState(
   state: ConfigStateType | string,
   style: StyleProp<any>,
   options?: BaseConfigType,
 ): ConfigType;
 
-export function useWhenState(
+export function WhenState(
   state: ConfigStateType | string,
   interpolation:
     | ConfigPropInterpolationType
@@ -27,13 +27,13 @@ export function useWhenState(
   options?: BaseConfigType,
 ): ConfigType;
 
-export function useWhenState(
+export function WhenState(
   state: ConfigStateType | string,
   whenFactory: WhenFactoryFunction,
   options?: BaseConfigType,
 ): ConfigType;
 
-export function useWhenState(
+export function WhenState(
   state: ConfigStateType | string,
   param:
     | StyleProp<any>

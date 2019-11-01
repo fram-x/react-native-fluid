@@ -1,9 +1,6 @@
 import React from "react";
 import { StyleSheet, Text } from "react-native";
-import Fluid, {
-  useFluidState,
-  useFluidConfig,
-} from "react-native-fluid-transitions";
+import Fluid, { useFluidConfig } from "react-native-fluid-transitions";
 import * as Colors from "../colors";
 
 type Props = {

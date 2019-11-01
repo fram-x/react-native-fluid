@@ -54,19 +54,19 @@ const createOnState = (
   return retVal;
 };
 
-export function useOnEnterState(
+export function OnEnterState(
   state: ConfigStateType | string,
   fromLabel: string,
   options?: BaseConfigOnType,
 ): ConfigType;
 
-export function useOnEnterState(
+export function OnEnterState(
   state: ConfigStateType | string,
   onFactory: OnFactoryFunction,
   options?: BaseConfigOnType,
 ): ConfigType;
 
-export function useOnEnterState(
+export function OnEnterState(
   state: ConfigStateType | string,
   interpolation:
     | ConfigPropInterpolationType
@@ -76,7 +76,7 @@ export function useOnEnterState(
   options?: BaseConfigOnType,
 ): ConfigType;
 
-export function useOnEnterState(
+export function OnEnterState(
   state: ConfigStateType | string,
   param:
     | OnFactoryFunction
@@ -91,19 +91,19 @@ export function useOnEnterState(
   return createOnState("onEnter", state, param, options);
 }
 
-export function useOnExitState(
+export function OnExitState(
   state: ConfigStateType | string,
   fromLabel: string,
   options?: BaseConfigOnType,
 ): ConfigType;
 
-export function useOnExitState(
+export function OnExitState(
   state: ConfigStateType | string,
   onFactory: OnFactoryFunction,
   options?: BaseConfigOnType,
 ): ConfigType;
 
-export function useOnExitState(
+export function OnExitState(
   state: ConfigStateType | string,
   interpolation:
     | ConfigPropInterpolationType
@@ -113,7 +113,7 @@ export function useOnExitState(
   options?: BaseConfigOnType,
 ): ConfigType;
 
-export function useOnExitState(
+export function OnExitState(
   state: ConfigStateType | string,
   param:
     | OnFactoryFunction
@@ -127,5 +127,3 @@ export function useOnExitState(
 ): ConfigType {
   return createOnState("onExit", state, param, options);
 }
-
-export {};

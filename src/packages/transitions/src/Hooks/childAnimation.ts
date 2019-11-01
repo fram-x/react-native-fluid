@@ -6,19 +6,19 @@ import {
   ConfigStaggerFunction,
 } from "../Configuration/Types";
 
-export function useChildAnimation(
+export function ChildAnimation(
   childAnimationType: ConfigSequentialChildAnimationType,
 ): ConfigType;
 
-export function useChildAnimation(
+export function ChildAnimation(
   childAnimationType: ConfigParallelChildAnimationType,
 ): ConfigType;
 
-export function useChildAnimation(
+export function ChildAnimation(
   childAnimationType: ConfigStaggeredChildAnimationType,
 ): ConfigType;
 
-export function useChildAnimation(
+export function ChildAnimation(
   childAnimationType:
     | ConfigSequentialChildAnimationType
     | ConfigParallelChildAnimationType
@@ -27,16 +27,14 @@ export function useChildAnimation(
   return { childAnimation: childAnimationType };
 }
 
-export function useStaggered(
-  stagger: number | ConfigStaggerFunction,
-): ConfigType {
-  return useChildAnimation({ type: "staggered", stagger });
+export function Staggered(stagger: number | ConfigStaggerFunction): ConfigType {
+  return ChildAnimation({ type: "staggered", stagger });
 }
 
-export function useSequential(): ConfigType {
-  return useChildAnimation({ type: "sequential" });
+export function Sequential(): ConfigType {
+  return ChildAnimation({ type: "sequential" });
 }
 
-export function useParallel(): ConfigType {
-  return useChildAnimation({ type: "parallel" });
+export function Parallel(): ConfigType {
+  return ChildAnimation({ type: "parallel" });
 }

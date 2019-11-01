@@ -1,16 +1,15 @@
 import React from "react";
 import Fluid, {
-  useFluidConfig,
   useFluidState,
+  OnEnterState,
+  OnExitState,
+  WhenState,
+  useInterpolationValue,
 } from "react-native-fluid-transitions";
 import { GestureContainer } from "react-native-fluid-gestures";
 import { StyleSheet, View } from "react-native";
 import * as Colors from "../colors";
 import { useMergedConfigs } from "react-native-fluid-transitions";
-import { useOnEnterState } from "react-native-fluid-transitions";
-import { useOnExitState } from "react-native-fluid-transitions";
-import { useWhenState } from "react-native-fluid-transitions";
-import { useInterpolationValue } from "react-native-fluid-transitions";
 
 const DraggingExampleScreen = () => {
   const [isSnappingState, setIsSnapping] = useFluidState(false);
@@ -20,7 +19,7 @@ const DraggingExampleScreen = () => {
   const valueDragY = useInterpolationValue("gestureContainer", "translateY");
 
   const config = useMergedConfigs(
-    useOnEnterState(
+    OnEnterState(
       "dragging",
       {
         inputRange: [0, 1],
@@ -29,7 +28,7 @@ const DraggingExampleScreen = () => {
       },
       { onBegin: () => setIsSnapping(false) },
     ),
-    useOnExitState(
+    OnExitState(
       "dragging",
       {
         inputRange: [0, 1],
@@ -38,21 +37,21 @@ const DraggingExampleScreen = () => {
       },
       { onBegin: () => setIsSnapping(true) },
     ),
-    useWhenState("dragging", {
+    WhenState("dragging", {
       styleKey: "transform.translateX",
       inputRange: [0, 1],
       outputRange: [0, 1],
       extrapolate: "extend",
       value: valueDragX,
     }),
-    useWhenState("dragging", {
+    WhenState("dragging", {
       styleKey: "transform.translateY",
       inputRange: [0, 1],
       outputRange: [0, 1],
       extrapolate: "extend",
       value: valueDragY,
     }),
-    useWhenState(
+    WhenState(
       isSnappingState,
       {
         opacity: 1,

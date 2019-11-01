@@ -6,9 +6,9 @@ import * as Colors from "../colors";
 import { createState } from "react-native-fluid-transitions";
 import {
   useMergedConfigs,
-  useWhenState,
-  useAnimationType,
-  useOnEnterState,
+  WhenState,
+  AnimationType,
+  OnEnterState,
 } from "react-native-fluid-transitions";
 
 const EmailFolder: React.FunctionComponent<{}> = () => {
@@ -19,14 +19,14 @@ const EmailFolder: React.FunctionComponent<{}> = () => {
   const states = [countState, activeState];
 
   const config = useMergedConfigs(
-    useWhenState(activeState, styles.activeNotification),
-    useWhenState(inactiveState, styles.inactiveNotification),
-    useOnEnterState("counter", {
+    WhenState(activeState, styles.activeNotification),
+    WhenState(inactiveState, styles.inactiveNotification),
+    OnEnterState("counter", {
       inputRange: [0, 0.5, 1],
       outputRange: [1, 2, 1],
       styleKey: "transform.scale",
     }),
-    useAnimationType(Fluid.Animations.Springs.Gentle),
+    AnimationType(Fluid.Animations.Springs.Gentle),
   );
 
   const inc = () => setCounter(counter + 1);

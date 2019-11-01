@@ -4,7 +4,6 @@ import {
   AnimatedStyleKeys,
   Style,
   Easings,
-  SharedInterpolationStatus,
 } from "../Components/Types";
 import { ConfigStyleInterpolationType, ConfigType } from "../Configuration";
 import { getStyleInfo } from "../Styles/getStyleInfo";

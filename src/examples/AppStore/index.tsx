@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import Fluid from "react-native-fluid-transitions";
 import { generateRandomImageUri } from "../helpers";
-import { useWhenState } from "react-native-fluid-transitions";
+import { WhenState } from "react-native-fluid-transitions";
 import { useFluidState } from "react-native-fluid-transitions";
 
 const loremText =
@@ -44,7 +44,7 @@ const Card: React.FunctionComponent<{
   onPress: () => void;
 }> = ({ title, subTitle, image, selected, onPress }) => {
   const [pressed, setPressed] = useFluidState(false);
-  const config = useWhenState(pressed, styles.cardPressed, {
+  const config = WhenState(pressed, styles.cardPressed, {
     animation: Fluid.Animations.Springs.Gentle,
   });
   const onPressIn = () => setPressed(true);

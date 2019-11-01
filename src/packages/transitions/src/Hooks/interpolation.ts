@@ -5,7 +5,7 @@ import {
   ConfigStyleInterpolationType,
 } from "../Configuration/Types";
 
-export const useInterpolation = (
+export const Interpolation = (
   value: ConfigInterpolatorType,
   interpolation:
     | ConfigStyleInterpolationType

@@ -65,18 +65,19 @@ export type WhenFactoryConfig = ConfigWhenFactoryType;
 export type OnFactoryConfig = ConfigOnFactoryType;
 
 export {
-  useOnEnterState,
-  useOnExitState,
   useFluidConfig,
-  useAnimationType,
-  useInterpolationValue,
   useMergedConfigs,
-  useWhenState,
   useFluidState,
-  useChildAnimation,
-  useParallel,
-  useSequential,
-  useStaggered,
+  WhenState,
+  OnEnterState,
+  OnExitState,
+  AnimationType,
+  Interpolation,
+  useInterpolationValue,
+  ChildAnimation,
+  Parallel,
+  Sequential,
+  Staggered,
 } from "./src/Hooks";
 
 const Fluid = {

@@ -1,9 +1,5 @@
 import React from "react";
-import Fluid, {
-  Easings,
-  useFluidConfig,
-  useFluidState,
-} from "react-native-fluid-transitions";
+import Fluid, { Easings, useFluidConfig } from "react-native-fluid-transitions";
 import { StyleSheet } from "react-native";
 
 type Props = {
