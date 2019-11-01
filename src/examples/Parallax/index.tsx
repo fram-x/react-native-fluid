@@ -1,88 +1,84 @@
-import React from 'react';
-import {Image, View, Text, StyleSheet, Dimensions} from 'react-native';
-import Fluid from 'react-native-fluid-transitions';
-import * as Colors from '../colors';
-import {generateImageUri} from '../helpers';
+import React from "react";
+import { Image, View, Text, StyleSheet, Dimensions } from "react-native";
+import Fluid from "react-native-fluid-transitions";
+import * as Colors from "../colors";
+import { generateImageUri } from "../helpers";
+import {
+  InterpolationValue,
+  useMergedConfigs,
+  useFluidConfig,
+  Interpolation,
+} from "react-native-fluid-transitions";
 
 const HeaderHeight = 52;
 
 const ParallaxExampleScreen = () => {
-  const size = Dimensions.get('window');
+  const size = Dimensions.get("window");
   const imageOffset = -80;
 
   // @ts-ignore
-  const data = Array.apply(null, {length: 24})
+  const data = Array.apply(null, { length: 24 })
     .map(Function.call, Number)
-    .map((s: string) => 'Test ' + s.toString());
+    .map((s: string) => "Test " + s.toString());
 
-  const {width: imageSize} = size;
+  const { width: imageSize } = size;
   const uri = generateImageUri(20, imageSize, imageSize);
 
-  const value = {
-    ownerLabel: 'scroller',
-    valueName: 'scrollY',
-  };
+  const value = InterpolationValue("scroller", "scrollY");
 
-  const imageConfig = Fluid.createConfig({
-    interpolation: {
-      styleKey: 'transform.scale',
+  const imageConfig = useFluidConfig(
+    Interpolation(value, {
+      styleKey: "transform.scale",
       inputRange: [-25, 0],
       outputRange: [1.1, 1],
-      extrapolateRight: 'clamp',
-      value,
-    },
-  });
+      extrapolateRight: "clamp",
+    }),
+  );
 
-  const headerContainerConfig = Fluid.createConfig({
-    interpolation: {
-      styleKey: 'backgroundColor',
+  const headerContainerConfig = useFluidConfig(
+    Interpolation(value, {
+      styleKey: "backgroundColor",
       inputRange: [0, imageSize - HeaderHeight + imageOffset],
-      outputRange: ['#FBB95800', Colors.ColorC],
-      extrapolate: 'clamp',
-      value,
-    },
-  });
+      outputRange: ["#FBB95800", Colors.ColorC],
+      extrapolate: "clamp",
+    }),
+  );
 
-  const headerTextConfig = Fluid.createConfig({
-    interpolation: [
-      {
-        styleKey: 'transform.scale',
-        inputRange: [0, imageSize - HeaderHeight + imageOffset],
-        outputRange: [1.5, 1],
-        extrapolateRight: 'clamp',
-        value,
-      },
-      {
-        styleKey: 'transform.translateX',
-        inputRange: [0, imageSize - HeaderHeight + imageOffset],
-        outputRange: [14, 1],
-        extrapolateRight: 'clamp',
-        value,
-      },
-      {
-        styleKey: 'color',
-        inputRange: [0, imageSize - HeaderHeight + imageOffset],
-        outputRange: [Colors.ColorC, '#FFF'],
-        extrapolate: 'clamp',
-        value,
-      },
-    ],
-  });
+  const headerTextConfig = useMergedConfigs(
+    Interpolation(value, {
+      styleKey: "transform.scale",
+      inputRange: [0, imageSize - HeaderHeight + imageOffset],
+      outputRange: [1.5, 1],
+      extrapolateRight: "clamp",
+    }),
+    Interpolation(value, {
+      styleKey: "transform.translateX",
+      inputRange: [0, imageSize - HeaderHeight + imageOffset],
+      outputRange: [14, 1],
+      extrapolateRight: "clamp",
+    }),
+    Interpolation(value, {
+      styleKey: "color",
+      inputRange: [0, imageSize - HeaderHeight + imageOffset],
+      outputRange: [Colors.ColorC, "#FFF"],
+      extrapolate: "clamp",
+    }),
+  );
 
   return (
     <Fluid.View staticStyle={styles.container} label="container">
-      <Fluid.ScrollView label={'scroller'}>
+      <Fluid.ScrollView label={"scroller"}>
         <Fluid.View
           label="image"
+          staticStyle={styles.image}
           style={{
             width: imageSize,
             height: imageSize + imageOffset,
-            backgroundColor: '#CCC',
-            transform: [{translateY: imageOffset}],
+            transform: [{ translateY: imageOffset }],
           }}
           config={imageConfig}>
           <Image
-            source={{uri}}
+            source={{ uri }}
             style={{
               width: imageSize,
               height: imageSize,
@@ -90,7 +86,7 @@ const ParallaxExampleScreen = () => {
           />
         </Fluid.View>
 
-        <Fluid.View staticStyle={styles.itemContainer}>
+        <Fluid.View staticStyle={styles.itemContainer} label="list">
           {data.map((d: string) => (
             <View key={d} style={styles.item}>
               <Text>{d}</Text>
@@ -100,6 +96,7 @@ const ParallaxExampleScreen = () => {
       </Fluid.ScrollView>
       <Fluid.View
         staticStyle={styles.headerContainer}
+        label={"header"}
         config={headerContainerConfig}>
         <Fluid.Text staticStyle={styles.headerText} config={headerTextConfig}>
           YOUR HOMEWORK
@@ -110,13 +107,13 @@ const ParallaxExampleScreen = () => {
 };
 
 ParallaxExampleScreen.navigationOptions = {
-  title: 'Parallax',
+  title: "Parallax",
   headerStyle: {
     backgroundColor: Colors.ColorC,
-    shadowColor: 'transparent',
+    shadowColor: "transparent",
     borderBottomWidth: 0,
   },
-  headerTintColor: '#FFF',
+  headerTintColor: "#FFF",
 };
 
 const styles = StyleSheet.create({
@@ -125,29 +122,32 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     ...StyleSheet.absoluteFillObject,
-    alignItems: 'flex-start',
-    justifyContent: 'center',
+    alignItems: "flex-start",
+    justifyContent: "center",
     height: HeaderHeight,
   },
   headerText: {
     fontSize: 12,
-    fontWeight: 'bold',
-    color: 'white',
+    fontWeight: "bold",
+    color: "white",
     marginLeft: 14,
   },
   itemContainer: {
-    backgroundColor: '#EFEFEF',
+    backgroundColor: "#EFEFEF",
   },
   item: {
     padding: 14,
     borderRadius: 8,
-    borderColor: '#CCC',
-    backgroundColor: '#FFF',
+    borderColor: "#CCC",
+    backgroundColor: "#FFF",
     borderWidth: StyleSheet.hairlineWidth,
     margin: 8,
     marginBottom: 0,
     height: 65,
-    justifyContent: 'center',
+    justifyContent: "center",
+  },
+  image: {
+    backgroundColor: "#CCC",
   },
 });
 

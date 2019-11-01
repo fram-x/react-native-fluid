@@ -5,6 +5,7 @@ import {
 } from "../Types";
 import { fluidException } from "../../Types";
 import { SafeStateConfigType } from "../../Configuration";
+import { useForceUpdate } from "../../Hooks";
 
 export const useInterpolatorConfig = (
   _transitionItem: TransitionItem,
@@ -15,6 +16,8 @@ export const useInterpolatorConfig = (
   isMounted: boolean,
 ) => {
   const interpolations = configuration.interpolation;
+  const forceUpdate = useForceUpdate();
+
   interpolations.forEach(interpolation => {
     if (!interpolation.value) {
       throw fluidException(
@@ -36,7 +39,9 @@ export const useInterpolatorConfig = (
             ownerLabel +
             ".",
         );
-      } else return;
+      } else {
+        return;
+      }
     }
 
     const {

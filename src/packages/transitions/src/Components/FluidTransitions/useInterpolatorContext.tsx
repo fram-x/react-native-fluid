@@ -4,8 +4,8 @@ import {
   InterpolatorInfo,
   PartialInterpolatorInfo,
 } from "../Types";
-import { useForceUpdate } from "../../Hooks";
-import { fluidException } from "../../Types";
+import { useForceUpdate, useLog } from "../../Hooks";
+import { fluidException, LoggerLevel } from "../../Types";
 
 /**
  *
@@ -20,13 +20,13 @@ export const useInterpolatorContext = (
    * Setup
    ******************************************************/
 
+  const logger = useLog(label, "ipctx");
   const interpolatorEntries = useRef<Array<InterpolatorInfo>>([]);
   const interpolatorEntry = useRef<InterpolatorInfo | undefined>(undefined);
-  const isMounted = useRef(false);
+  const hasUpdated = useRef(false);
   const hasInterpolatorRequest = useRef(false);
 
   const forceUpdate = useForceUpdate();
-
   const context = useContext(InterpolatorContext);
 
   if (setupInterpolators && !interpolatorEntry.current) {
@@ -39,6 +39,15 @@ export const useInterpolatorContext = (
       label: label,
       ...setupInterpolators(props),
     };
+    logger(
+      () =>
+        "Registered " +
+        (interpolatorEntry.current &&
+          Object.keys(interpolatorEntry.current.interpolators).join(", ")) +
+        " in " +
+        label,
+      LoggerLevel.Detailed,
+    );
   }
 
   /******************************************************
@@ -52,8 +61,9 @@ export const useInterpolatorContext = (
         return;
       }
       interpolatorEntries.current.push(interpolatorInfo);
+      logger(() => "Registered interpolator through context in " + label);
     },
-    [context],
+    [context, label, logger],
   );
 
   const getInterpolator = (lbl: string, name: string) => {
@@ -75,17 +85,15 @@ export const useInterpolatorContext = (
     ) {
       return interpolatorEntry.current.interpolators[name];
     }
-    if (isMounted.current) {
-      throw fluidException(
-        "Could not find interpolator " + lbl + "." + name + ".",
-      );
-    } else {
-      return undefined;
+    // Let's update once to rerender so that the tree is ready
+    if (!hasUpdated.current) {
+      hasUpdated.current = true;
+      forceUpdate();
     }
+    return undefined;
   };
 
   useEffect(() => {
-    isMounted.current = true;
     if (interpolatorEntry.current) {
       registerInterpolator(interpolatorEntry.current);
     }

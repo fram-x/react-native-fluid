@@ -4,7 +4,7 @@ import Fluid, {
   OnEnterState,
   OnExitState,
   WhenState,
-  useInterpolationValue,
+  InterpolationValue,
 } from "react-native-fluid-transitions";
 import { GestureContainer } from "react-native-fluid-gestures";
 import { StyleSheet, View } from "react-native";
@@ -14,9 +14,8 @@ import { useMergedConfigs } from "react-native-fluid-transitions";
 const DraggingExampleScreen = () => {
   const [isSnappingState, setIsSnapping] = useFluidState(false);
 
-  const valueDragX = useInterpolationValue("gestureContainer", "translateX");
-
-  const valueDragY = useInterpolationValue("gestureContainer", "translateY");
+  const valueDragX = InterpolationValue("gestureContainer", "translateX");
+  const valueDragY = InterpolationValue("gestureContainer", "translateY");
 
   const config = useMergedConfigs(
     OnEnterState(
@@ -58,7 +57,7 @@ const DraggingExampleScreen = () => {
         transform: [{ translateX: 0 }, { translateY: 0 }],
       },
       {
-        animation: Fluid.Animations.Springs.spring(1, 100, 4),
+        animation: Fluid.Animations.Springs.Gentle,
         onEnd: () => setIsSnapping(false),
       },
     ),
