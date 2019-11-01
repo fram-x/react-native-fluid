@@ -69,11 +69,14 @@ export {
   useOnExitState,
   useFluidConfig,
   useAnimationType,
-  useChildAnimation,
   useInterpolationValue,
   useMergedConfigs,
   useWhenState,
   useFluidState,
+  useChildAnimation,
+  useParallel,
+  useSequential,
+  useStaggered,
 } from "./src/Hooks";
 
 const Fluid = {

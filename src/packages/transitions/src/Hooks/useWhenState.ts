@@ -11,7 +11,6 @@ import {
   ConfigValueInterpolationType,
 } from "../Configuration/Types";
 import { StyleProp } from "react-native";
-import { useFluidConfig } from "./useFluidConfig";
 
 export function useWhenState(
   state: ConfigStateType | string,
