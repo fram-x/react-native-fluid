@@ -33,18 +33,7 @@ import {
   createConfig,
   ChildAnimationDirection,
   SafeStateConfigType,
-  ConfigOnType,
-  ConfigType,
 } from "../../Configuration";
-
-type PendingSharedInterpolation = {
-  item: TransitionItem;
-  fromLabel: string;
-  toLabel: string;
-  animation?: ConfigAnimationType;
-  onBegin?: OnAnimationFunction;
-  onEnd?: OnAnimationFunction;
-};
 
 export const useSharedInterpolation = (
   transitionItem: TransitionItem,

@@ -14,7 +14,7 @@ import {
   ComponentProps,
 } from "react-native-fluid-transitions";
 
-type DraggableProps = ComponentProps<ViewProps> & {
+type DraggableProps = ComponentProps<ViewStyle> & {
   onGestureEvent?: (event: PanGestureHandlerGestureEvent) => void;
   onHandlerStateChange?: (event: PanGestureHandlerStateChangeEvent) => void;
 };

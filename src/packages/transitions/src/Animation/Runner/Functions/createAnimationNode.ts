@@ -1,4 +1,4 @@
-import { getLifecycleFunc, StopReason } from "./lifecycle";
+import { getLifecycleFunc } from "./lifecycle";
 import { normalize } from "./normalize";
 import { getSetAnimationValue } from "./setAnimationValue";
 import {

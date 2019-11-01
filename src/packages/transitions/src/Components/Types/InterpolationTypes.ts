@@ -1,17 +1,11 @@
-import {
-  ExtrapolateType,
-  InterpolateFunction,
-} from "react-native-fluid-animations";
-import { MetricsInfo } from "../../Types";
+import { InterpolateFunction } from "react-native-fluid-animations";
 import {
   IAnimationValue,
   InterpolationConfig,
 } from "react-native-fluid-animations";
 import { TransitionItem } from "./TransitionItem";
-import { Style } from "./StyleTypes";
 import {
   ConfigAnimationType,
-  ConfigInterpolatorType,
   ChildAnimationDirection,
 } from "../../Configuration";
 

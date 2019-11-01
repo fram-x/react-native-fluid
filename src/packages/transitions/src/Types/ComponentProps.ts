@@ -3,7 +3,7 @@ import { OnAnimationFunction } from "../Components/Types";
 import {
   ConfigStateType,
   ConfigAnimationType,
-  ConfigType
+  ConfigType,
 } from "../Configuration";
 
 export interface ComponentProps<PT> {
