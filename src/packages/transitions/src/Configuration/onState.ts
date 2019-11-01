@@ -5,8 +5,8 @@ import {
   ConfigType,
   OnFactoryFunction,
   BaseConfigOnType,
-} from "../Configuration/Types";
-import { createConfig } from "../Configuration";
+} from "./Types";
+import { createConfig } from ".";
 
 const createOnState = (
   key: "onEnter" | "onExit",

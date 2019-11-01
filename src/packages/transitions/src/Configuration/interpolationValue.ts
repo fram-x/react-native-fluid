@@ -1,4 +1,4 @@
-import { ConfigInterpolatorType } from "../Configuration/Types";
+import { ConfigInterpolatorType } from "./Types";
 
 export const useInterpolationValue = (
   owner: string,

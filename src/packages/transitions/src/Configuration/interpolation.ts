@@ -1,9 +1,9 @@
-import { ConfigType } from "../Configuration";
+import { ConfigType } from ".";
 import {
   ConfigValueInterpolationType,
   ConfigInterpolatorType,
   ConfigStyleInterpolationType,
-} from "../Configuration/Types";
+} from "./Types";
 
 export const Interpolation = (
   value: ConfigInterpolatorType,

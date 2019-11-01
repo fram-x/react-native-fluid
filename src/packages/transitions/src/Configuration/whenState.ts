@@ -3,13 +3,13 @@ import {
   WhenFactoryFunction,
   createConfig,
   ConfigType,
-} from "../Configuration";
+} from ".";
 import {
   BaseConfigType,
   ConfigPropInterpolationType,
   ConfigStyleInterpolationType,
   ConfigValueInterpolationType,
-} from "../Configuration/Types";
+} from "./Types";
 import { StyleProp } from "react-native";
 
 export function WhenState(

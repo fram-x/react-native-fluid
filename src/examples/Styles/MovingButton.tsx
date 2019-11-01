@@ -4,7 +4,6 @@ import Fluid, { useFluidState } from "react-native-fluid-transitions";
 import * as Colors from "../colors";
 import { useMergedConfigs } from "react-native-fluid-transitions";
 import { WhenState, AnimationType } from "react-native-fluid-transitions";
-import { OnEnterState } from "react-native-fluid-transitions";
 
 const MovingButton: React.FunctionComponent<{}> = () => {
   const [activeState, setActive] = useFluidState(false);

@@ -4,7 +4,7 @@ import {
   ConfigStaggeredChildAnimationType,
   ConfigSequentialChildAnimationType,
   ConfigStaggerFunction,
-} from "../Configuration/Types";
+} from "./Types";
 
 export function ChildAnimation(
   childAnimationType: ConfigSequentialChildAnimationType,

@@ -27,6 +27,16 @@ import {
   ConfigAnimationType,
   ConfigWhenFactoryType,
   ConfigOnFactoryType,
+  WhenState,
+  OnEnterState,
+  OnExitState,
+  AnimationType,
+  Interpolation,
+  useInterpolationValue,
+  ChildAnimation,
+  Parallel,
+  Sequential,
+  Staggered,
 } from "./src/Configuration";
 import {
   interpolateColor,
@@ -64,21 +74,7 @@ export type AnimationConfig = ConfigAnimationType;
 export type WhenFactoryConfig = ConfigWhenFactoryType;
 export type OnFactoryConfig = ConfigOnFactoryType;
 
-export {
-  useFluidConfig,
-  useMergedConfigs,
-  useFluidState,
-  WhenState,
-  OnEnterState,
-  OnExitState,
-  AnimationType,
-  Interpolation,
-  useInterpolationValue,
-  ChildAnimation,
-  Parallel,
-  Sequential,
-  Staggered,
-} from "./src/Hooks";
+export { useFluidConfig, useMergedConfigs, useFluidState } from "./src/Hooks";
 
 const Fluid = {
   View: TransitionView,
@@ -115,4 +111,14 @@ export {
   ConfigOnType,
   ConfigType,
   ChildAnimationDirection,
+  WhenState,
+  OnEnterState,
+  OnExitState,
+  AnimationType,
+  Interpolation,
+  useInterpolationValue,
+  ChildAnimation,
+  Parallel,
+  Sequential,
+  Staggered,
 };
