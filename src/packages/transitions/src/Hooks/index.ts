@@ -7,3 +7,5 @@ export * from "./useInterpolationValue";
 export * from "./useInterpolationValue";
 export * from "./useOnState";
 export * from "./useWhenState";
+export * from "./useAnimationType";
+export * from "./useChildAnimation";

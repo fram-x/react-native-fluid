@@ -13,7 +13,7 @@ import {
   DriverContext,
   DriverContextType,
 } from "./src/Components/Types";
-import { useFluidState, useFluidConfig } from "./src/Hooks";
+
 import {
   createConfig,
   createState,
@@ -52,8 +52,8 @@ const Animations = {
 };
 
 const States = {
-  StateUnmounted,
-  StateMounted,
+  Umounted: StateUnmounted,
+  Mounted: StateMounted,
 };
 
 export type StateConfig = ConfigStateType;
@@ -64,7 +64,17 @@ export type AnimationConfig = ConfigAnimationType;
 export type WhenFactoryConfig = ConfigWhenFactoryType;
 export type OnFactoryConfig = ConfigOnFactoryType;
 
-export * from "./src/Hooks";
+export {
+  useOnEnterState,
+  useOnExitState,
+  useFluidConfig,
+  useAnimationType,
+  useChildAnimation,
+  useInterpolationValue,
+  useMergedConfigs,
+  useWhenState,
+  useFluidState,
+} from "./src/Hooks";
 
 const Fluid = {
   View: TransitionView,

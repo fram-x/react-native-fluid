@@ -4,6 +4,12 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Fluid from "react-native-fluid-transitions";
 import * as Colors from "../colors";
 import { createState } from "react-native-fluid-transitions";
+import {
+  useMergedConfigs,
+  useWhenState,
+  useAnimationType,
+  useOnEnterState,
+} from "react-native-fluid-transitions";
 
 const EmailFolder: React.FunctionComponent<{}> = () => {
   const [counter, setCounter] = useState(0);
@@ -12,23 +18,16 @@ const EmailFolder: React.FunctionComponent<{}> = () => {
   const inactiveState = createState("inactive", counter === 0);
   const states = [countState, activeState];
 
-  const config = Fluid.createConfig({
-    animation: Fluid.Animations.Springs.Gentle,
-    when: [
-      { state: activeState, style: styles.activeNotification },
-      { state: inactiveState, style: styles.inactiveNotification },
-    ],
-    onEnter: {
-      state: "counter",
-      onFactory: () => ({
-        interpolation: {
-          inputRange: [0, 0.5, 1],
-          outputRange: [1, 2, 1],
-          styleKey: "transform.scale",
-        },
-      }),
-    },
-  });
+  const config = useMergedConfigs(
+    useWhenState(activeState, styles.activeNotification),
+    useWhenState(inactiveState, styles.inactiveNotification),
+    useOnEnterState("counter", {
+      inputRange: [0, 0.5, 1],
+      outputRange: [1, 2, 1],
+      styleKey: "transform.scale",
+    }),
+    useAnimationType(Fluid.Animations.Springs.Gentle),
+  );
 
   const inc = () => setCounter(counter + 1);
   return (

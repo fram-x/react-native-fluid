@@ -58,7 +58,7 @@ export function useWhenState(
     retVal = createConfig({
       when: {
         state,
-        style: param,
+        interpolation: param,
         ...(options ? options : {}),
       },
     });
@@ -66,7 +66,7 @@ export function useWhenState(
     retVal = createConfig({
       when: {
         state,
-        interpolation: param,
+        style: param,
         ...(options ? options : {}),
       },
     });
