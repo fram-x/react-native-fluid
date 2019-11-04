@@ -20,6 +20,7 @@ export type AnimationNode = {
   stagger: number;
   staggerMax: number;
   staggerFunction?: ConfigStaggerFunction;
+  waitForMetrics?: () => Promise<void>;
   animation?: ConfigAnimationType;
   label?: string;
 };

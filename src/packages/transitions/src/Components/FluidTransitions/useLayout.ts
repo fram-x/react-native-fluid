@@ -16,7 +16,9 @@ export const useLayout = (
   // Wait for layout
   const waitForLayoutResolve = useRef<Function | null>(null);
   const previousLayoutMetrics = useRef<MetricsInfo>();
-  const waitForLayout = useRef(Promise.resolve());
+  const waitForLayout = useRef<Promise<void>>(
+    new Promise(resolve => (waitForLayoutResolve.current = resolve)),
+  );
 
   const handleOnLayout = useCallback((evt: LayoutChangeEvent) => {
     logger(() => `onLayout: ${transitionItem.label}...`, LoggerLevel.Detailed);
@@ -44,11 +46,6 @@ export const useLayout = (
   }, []);
 
   const measureAsync = useCallback(() => {
-    // Set up new promise
-    waitForLayout.current = new Promise(
-      resolve => (waitForLayoutResolve.current = resolve),
-    );
-
     return measureItemInWindow(transitionItem.ref()).then(
       ({ x, y, width: w, height: h }: MetricsInfo) => {
         if (__DEV__) {

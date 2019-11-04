@@ -22,7 +22,7 @@ import { AnimationInfo } from "../Components/Types/AnimationInfo";
 import { isConfigAnimationTiming } from "../Configuration";
 import { isInterpolationRunning } from "./Runner/interpolationStorage";
 
-export function commitAnimations(
+export async function commitAnimations(
   root: TransitionItem,
   driverContext: DriverContextType | undefined = undefined,
   interpolationInfos: Array<InterpolationInfo>,
@@ -31,6 +31,7 @@ export function commitAnimations(
   if (!root.isAlive()) {
     return;
   }
+
   // Skip empty
   if (interpolationInfos.length === 0) {
     return;
@@ -62,7 +63,7 @@ export function commitAnimations(
 
   // Build tree
   // Get interpolation tree
-  const tree = getInterpolationTree(root, interpolationInfos, itemIds);
+  const tree = await getInterpolationTree(root, interpolationInfos, itemIds);
   if (!tree) {
     // Let's just return - we might have started a repeat but the component
     // has been removed.

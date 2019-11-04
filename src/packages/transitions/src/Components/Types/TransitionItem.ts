@@ -13,4 +13,5 @@ export type TransitionItem = {
   configuration: () => SafeStateConfigType;
   clone: (props: any) => React.ReactElement;
   isAlive: () => boolean;
+  waitForMetrics: () => Promise<void>;
 };

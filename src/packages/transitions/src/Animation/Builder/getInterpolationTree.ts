@@ -16,13 +16,19 @@ import {
  * @param item Root item to build tree from
  * @returns
  */
-export function getInterpolationTree(
+export async function getInterpolationTree(
   item: TransitionItem,
   interpolations: Array<InterpolationInfo>,
   interpolationIds: Array<number>,
-): AnimationNode | undefined {
+): Promise<AnimationNode | undefined> {
   // Build Tree
   const tree = createInterpolationNode(item, interpolations);
+
+  // Resolve metrics
+  await resolveMetrics(tree);
+
+  // Filter out invisible items
+  // TODO
 
   // Resolve stagger
   resolveStagger(tree);
@@ -71,15 +77,20 @@ export function getReducedInterpolationTree(
   return retVal ? calculateOffset(retVal) : undefined;
 }
 
-export const flattenTree = (nodes: Array<AnimationNode>) => {
-  const nodeList: AnimationNode[] = [];
-  nodes.forEach(n => flattenNode(n, nodeList));
-  return nodeList;
-};
-
 const flattenNode = (node: AnimationNode, nodeList: Array<AnimationNode>) => {
   nodeList.push(node);
   node.children.forEach(c => flattenNode(c, nodeList));
+};
+
+const resolveMetrics = (node: AnimationNode) => {
+  const metricsPromises: Promise<void>[] = [];
+  const nodes: AnimationNode[] = [];
+  flattenNode(node, nodes);
+  nodes.forEach(n => {
+    // find node
+    if (n.waitForMetrics) metricsPromises.push(n.waitForMetrics());
+  });
+  return Promise.all(metricsPromises);
 };
 
 const resolveStagger = (node: AnimationNode) => {
@@ -316,6 +327,7 @@ function createInterpolationNode(
     childDirection: resolvedChildDirection,
     staggerMax: resolvedStaggerMax,
     staggerFunction: resolvedStaggerFunction,
+    waitForMetrics: item.waitForMetrics,
     duration:
       (singleInterpolation &&
         singleInterpolation.animationType &&
