@@ -18,6 +18,7 @@ export type AnimationNode = {
   subtreeDuration?: number;
   delay: number;
   stagger: number;
+  staggerMax: number;
   staggerFunction?: ConfigStaggerFunction;
   animation?: ConfigAnimationType;
   label?: string;

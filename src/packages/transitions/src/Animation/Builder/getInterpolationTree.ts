@@ -220,7 +220,9 @@ function getNodeOffset(node: AnimationNode): number {
     case "staggered":
       if (parent.staggerFunction) return node.stagger;
       return parent.children.reduce((acc, _, i) => {
-        return i < index ? acc + node.stagger : acc;
+        return i < index
+          ? Math.min(acc + node.stagger, parent.staggerMax)
+          : acc;
       }, currentOffset);
   }
 }
@@ -240,7 +242,10 @@ function getSubtreeDuration(node: AnimationNode): number {
       return children.reduce(
         (accObj, c) => {
           return {
-            offset: accObj.offset + (c.stagger > 0 ? c.stagger : node.stagger),
+            offset: Math.min(
+              accObj.offset + (c.stagger > 0 ? c.stagger : node.stagger),
+              node.staggerMax,
+            ),
             value: Math.max(
               accObj.value,
               accObj.offset + (c.subtreeDuration || 0),
@@ -290,6 +295,15 @@ function createInterpolationNode(
       ? (configuration.childAnimation.stagger as ConfigStaggerFunction)
       : undefined;
 
+  const resolvedStaggerMax =
+    configuration.childAnimation &&
+    configuration.childAnimation.type === "staggered" &&
+    configuration.childAnimation.stagger &&
+    !(typeof configuration.childAnimation.stagger === "function") &&
+    configuration.childAnimation.max
+      ? (configuration.childAnimation.max as number)
+      : Number.MAX_SAFE_INTEGER;
+
   const node: AnimationNode = {
     id: item.id,
     label: item.label,
@@ -300,6 +314,7 @@ function createInterpolationNode(
     stagger: resolvedStagger,
     childAnimation: resolvedChildAnimation.type,
     childDirection: resolvedChildDirection,
+    staggerMax: resolvedStaggerMax,
     staggerFunction: resolvedStaggerFunction,
     duration:
       (singleInterpolation &&
@@ -328,6 +343,7 @@ function createInterpolationNode(
         childAnimation: "-",
         childDirection: "-",
         stagger: 0,
+        staggerMax: Infinity,
         interpolationId: ip.id,
         duration:
           (ip.animationType &&

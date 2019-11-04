@@ -21,7 +21,7 @@ const NavigationExampleScreen = createFluidStackNavigator({
   screen2: () => (
     <FluidNavigationContainer name="screen2">
       <Screen
-        showBubbles={false}
+        mode={"list"}
         name="Screen 2"
         interpolationColor={ColorA}
         interpolatorPosition={"flex-end"}
@@ -53,7 +53,7 @@ const NavigationExampleScreen = createFluidStackNavigator({
         color="beige"
         prev="screen3"
         interpolatorPosition={"flex-end"}
-        showBubbles={false}
+        mode="boxes"
       />
     </FluidNavigationContainer>
   ),

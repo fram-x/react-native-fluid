@@ -358,6 +358,31 @@ describe("getInterpolationTree / offset / stagger", () => {
       expect(valueToTest.children[1].offset).toEqual(100);
     }
   });
+
+  it("should handle max stagger value", () => {
+    const tree = createSimpleTree({
+      id: 1,
+      delay: 0,
+      childAnimation: "staggered",
+      stagger: 100,
+      staggerMax: 100,
+      children: [
+        { id: 2, duration: 100 },
+        { id: 3, duration: 100 },
+        { id: 4, duration: 100 },
+      ],
+    });
+    const valueToTest = getReducedInterpolationTree(tree, {
+      [2]: true,
+      [3]: true,
+      [4]: true,
+    });
+    expect(valueToTest).toBeDefined();
+    if (valueToTest) {
+      expect(valueToTest.subtreeDuration).toEqual(200);
+      expect(valueToTest.children[2].offset).toEqual(100);
+    }
+  });
 });
 
 /****************************************************************
@@ -370,6 +395,7 @@ export type MockNode = {
   duration?: number;
   delay?: number;
   stagger?: number;
+  staggerMax?: number;
   childAnimation?: "staggered" | "parallel" | "sequential";
 };
 
@@ -382,6 +408,7 @@ export const createSimpleTree = (
     parent,
     offset: -1,
     stagger: mockNode.stagger || 1.0,
+    staggerMax: mockNode.staggerMax || Number.MAX_SAFE_INTEGER,
     duration: mockNode.duration || 330,
     delay: mockNode.delay || 0,
     childAnimation: mockNode.childAnimation || "parallel",

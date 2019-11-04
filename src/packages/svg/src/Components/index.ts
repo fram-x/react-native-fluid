@@ -1,7 +1,7 @@
 import Fluid, {
   createFluidComponent,
   interpolateValue,
-  ValueDescriptorType
+  ValueDescriptorType,
 } from "react-native-fluid-transitions";
 import {
   Ellipse,
@@ -13,7 +13,7 @@ import {
   Line,
   LineProps,
   LinearGradientProps,
-  LinearGradient
+  LinearGradient,
 } from "react-native-svg";
 import { ViewStyle } from "react-native";
 import { AnimationProvider } from "react-native-fluid-animations";
@@ -25,7 +25,7 @@ const defaultDescriptor: ValueDescriptorType = {
   getNumericValue: defaultGetValue,
   defaultAnimation: Fluid.Animations.Springs.Default,
   extrapolate: "extend",
-  interpolate: interpolateValue
+  interpolate: interpolateValue,
 };
 
 // const defaultColorDescriptor: ValueDescriptorType = {
@@ -45,8 +45,8 @@ export const FluidEllipse = createFluidComponent<EllipseProps, ViewStyle>(
     cx: defaultDescriptor,
     cy: defaultDescriptor,
     rx: defaultDescriptor,
-    ry: defaultDescriptor
-  })
+    ry: defaultDescriptor,
+  }),
 );
 
 export const FluidCircle = createFluidComponent<CircleProps, ViewStyle>(
@@ -56,8 +56,8 @@ export const FluidCircle = createFluidComponent<CircleProps, ViewStyle>(
   () => ({
     cx: defaultDescriptor,
     cy: defaultDescriptor,
-    r: defaultDescriptor
-  })
+    r: defaultDescriptor,
+  }),
 );
 
 export const FluidRect = createFluidComponent<RectProps, ViewStyle>(
@@ -70,8 +70,8 @@ export const FluidRect = createFluidComponent<RectProps, ViewStyle>(
     width: defaultDescriptor,
     height: defaultDescriptor,
     rx: defaultDescriptor,
-    ry: defaultDescriptor
-  })
+    ry: defaultDescriptor,
+  }),
 );
 
 export const FluidLine = createFluidComponent<LineProps, ViewStyle>(
@@ -82,8 +82,8 @@ export const FluidLine = createFluidComponent<LineProps, ViewStyle>(
     x1: defaultDescriptor,
     y1: defaultDescriptor,
     x2: defaultDescriptor,
-    y2: defaultDescriptor
-  })
+    y2: defaultDescriptor,
+  }),
 );
 
 export const FluidLinearGradient = createFluidComponent<
@@ -93,5 +93,5 @@ export const FluidLinearGradient = createFluidComponent<
   x1: defaultDescriptor,
   y1: defaultDescriptor,
   x2: defaultDescriptor,
-  y2: defaultDescriptor
+  y2: defaultDescriptor,
 }));

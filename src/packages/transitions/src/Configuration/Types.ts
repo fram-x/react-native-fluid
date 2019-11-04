@@ -110,6 +110,7 @@ export type ConfigParallelChildAnimationType = BaseConfigChildAnimationType & {
 export type ConfigStaggeredChildAnimationType = BaseConfigChildAnimationType & {
   type: "staggered";
   stagger?: number | ConfigStaggerFunction;
+  max?: number;
 };
 
 export type ConfigChildAnimationType =
