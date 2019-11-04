@@ -110,10 +110,11 @@ export const Screen: React.FC<Props> = ({
         <Fluid.View
           label="listContainer"
           staticStyle={styles.horizontalContent}
-          config={Staggered(100, direction, 330)}>
+          config={Staggered(100, direction)}>
           <ScrollView style={styles.listContainer}>
             {[...Array(50).keys()].map(p => (
               <Fluid.View
+                label={"list" + p.toString()}
                 key={p}
                 style={styles.listItem}
                 config={buttonTransitions}>

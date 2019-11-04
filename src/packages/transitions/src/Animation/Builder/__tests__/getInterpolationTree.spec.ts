@@ -359,15 +359,14 @@ describe("getInterpolationTree / offset / stagger", () => {
     }
   });
 
-  it("should handle max stagger value", () => {
+  it("should not render hidden elements", () => {
     const tree = createSimpleTree({
       id: 1,
       delay: 0,
       childAnimation: "staggered",
       stagger: 100,
-      staggerMax: 100,
       children: [
-        { id: 2, duration: 100 },
+        { id: 2, duration: 100, isHidden: true },
         { id: 3, duration: 100 },
         { id: 4, duration: 100 },
       ],
@@ -375,12 +374,11 @@ describe("getInterpolationTree / offset / stagger", () => {
     const valueToTest = getReducedInterpolationTree(tree, {
       [2]: true,
       [3]: true,
-      [4]: true,
+      [4]: false,
     });
     expect(valueToTest).toBeDefined();
     if (valueToTest) {
       expect(valueToTest.subtreeDuration).toEqual(200);
-      expect(valueToTest.children[2].offset).toEqual(100);
     }
   });
 });
@@ -395,7 +393,7 @@ export type MockNode = {
   duration?: number;
   delay?: number;
   stagger?: number;
-  staggerMax?: number;
+  isHidden?: boolean;
   childAnimation?: "staggered" | "parallel" | "sequential";
 };
 
@@ -408,7 +406,6 @@ export const createSimpleTree = (
     parent,
     offset: -1,
     stagger: mockNode.stagger || 1.0,
-    staggerMax: mockNode.staggerMax || Number.MAX_SAFE_INTEGER,
     duration: mockNode.duration || 330,
     delay: mockNode.delay || 0,
     childAnimation: mockNode.childAnimation || "parallel",
@@ -416,6 +413,7 @@ export const createSimpleTree = (
     metrics: new Metrics(-1, -1, -1, -1),
     children: [],
     interpolationId: 0,
+    isHidden: mockNode.isHidden || false,
   };
   node.children = mockNode.children
     ? mockNode.children.map(c => createSimpleTree(c, node))

@@ -7,6 +7,7 @@ import {
   ChildAnimationDirection,
   ConfigStaggerFunction,
 } from "../../Configuration";
+import { Dimensions } from "react-native";
 
 /**
  *
@@ -24,34 +25,42 @@ export async function getInterpolationTree(
   // Build Tree
   const tree = createInterpolationNode(item, interpolations);
 
-  // Resolve metrics
-  await resolveMetrics(tree);
+  // Flatten tree
+  const nodes: AnimationNode[] = [];
+  flattenNode(tree, nodes);
 
-  // Filter out invisible items
-  // TODO
+  // Resolve metrics
+  await resolveMetrics(nodes);
 
   // Resolve stagger
   resolveStagger(tree);
 
   // Get hash of items with interpolation
-  const hash = getInterpolations(interpolationIds);
+  const hash = getInterpolations(interpolationIds, nodes);
 
   // Trim tree of nodes to only include those containing interpolations
   // or having children with interpolation
   return getReducedInterpolationTree(tree, hash);
 }
 
-/**
- *
- * @description Returns a hash-map of ids for transition items that have
- * interpolations
- * @param ids list of transition item ids with interpolation
- * @returns A tree with interpolation
- */
-export function getInterpolations(ids: Array<number>): Animations {
+const dim = Dimensions.get("window");
+
+function getInterpolations(
+  ids: Array<number>,
+  nodes: AnimationNode[],
+): Animations {
   // Identifiers of interpolation nodes
   const interpolationIds: { [key: string]: boolean } = {};
-  ids.forEach(id => (interpolationIds[id] = true));
+  ids.forEach(id => {
+    const node = nodes.find(p => p.id === id);
+    if (node) {
+      interpolationIds[id] =
+        // node.metrics.x + node.metrics.width >= 0 &&
+        // node.metrics.x < dim.width &&
+        node.metrics.y + node.metrics.height >= 0 &&
+        node.metrics.y < dim.height;
+    }
+  });
   return interpolationIds;
 }
 
@@ -82,15 +91,12 @@ const flattenNode = (node: AnimationNode, nodeList: Array<AnimationNode>) => {
   node.children.forEach(c => flattenNode(c, nodeList));
 };
 
-const resolveMetrics = (node: AnimationNode) => {
+const resolveMetrics = async (nodes: AnimationNode[]) => {
   const metricsPromises: Promise<void>[] = [];
-  const nodes: AnimationNode[] = [];
-  flattenNode(node, nodes);
   nodes.forEach(n => {
-    // find node
     if (n.waitForMetrics) metricsPromises.push(n.waitForMetrics());
   });
-  return Promise.all(metricsPromises);
+  await Promise.all(metricsPromises);
 };
 
 const resolveStagger = (node: AnimationNode) => {
@@ -231,9 +237,7 @@ function getNodeOffset(node: AnimationNode): number {
     case "staggered":
       if (parent.staggerFunction) return node.stagger;
       return parent.children.reduce((acc, _, i) => {
-        return i < index
-          ? Math.min(acc + node.stagger, parent.staggerMax)
-          : acc;
+        return i < index ? acc + node.stagger : acc;
       }, currentOffset);
   }
 }
@@ -253,10 +257,7 @@ function getSubtreeDuration(node: AnimationNode): number {
       return children.reduce(
         (accObj, c) => {
           return {
-            offset: Math.min(
-              accObj.offset + (c.stagger > 0 ? c.stagger : node.stagger),
-              node.staggerMax,
-            ),
+            offset: accObj.offset + (c.stagger > 0 ? c.stagger : node.stagger),
             value: Math.max(
               accObj.value,
               accObj.offset + (c.subtreeDuration || 0),
@@ -306,15 +307,6 @@ function createInterpolationNode(
       ? (configuration.childAnimation.stagger as ConfigStaggerFunction)
       : undefined;
 
-  const resolvedStaggerMax =
-    configuration.childAnimation &&
-    configuration.childAnimation.type === "staggered" &&
-    configuration.childAnimation.stagger &&
-    !(typeof configuration.childAnimation.stagger === "function") &&
-    configuration.childAnimation.max
-      ? (configuration.childAnimation.max as number)
-      : Number.MAX_SAFE_INTEGER;
-
   const node: AnimationNode = {
     id: item.id,
     label: item.label,
@@ -322,10 +314,10 @@ function createInterpolationNode(
     children: [],
     metrics: item.metrics(),
     offset: -1,
+    isHidden: false,
     stagger: resolvedStagger,
     childAnimation: resolvedChildAnimation.type,
     childDirection: resolvedChildDirection,
-    staggerMax: resolvedStaggerMax,
     staggerFunction: resolvedStaggerFunction,
     waitForMetrics: item.waitForMetrics,
     duration:
@@ -355,7 +347,7 @@ function createInterpolationNode(
         childAnimation: "-",
         childDirection: "-",
         stagger: 0,
-        staggerMax: Infinity,
+        isHidden: false,
         interpolationId: ip.id,
         duration:
           (ip.animationType &&

@@ -31,9 +31,8 @@ export function ChildAnimation(
 export function Staggered(
   stagger: number | ConfigStaggerFunction,
   direction?: ChildAnimationDirection,
-  max?: number,
 ): ConfigType {
-  return ChildAnimation({ type: "staggered", stagger, direction, max });
+  return ChildAnimation({ type: "staggered", stagger, direction });
 }
 
 export function Sequential(): ConfigType {

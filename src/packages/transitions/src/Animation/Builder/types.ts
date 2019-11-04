@@ -18,11 +18,11 @@ export type AnimationNode = {
   subtreeDuration?: number;
   delay: number;
   stagger: number;
-  staggerMax: number;
   staggerFunction?: ConfigStaggerFunction;
   waitForMetrics?: () => Promise<void>;
   animation?: ConfigAnimationType;
   label?: string;
+  isHidden: boolean;
 };
 
 export type Animations = { [key: string]: boolean };

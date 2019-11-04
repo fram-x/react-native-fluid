@@ -1,6 +1,11 @@
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useMemo } from "react";
 import { Metrics, MetricsInfo, LoggerLevel } from "../../Types";
-import { LayoutChangeEvent, InteractionManager } from "react-native";
+import {
+  LayoutChangeEvent,
+  InteractionManager,
+  UIManager,
+  Platform,
+} from "react-native";
 import { measureItemInWindow } from "../../Utilities";
 import { TransitionItem } from "../Types";
 import { useLog } from "../../Hooks";
@@ -16,8 +21,9 @@ export const useLayout = (
   // Wait for layout
   const waitForLayoutResolve = useRef<Function | null>(null);
   const previousLayoutMetrics = useRef<MetricsInfo>();
-  const waitForLayout = useRef<Promise<void>>(
-    new Promise(resolve => (waitForLayoutResolve.current = resolve)),
+  const waitForLayout = useMemo(
+    () => new Promise(resolve => (waitForLayoutResolve.current = resolve)),
+    [],
   );
 
   const handleOnLayout = useCallback((evt: LayoutChangeEvent) => {
@@ -34,7 +40,11 @@ export const useLayout = (
       previousLayoutMetrics.current = nextMetrics;
       if (isFirstMeasure.current) {
         isFirstMeasure.current = false;
-        InteractionManager.runAfterInteractions(measureAsync);
+        if (Platform.OS === "android") {
+          measureAsync();
+        } else {
+          InteractionManager.runAfterInteractions(measureAsync);
+        }
       } else {
         measureAsync();
       }
@@ -59,6 +69,7 @@ export const useLayout = (
         }
         metrics.current.setValues(x, y, w, h);
         waitForLayoutResolve.current && waitForLayoutResolve.current();
+        waitForLayoutResolve.current = null;
       },
     );
   }, [logger, transitionItem]);
@@ -66,6 +77,6 @@ export const useLayout = (
   return {
     handleOnLayout: handleOnLayout,
     metrics: metrics.current,
-    waitForLayout: waitForLayout.current,
+    waitForLayout,
   };
 };

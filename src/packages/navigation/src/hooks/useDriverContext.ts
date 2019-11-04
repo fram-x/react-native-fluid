@@ -15,9 +15,9 @@ export const useDriverContext = (
       driver: current,
       requestDuration: (duration: number) => {
         durationValue.setValue(duration);
-        console.log("---", screenName, "got duration", duration);
+        // console.log("---", screenName, "got duration", duration);
       },
     }),
-    [current, durationValue, navigationState, screenName],
+    [current, durationValue, navigationState],
   );
 };

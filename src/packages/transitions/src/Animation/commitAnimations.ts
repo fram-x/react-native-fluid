@@ -127,80 +127,78 @@ export async function commitAnimations(
   interpolationInfos.forEach(interpolationInfo => {
     // Mark as started
     const node = findNodeByInterpolationId(interpolationInfo.id, tree);
-    if (!node) {
-      throw fluidInternalException("Could not find node for interpolationinfo");
+    if (node) {
+      const { interpolationConfig, onEnd, onBegin } = interpolationInfo;
+
+      const {
+        inputRange,
+        outputRange,
+        extrapolate,
+        extrapolateLeft,
+        extrapolateRight,
+      } = interpolationConfig;
+
+      const easing = interpolationInfo.animationType
+        ? interpolationInfo.animationType.type === "timing" &&
+          interpolationInfo.animationType.easing
+          ? interpolationInfo.animationType.easing
+          : Easings.linear
+        : Easings.linear;
+
+      if (!easing.name) {
+        console.warn("Easing is missing name");
+      }
+      const easingKey = easing.name || "unknown";
+
+      // Looping
+      let isRepeating = false;
+      if (interpolationInfo.loop) {
+        isRepeating = decorateWithRepeat(
+          "loop",
+          interpolationInfo.loop,
+          interpolationInfo,
+          loopAnimations,
+        );
+      } else if (interpolationInfo.flip) {
+        isRepeating = decorateWithRepeat(
+          "flip",
+          interpolationInfo.flip,
+          interpolationInfo,
+          loopAnimations,
+        );
+      } else if (interpolationInfo.yoyo) {
+        isRepeating = decorateWithRepeat(
+          "yoyo",
+          interpolationInfo.yoyo,
+          interpolationInfo,
+          loopAnimations,
+        );
+      }
+
+      let onAnimationEnd = isRepeating
+        ? checkForLoopedAnimations(interpolationInfo.id, onEnd)
+        : onEnd;
+
+      // Create tracker info
+      animationInfos.push({
+        animationId: interpolationInfo.id,
+        interpolate: interpolationInfo.interpolate,
+        ownerId: interpolationInfo.itemId,
+        key: interpolationInfo.key,
+        target: interpolationInfo.interpolator,
+        inputRange: inputRange || [0, 1],
+        outputRange,
+        duration: node.duration,
+        offset: node.offset,
+        extrapolate,
+        extrapolateLeft,
+        extrapolateRight,
+        easing,
+        easingKey,
+        onBegin,
+        onEnd: onAnimationEnd,
+      });
     }
-
-    const { interpolationConfig, onEnd, onBegin } = interpolationInfo;
-
-    const {
-      inputRange,
-      outputRange,
-      extrapolate,
-      extrapolateLeft,
-      extrapolateRight,
-    } = interpolationConfig;
-
-    const easing = interpolationInfo.animationType
-      ? interpolationInfo.animationType.type === "timing" &&
-        interpolationInfo.animationType.easing
-        ? interpolationInfo.animationType.easing
-        : Easings.linear
-      : Easings.linear;
-
-    if (!easing.name) {
-      console.warn("Easing is missing name");
-    }
-    const easingKey = easing.name || "unknown";
-
-    // Looping
-    let isRepeating = false;
-    if (interpolationInfo.loop) {
-      isRepeating = decorateWithRepeat(
-        "loop",
-        interpolationInfo.loop,
-        interpolationInfo,
-        loopAnimations,
-      );
-    } else if (interpolationInfo.flip) {
-      isRepeating = decorateWithRepeat(
-        "flip",
-        interpolationInfo.flip,
-        interpolationInfo,
-        loopAnimations,
-      );
-    } else if (interpolationInfo.yoyo) {
-      isRepeating = decorateWithRepeat(
-        "yoyo",
-        interpolationInfo.yoyo,
-        interpolationInfo,
-        loopAnimations,
-      );
-    }
-
-    let onAnimationEnd = isRepeating
-      ? checkForLoopedAnimations(interpolationInfo.id, onEnd)
-      : onEnd;
-
-    // Create tracker info
-    animationInfos.push({
-      animationId: interpolationInfo.id,
-      interpolate: interpolationInfo.interpolate,
-      ownerId: interpolationInfo.itemId,
-      key: interpolationInfo.key,
-      target: interpolationInfo.interpolator,
-      inputRange: inputRange || [0, 1],
-      outputRange,
-      duration: node.duration,
-      offset: node.offset,
-      extrapolate,
-      extrapolateLeft,
-      extrapolateRight,
-      easing,
-      easingKey,
-      onBegin,
-      onEnd: onAnimationEnd,
-    });
   });
 
   // Setup trackers

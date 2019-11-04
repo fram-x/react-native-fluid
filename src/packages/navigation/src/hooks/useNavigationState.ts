@@ -58,7 +58,7 @@ export const useNavigationState = (
   }, []);
 
   useNavigationEvents(p => {
-    console.log(name, p.action.type);
+    // console.log(name, p.action.type);
     if (
       p.action.type === "Navigation/NAVIGATE" ||
       p.action.type === "Navigation/COMPLETE_TRANSITION"
