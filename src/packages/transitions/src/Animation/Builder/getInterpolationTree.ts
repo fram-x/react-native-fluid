@@ -95,7 +95,7 @@ const flattenNode = (node: AnimationNode, nodeList: Array<AnimationNode>) => {
 };
 
 const resolveMetrics = async (nodes: AnimationNode[]) => {
-  const metricsPromises: Promise<void>[] = [];
+  const metricsPromises: Promise<unknown>[] = [];
   nodes.forEach(n => {
     if (n.waitForMetrics) metricsPromises.push(n.waitForMetrics());
   });
