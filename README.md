@@ -1,66 +1,29 @@
-# Getting started
-
-## Bugs
-
-* [x] Fix issue with removing a when interpolation. See Styles example and press on/off
-* [x] Style-flash in Styles example - press button and while it is animating, press inbox-button
-* [x] Create central function for removing interpolations and animations
-* [x] Fix createAnimationNode impl so that tests only needs to run once
-* [ ] Shared transitions (WIP)
-    * [ ] Fix running second shared transition while one is running  
-    Should we skip providing shared transitions in first version?
-* [ ] Fix issue with when.interpolation.value not using animation (is it possible?)
-
-### Web
-
-* [ ] Fix measure of rotated elements on Web
-* [ ] Styles example: Button is not moving
-
-### Android
-
-* [ ] Parallax example, not interpolating change of header color correctly
-* [x] SVG - ValueNode cannot be cast to a number
-* [x] Interpolation
-    * [x] "Error while updating transform"
-    * [x] Rotated image is not displayed correctly
-* [x] Interactions - some alignment issue
-
-## TODO
-
-* [x] ConfigStateType should be accepted as state
-* [x] StaggerMs & StaggerFunc => stagger
-* [x] Test/implement stagger custom function
-* [x] Create dragging example
-* [ ] Navigation with new Stack navigator
-
-## Later
-
-* [ ] Prop animation - support nested props and arrays WIP
-* [ ] Fix Spotify example, find out why changing to static styles fixes initial pos
-* [ ] Add velocity calculation to spring functions, find a way to keep velocity on  
-animations and pass them to the spring function
-* [ ] Optimize running multiple animation updates when nodes are equal (duration, offset, easing)
-
 # Documentation
 
 ## Getting Started
 
+### Installation
+
 Installing react-native-fluid-transitions is simple, both in React Native Web and in React Native.
 
-### React Native Web
+**React Native Web**
 
 ```
 yarn add react-native-fluid-animations
 yarn add react-native-fluid-transitions
 ```
 
-### React Native
+**React Native**
 
 ```
 yarn add react-native-reanimated
 yarn add react-native-fluid-animations
 yarn add react-native-fluid-transitions
 ```
+
+> Remember to run `react-native-link` or `cd ios && pod install` (depending on your version of React Native) after installing the dependencies.
+
+### Example
 
 Getting your first transitions set up is really easy:
 
@@ -79,24 +42,26 @@ const MyComponent = ({active}) => (
 )
 ```
 
-Try using this component in your view and toggle the active property.  
-The component should automatically interpolate between the two styles with  
-default values that should work for the different style properties.
+Try using this component in your view and toggle the active property. The component should automatically interpolate between the two styles with default values that should work for the different style properties.
 
 ## Api
 
-### Properties
+### Fluid.View
+
+The `Fluid.View` is the basic building block of react-native-fluid-transitions and shares the same properties as a regular React Native `View`.
+
+**Properties**
 
 | Property     | Description                                                             |
 | ------------ | ----------------------------------------------------------------------- |
 | style        | Style that will generate automatic interpolations when changed          |
 | initialStyle | Initial style for component. Will be interpolated from on mount         |
 | staticStyle  | Style that will not generate interpolations (use for optimizing styles) |
-| config       | Configuration object (see below)                                        |
-| states       | State / states (see below)                                              |
-| animation    | Override default animation                                              |
+| config       | <a name="Configuration">Configuration object                            |
+| states       | <a name="States">State / states                                         |
+| animation    | <a name="AnimationType">Animation                                       |
 
-### Events
+**Events**
 
 | Event            | Description                             |
 | ---------------- | --------------------------------------- |
@@ -106,7 +71,7 @@ default values that should work for the different style properties.
 | onAnimationBegin | Called when style interpolation starts  |
 | onAnimationEnd   | Called when style interpolation is done |
 
-### Configuration and States
+**Configuration and States**
 
 If you want more control over how animations are played, you can build your own  
 animation definitions using the configuration and state and properties of a Fluid Component.
@@ -141,9 +106,11 @@ const MyComponent = () => {
   );
 }
 ```
-#### States 
+#### <a name="States">States</a>
 
-#### Configuration
+A fluid state works as a regular React Native state, and can be created with the hook <a href="useFluidState">`useFluidState`</a>. It returns a state variable and a function for updating the state. This object can be passed along to the Fluid.View through the state property.
+
+#### <a name="Configuration">Configuration</a>
 
 A configuration object consists of the following types:
 
@@ -157,39 +124,45 @@ A configuration object consists of the following types:
 | interpolation  | Describes interpolations that should be on at all times. Typically used for interpolations that are driven by a ScrollView or gesture. |
 
 
-##### When
+#### <a name="When">When</a>
 
 The when configuration field can contain different types of configuration. The when configuration field is created using the `WhenState` function. This function has several different overloads:
 
-**Creates a when configuration that applies the provided style when the state is active:**
+**Create a new when configuration element that applies the provided style when the state is active:**
 
-`function WhenState(state, style, options?)`
+```js
+function WhenState(state, style, options?)
+```
 
-**Creates a when configuration that applies an interpolation when the state is active:**
+**Create a new when configuration element that applies an interpolation when the state is active:**
 
-`function WhenState(state, interpolation, options?)`
+```js
+function WhenState(state, interpolation, options?)
+```
 
-**Creates a when configuration that applies an interpolation returned by the factory function when the state is active:**
+**Create a new when configuration element that applies an interpolation returned by the factory function when the state is active:**
 
-`function WhenState(state, whenFactory, options?)`
+```js
+function WhenState(<a href="#States">state</a>, whenFactory, options?)
+```
 
-###### <a name="InterpolationType"></>Interpolation
+**<a name="InterpolationType">Interpolation</a>**
 
 An interpolation element consists of the following fields:
 
-| Field             | Description                                               | Type                                      |
-| ----------------- | --------------------------------------------------------- | ----------------------------------------- |
-| styleKey/propName | Name of the property or style that should be interpolated | String                                    |
-| inputRange        | Array with input range values                             | number[]                                  |
-| outputRange       | Array with output range values                            | number[] or string[]                      |
-| extrapolate       | Extrapolation                                             | 'clamp', 'extend', 'identity'             |
-| extrapolateLeft   | Left extrapolation                                        | 'clamp', 'extend', 'identity'             |
-| extrapolateRight  | Right extrapolation                                       | 'clamp', 'extend', 'identity'             |
-| animation         | Animation type for interpolation                          | <a href="#AnimationType">AnimationType</> |
+| Field             | Description                                               | Type                                   |
+| ----------------- | --------------------------------------------------------- | -------------------------------------- |
+| styleKey/propName | Name of the property or style that should be interpolated | String                                 |
+| inputRange        | Array with input range values                             | number[]                               |
+| outputRange       | Array with output range values                            | number[] or string[]                   |
+| extrapolate       | Extrapolation                                             | 'clamp', 'extend', 'identity'          |
+| extrapolateLeft   | Left extrapolation                                        | 'clamp', 'extend', 'identity'          |
+| extrapolateRight  | Right extrapolation                                       | 'clamp', 'extend', 'identity'          |
+| animation         | Animation type for interpolation                          | <a href="#AnimationType">AnimationType |
 
 > Note that the styleKey uses dot-notation, so to build an interpolation for the scale transform you would write "transform.scale".
 
-###### Options
+###### <a name="Options">Options</a>
 
 The object element has a set of optional fields that can be set:
 
@@ -201,7 +174,7 @@ The object element has a set of optional fields that can be set:
 | flip    | Number of times to flip animation                      | number or Infinity |
 | yoyo    | Number of times to play the animation with yoyo effect | number or Infinity |
 
-###### <a name="AnimationType"></>Animation
+###### <a name="AnimationType">Animation</a>
 
 An animation type is a description of the animation function to run a given animation and can be of two types, `spring` or `timing`. An animation type consists of the following fields:
 
@@ -238,7 +211,8 @@ One of the more advanced techniques when building animations and transitions in 
 TODO: Define values
 TODO: Use values
 
-#### Hooks
+### Hooks
 
-useFluidState  
-useFluidConfig
+**<a name="useFluidState">useFluidState</a>**
+
+**<a name="useFluidConfig">useFluidConfig</a>**
