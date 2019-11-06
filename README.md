@@ -1,5 +1,10 @@
 # Documentation
 
+<a href="https://www.npmjs.com/package/react-native-fluid-transitions">
+  <img src="https://img.shields.io/npm/v/react-native-fluid-transitions.svg?style=flat-square">
+</a>
+<a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-blue.svg"></a>
+
 Declarative animations for React Native and React Native Web.
 
 ## Installation
