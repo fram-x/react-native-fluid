@@ -1,11 +1,6 @@
 import { useRef, useCallback, useMemo } from "react";
 import { Metrics, MetricsInfo, LoggerLevel } from "../../Types";
-import {
-  LayoutChangeEvent,
-  InteractionManager,
-  UIManager,
-  Platform,
-} from "react-native";
+import { LayoutChangeEvent, InteractionManager, Platform } from "react-native";
 import { measureItemInWindow } from "../../Utilities";
 import { TransitionItem } from "../Types";
 import { useLog } from "../../Hooks";

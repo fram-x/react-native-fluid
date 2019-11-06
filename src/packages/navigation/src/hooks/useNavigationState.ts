@@ -13,7 +13,7 @@ import {
   NavigationRoute,
   NavigationParams,
 } from "react-navigation";
-import { StackAnimationIsSwipingContext } from "react-navigation-stack";
+import { StackCardAnimationContext } from "react-navigation-stack";
 
 // @ts-ignore
 import { always } from "react-native-reanimated/src/base";
@@ -31,25 +31,24 @@ export const useNavigationState = (
   const prevIndexRef = useRef(getIndex(navigation));
 
   // Set up node for tracking swiping
-  const isSwipingValue = useContext(StackAnimationIsSwipingContext);
+  const stackCardAnimationContext = useContext(StackCardAnimationContext);
 
   const updateSwiping = useCallback((args: readonly (0 | 1)[]) => {
     const isSwiping = args[0];
-    const isClosing = args[1];
     if (isSwiping) {
       setNavigationState(NavigationState.BackFrom);
     }
   }, []);
 
-  const updateSwipingNode = useMemo(
-    () =>
-      always(
-        Animated.onChange(isSwipingValue, [
-          Animated.call([isSwipingValue], updateSwiping),
+  const updateSwipingNode = useMemo(() => {
+    if (stackCardAnimationContext) {
+      return always(
+        Animated.onChange(stackCardAnimationContext.swiping, [
+          Animated.call([stackCardAnimationContext.swiping], updateSwiping),
         ]),
-      ),
-    [isSwipingValue, updateSwiping],
-  );
+      );
+    } else return Animated.block([]);
+  }, [stackCardAnimationContext, updateSwiping]);
 
   useEffect(() => {
     updateSwipingNode.__attach();

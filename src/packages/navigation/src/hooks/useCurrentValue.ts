@@ -1,6 +1,6 @@
 import Animated from "react-native-reanimated";
 import { useRef, useEffect, useMemo, useContext } from "react";
-import { StackAnimationProgressContext } from "react-navigation-stack";
+import { StackCardAnimationContext } from "react-navigation-stack";
 // @ts-ignore
 import { always } from "react-native-reanimated/src/base";
 import { NavigationState } from "../types";
@@ -14,12 +14,12 @@ export const useCurrentValue = (
   // Save navigation state
   const prevNavigationStateRef = useRef(navigationState);
 
-  // Get progress from stack navigation context
-  const progressValue = useContext(StackAnimationProgressContext);
-
   // Set up some values to track
   const currentValue = useMemo(() => new Animated.Value(0), []);
   const durationValue = useMemo(() => new Animated.Value<number>(0), []);
+
+  // Get progress from stack navigation context
+  const stackCardAnimationContext = useContext(StackCardAnimationContext);
 
   // States
   const isForward =
@@ -64,6 +64,17 @@ export const useCurrentValue = (
       // @ts-ignore
       updateValueRef.current.__detach();
     }
+
+    if (!stackCardAnimationContext) {
+      return {
+        current: currentValue,
+        duration: durationValue,
+      };
+    }
+
+    const progressValue = stackCardAnimationContext.next
+      ? stackCardAnimationContext.next.progress
+      : stackCardAnimationContext.current.progress;
 
     // Set up new
     updateValueRef.current = always(

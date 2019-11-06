@@ -21,6 +21,8 @@ import RepeatExampleScreen from "./Repeating";
 import DraggingExampleScreen from "./Dragging";
 import NavigationExampleScreen from "./Navigation";
 import DriverExampleScreen from "./Driver";
+import FlutterExampleScreen from "./Flutter";
+
 import Fluid from "react-native-fluid-transitions";
 import { StyleSheet } from "react-native";
 
@@ -43,6 +45,7 @@ const Stack = createStackNavigator({
   children: ChildExampleScreen,
   appStore: AppStoreExampleScreen,
   list: ListExampleScreen,
+  flutter: FlutterExampleScreen,
 });
 
 const AppNavigator = createAppContainer(Stack);
