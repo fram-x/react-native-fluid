@@ -5440,8 +5440,8 @@ react-navigation-hooks@^1.1.0:
   resolved "https://registry.yarnpkg.com/react-navigation-hooks/-/react-navigation-hooks-1.1.0.tgz#337c41a50ebc7b9030bb9d9333cd4fd6e1f86b68"
   integrity sha512-ZY/aiYJ88KXaOo8iOa4171O/0x6ztGhUPd2OYzdaJhLT/tP64zi5HB/RZFImuKhaBTODXjoSpFaOTA5xpePG4g==
 
-"react-navigation-stack@file:../../../libraries/stack":
-  version "2.0.0-alpha.34"
+"react-navigation-stack@file:../../libs/stack":
+  version "2.0.0-alpha.35"
 
 react-navigation-tabs@^2.5.5:
   version "2.5.6"
