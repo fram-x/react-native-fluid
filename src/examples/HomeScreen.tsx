@@ -22,11 +22,6 @@ class HomeScreen extends React.PureComponent<any> {
             onPress={() => this.openExample("styles")}
           />
           <HomeScreenButton
-            text="Flutter"
-            icon="border-style"
-            onPress={() => this.openExample("flutter")}
-          />
-          <HomeScreenButton
             text="AppStore"
             icon="vector-intersection"
             onPress={() => this.openExample("appStore")}
@@ -110,6 +105,11 @@ class HomeScreen extends React.PureComponent<any> {
             text="Driver"
             icon="car"
             onPress={() => this.openExample("driver")}
+          />
+          <HomeScreenButton
+            text="Flutter"
+            icon="border-style"
+            onPress={() => this.openExample("flutter")}
           />
         </View>
       </ScrollView>

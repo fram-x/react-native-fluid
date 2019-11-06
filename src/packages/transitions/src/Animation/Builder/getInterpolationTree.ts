@@ -59,6 +59,9 @@ function getInterpolations(
         // node.metrics.x < dim.width &&
         node.metrics.y + node.metrics.height >= 0 &&
         node.metrics.y < dim.height;
+      // if (!interpolationIds[id]) {
+      //   console.log(node.label);
+      // }
     }
   });
   return interpolationIds;

@@ -6,6 +6,7 @@ import {
   ConfigStaggerFunction,
   ChildAnimationDirection,
 } from "./Types";
+import { DefaultStaggerMs } from "../Types";
 
 export function ChildAnimation(
   childAnimationType: ConfigSequentialChildAnimationType,
@@ -29,10 +30,14 @@ export function ChildAnimation(
 }
 
 export function Staggered(
-  stagger: number | ConfigStaggerFunction,
+  stagger?: number | ConfigStaggerFunction,
   direction?: ChildAnimationDirection,
 ): ConfigType {
-  return ChildAnimation({ type: "staggered", stagger, direction });
+  return ChildAnimation({
+    type: "staggered",
+    stagger: stagger || DefaultStaggerMs,
+    direction: direction || "forward",
+  });
 }
 
 export function Sequential(): ConfigType {
