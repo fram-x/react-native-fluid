@@ -218,12 +218,12 @@ An animation type is a description of the animation function to run a given anim
 
 ### onEnter / onExit
 
-If you want an interpolation to run when a state change occurs, you can add `OnEnter` or `OnExit` configuration elements to your Fluid.View. The onEnter / onExit element can be created with the OnEnter / OnExit functions:
+If you want an interpolation to run when a state change occurs, you can add `OnEnter` or `OnExit` configuration elements to your Fluid.View. The onEnter / onExit element can be created with the `OnEnterState` / `OnExitState` functions:
 
 **Creates a new onEnter / onExit element describing the interpolation that should be run when the state changes to / from active.**
 
 ```js
-function OnEnterState / OnExitState(state, interpolation, options?) 
+function (state, interpolation, options?) 
 ```
 
 Where the parameters <a href="#States">state</a>, <a href="#InterpolationType">interpolation</a> and <a href="#Options">options</a> shares the same types as the `When` element.
