@@ -84,7 +84,7 @@ The `Fluid.*` components are the basic building blocks of react-native-fluid-tra
 | onAnimationBegin | Called when style interpolation starts  |
 | onAnimationEnd   | Called when style interpolation is done |
 
-**Configuration and States**
+## Configuration and States
 
 If you want more control over how animations are played, you can build your own animation definitions using the configuration and state and properties of a Fluid Component.
 
@@ -240,9 +240,7 @@ const config = useFluidConfig(
 );
 ```
 
-### <a name="Interpolation">Interpolations</a>
-
-### <a name="Coordination">Child Animation</a>
+## <a name="Coordination">Child Animation</a>
 
 When animations are played in the context of a parent `Fluid.View`, you can control how these animations should be played by changing the child configuration. There are three different types of child configuration available:
 
@@ -258,7 +256,7 @@ Paralell()
 Staggered(staggerMs? | staggerFunction?, direction)
 ```
 
-### Value Interpolations
+## Value Interpolations
 One of the more advanced techniques when building animations and transitions in React Native is when you need your interpolation to depend on a gesture value or a scrolliew position. In `react-native-fluid-transitions` this is already taken care of for you.
 
 Given a view tree that contains a header and a scroll view:
