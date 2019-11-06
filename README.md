@@ -1,5 +1,5 @@
 <p align="center">
-<img src="./ios/FluidTransitions/Images.xcassets/Logo.imageset/logo-symbol-text@1x.png" />
+<img src="./ios/FluidTransitions/Images.xcassets/Logo.imageset/logo-symbol-text@3x.png" width="300"  height="249" />
 </p>
 
 # Documentation
