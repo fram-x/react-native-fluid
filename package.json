@@ -8,7 +8,8 @@
     "run-ios": "react-native run-ios",
     "run-android": "react-native run-android",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "build": "yarn test && concurrently \"echo Building react-native-fluid-animations.$npm_package_version... && cd src/packages/animated && npm pack && mv ./react-native-fluid-animations-$npm_package_version.tgz ../../../dist/react-native-fluid-animations-$npm_package_version.tgz\" && concurrently \"echo Building react-native-fluid-transitions.$npm_package_version... && cd src/packages/transitions && npm pack && mv ./react-native-fluid-transitions-$npm_package_version.tgz ../../../dist/react-native-fluid-transitions-$npm_package_version.tgz\" && concurrently \"echo Building react-native-fluid-navigation.$npm_package_version... && cd src/packages/navigation && npm pack && mv ./react-native-fluid-navigation-$npm_package_version.tgz ../../../dist/react-native-fluid-navigation-$npm_package_version.tgz\" && concurrently \"echo Building react-native-fluid-gestures.$npm_package_version... && cd src/packages/gestures && npm pack && mv ./react-native-fluid-gestures-$npm_package_version.tgz ../../../dist/react-native-fluid-gestures-$npm_package_version.tgz\""
   },
   "dependencies": {
     "@react-native-community/masked-view": "^0.1.1",
