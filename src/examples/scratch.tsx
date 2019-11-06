@@ -3,6 +3,8 @@ import { View, StyleSheet, Animated, Easing } from "react-native";
 import Fluid, { useFluidConfig } from "react-native-fluid-transitions";
 import { InterpolationValue } from "react-native-fluid-transitions";
 import { Interpolation } from "react-native-fluid-transitions";
+import { OnEnterState } from "src/packages/transitions/dist/src/Hooks/onState";
+import { useFluidState } from "react-native-fluid-transitions";
 
 const styles = StyleSheet.create({
   activeContainer: {},
@@ -12,7 +14,18 @@ const styles = StyleSheet.create({
 
 export const MyComponent: React.FC = ({ children }) => {
   const [active, setActive] = useState(true);
+  const [activeState] = useFluidState(false);
   const toggleActive = () => setActive(p => !p);
+
+  const cfg = useFluidConfig(
+    OnEnterState(activeState, {
+      styleKey: "backgroundColor",
+      inputRange: [0, 1],
+      outputRange: ["pink", "gold"],
+    }),
+  );
+
+  let g = cfg;
 
   const animationRef = useRef<Animated.CompositeAnimation>();
   const animatedValue = useMemo(() => new Animated.Value(0), []);

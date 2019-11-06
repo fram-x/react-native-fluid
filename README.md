@@ -73,8 +73,7 @@ The `Fluid.View` is the basic building block of react-native-fluid-transitions a
 
 **Configuration and States**
 
-If you want more control over how animations are played, you can build your own  
-animation definitions using the configuration and state and properties of a Fluid Component.
+If you want more control over how animations are played, you can build your own animation definitions using the configuration and state and properties of a Fluid Component.
 
 A simple example illustrates how states and configuration can be used to build transitions:
 
@@ -108,7 +107,14 @@ const MyComponent = () => {
 ```
 #### <a name="States">States</a>
 
-A fluid state works as a regular React Native state, and can be created with the hook <a href="useFluidState">`useFluidState`</a>. It returns a state variable and a function for updating the state. This object can be passed along to the Fluid.View through the state property.
+A fluid state works as a regular React Native state, and can be created with the hook <a href="#useFluidState">`useFluidState`</a>. It returns a state variable and a function for updating the state. This object can be passed along to the Fluid.View through the state property.
+
+```js
+const [activeState, setActiveState] = useFluidState(false);
+const toggle = () => setActiveState(a => !a);
+```
+
+The example shows how to create and update a state with a simple toggle function.
 
 #### <a name="Configuration">Configuration</a>
 
@@ -128,19 +134,19 @@ A configuration object consists of the following types:
 
 The when configuration field can contain different types of configuration. The when configuration field is created using the `WhenState` function. This function has several different overloads:
 
-**Create a new when configuration element that applies the provided style when the state is active:**
+**Creates a new when configuration element that applies the provided style when the state is active:**
 
 ```js
 function WhenState(state, style, options?)
 ```
 
-**Create a new when configuration element that applies an interpolation when the state is active:**
+**Creates a new when configuration element that applies an interpolation when the state is active:**
 
 ```js
 function WhenState(state, interpolation, options?)
 ```
 
-**Create a new when configuration element that applies an interpolation returned by the factory function when the state is active:**
+**Creates a new when configuration element that applies an interpolation returned by the factory function when the state is active:**
 
 ```js
 function WhenState(<a href="#States">state</a>, whenFactory, options?)
@@ -162,7 +168,7 @@ An interpolation element consists of the following fields:
 
 > Note that the styleKey uses dot-notation, so to build an interpolation for the scale transform you would write "transform.scale".
 
-###### <a name="Options">Options</a>
+**<a name="Options">Options</a>**
 
 The object element has a set of optional fields that can be set:
 
@@ -174,7 +180,7 @@ The object element has a set of optional fields that can be set:
 | flip    | Number of times to flip animation                      | number or Infinity |
 | yoyo    | Number of times to play the animation with yoyo effect | number or Infinity |
 
-###### <a name="AnimationType">Animation</a>
+**<a name="AnimationType">Animation</a>**
 
 An animation type is a description of the animation function to run a given animation and can be of two types, `spring` or `timing`. An animation type consists of the following fields:
 
@@ -197,13 +203,33 @@ An animation type is a description of the animation function to run a given anim
 | stiffness | Stiffness of the spring animation | number   |
 | damping   | Damping of the spring animation   | number   |
 
-##### onEnter
+### onEnter / onExit
 
-##### onExit
+If you want an interpolation to run when a state change occurs, you can add `OnEnter` or `OnExit` configuration elements to your Fluid.View. The onEnter / onExit element can be created with the OnEnter / OnExit functions:
 
-##### Interpolation
+**Creates a new onEnter / onExit element describing the interpolation that should be run when the state changes to / from active.**
 
-##### Child Animation
+```js
+function OnEnterState / OnExitState(state, interpolation, options?) 
+```
+
+Where the parameters <a href="#States">state</a>, <a href="#InterpolationType">interpolation</a> and <a href="#Options">options</a> shares the same types as the `When` element.
+
+This example will add an interpolation that changes the backgroundColor of the View from pink to gold when the myState changes to an active state:
+
+```js
+const config = useFluidConfig(
+  OnEnterState(myState, {
+    styleKey: "backgroundColor",
+    inputRange: [0, 1],
+    outputRange: ["pink", "gold"],
+  }),
+);
+```
+
+### <a name="Interpolation">Interpolations</a>
+
+### Child Animation
 
 ### Value Interpolations
 One of the more advanced techniques when building animations and transitions in React Native is when you need your interpolation to depend on a gesture value or a scrolliew position. In `react-native-fluid-transitions` this is already taken care of for you.
