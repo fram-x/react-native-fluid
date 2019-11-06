@@ -262,13 +262,12 @@ One of the more advanced techniques when building animations and transitions in 
 Given a view tree that contains a header and a scroll view:
 
 ```js
-  <Fluid.View>
-    <Fluid.View config={config} staticStyle={styles.header}/>
-    <Fluid.ScrollView label="myScrollView">      
-      {children}
-    </Fluid.ScrollView>
-  </Fluid.View>
-);
+<Fluid.View>
+  <Fluid.View config={config} staticStyle={styles.header}/>
+  <Fluid.ScrollView label="myScrollView">      
+    {children}
+  </Fluid.ScrollView>
+</Fluid.View>
 ```
 
 You can add interpolations to the header component's configuration using the scroll position from the scroll view:
@@ -280,8 +279,7 @@ const config = useFluidConfig(
     inputRange: [0, 10],
     outputRange: [1, 0.99],
     styleKey: "transform.scale",
-  }),
-);
+  });
 ```
 
 A `Fluid.ScrollView` exposes two values, `scrollY` and `scrollX`.
