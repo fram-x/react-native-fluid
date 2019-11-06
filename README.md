@@ -229,16 +229,48 @@ const config = useFluidConfig(
 
 ### <a name="Interpolation">Interpolations</a>
 
-### Child Animation
+### <a name="Coordination">Child Animation</a>
+
+When animations are played in the context of a parent `Fluid.View`, you can control how these animations should be played by changing the child configuration. There are three different types of child configuration available:
+
+```js
+Sequential()
+```
+
+```js
+Paralell()
+```
+
+```js
+Staggered(staggerMs? | staggerFunction?, direction)
+```
 
 ### Value Interpolations
 One of the more advanced techniques when building animations and transitions in React Native is when you need your interpolation to depend on a gesture value or a scrolliew position. In `react-native-fluid-transitions` this is already taken care of for you.
 
-TODO: Define values
-TODO: Use values
+Given a view tree that contains a header and a scroll view:
 
-### Hooks
+```js
+  <Fluid.View>
+    <Fluid.View config={config} staticStyle={styles.header}/>
+    <Fluid.ScrollView label="myScrollView">      
+      {children}
+    </Fluid.ScrollView>
+  </Fluid.View>
+);
+```
 
-**<a name="useFluidState">useFluidState</a>**
+You can add interpolations to the header component's configuration using the scroll position from the scroll view:
 
-**<a name="useFluidConfig">useFluidConfig</a>**
+```js
+const value = InterpolationValue("myScrollView", "scrollY");
+const config = useFluidConfig(
+  Interpolation(value, {
+    inputRange: [0, 10],
+    outputRange: [1, 0.99],
+    styleKey: "transform.scale",
+  }),
+);
+```
+
+A `Fluid.ScrollView` exposes two values, `scrollY` and `scrollX`.
