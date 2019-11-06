@@ -1,3 +1,7 @@
+<p align="center">
+<img src="./ios/FluidTransitions/Images.xcassets/Logo.imageset/logo-symbol-text@1x.png" />
+</p>
+
 # Documentation
 
 <a href="https://www.npmjs.com/package/react-native-fluid-transitions">
