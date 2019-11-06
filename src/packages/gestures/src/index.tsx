@@ -1,5 +1,5 @@
 import React, { useState, useContext, useMemo, useCallback } from "react";
-import { ViewProps, ViewStyle } from "react-native";
+import { ViewStyle } from "react-native";
 import {
   PanGestureHandler,
   PanGestureHandlerGestureEvent,

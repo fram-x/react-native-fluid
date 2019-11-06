@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "concurrently \"cd src/packages/animated && tsc --watch\" \"cd src/packages/transitions && tsc --watch\" \"cd src/packages/gestures && tsc --watch\" \"cd src/packages/navigation && tsc --watch\"",
+    "web": "concurrently \"cd src/web && yarn start\"",
     "run-ios": "react-native run-ios",
     "run-android": "react-native run-android",
     "start": "react-native start",
@@ -23,7 +24,7 @@
     "react-navigation": "^4.0.7",
     "react-navigation-drawer": "^2.2.2",
     "react-navigation-hooks": "^1.1.0",
-    "react-navigation-stack": "file:///Users/christianfalch/Projects/libs/stack",
+    "react-navigation-stack": "file://Users/christianfalch/Projects/libs/stack",
     "react-navigation-tabs": "^2.5.5"
   },
   "devDependencies": {

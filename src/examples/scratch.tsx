@@ -1,12 +1,13 @@
 import React, { useState, useRef, useMemo, useEffect } from "react";
 import { View, StyleSheet, Animated, Easing } from "react-native";
-import Fluid, { useMergedConfigs } from "react-native-fluid-transitions";
+import Fluid, { useFluidConfig } from "react-native-fluid-transitions";
 import { InterpolationValue } from "react-native-fluid-transitions";
 import { Interpolation } from "react-native-fluid-transitions";
 
 const styles = StyleSheet.create({
   activeContainer: {},
   container: {},
+  header: {},
 });
 
 export const MyComponent: React.FC = ({ children }) => {
@@ -15,6 +16,16 @@ export const MyComponent: React.FC = ({ children }) => {
 
   const animationRef = useRef<Animated.CompositeAnimation>();
   const animatedValue = useMemo(() => new Animated.Value(0), []);
+  //   let config = {};
+
+  // return (
+  //   <Fluid.View>
+  //     <Fluid.View config={config} staticStyle={styles.header}/>
+  //     <Fluid.ScrollView label="myScrollView">
+  //       {children}
+  //     </Fluid.ScrollView>
+  //   </Fluid.View>
+  // );
 
   const animatedStyle = useMemo(
     () => ({
@@ -51,7 +62,7 @@ export const MyComponent: React.FC = ({ children }) => {
   }, [active, animatedValue]);
 
   const value = InterpolationValue("myScrollView", "scrollY");
-  const config = useMergedConfigs(
+  const config = useFluidConfig(
     Interpolation(value, {
       inputRange: [0, 10],
       outputRange: [1, 1.1],

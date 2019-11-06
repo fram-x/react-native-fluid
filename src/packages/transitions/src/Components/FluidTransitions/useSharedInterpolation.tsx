@@ -3,7 +3,6 @@ import React, {
   useRef,
   useEffect,
   useState,
-  useMemo,
   useCallback,
 } from "react";
 import {
@@ -27,7 +26,7 @@ import {
   getStateNameForLabel,
 } from "../../Shared";
 import { TransitionView } from "../index";
-import { fluidException, fluidInternalException, AsGroup } from "../../Types";
+import { fluidException, fluidInternalException } from "../../Types";
 import {
   ConfigAnimationType,
   createConfig,

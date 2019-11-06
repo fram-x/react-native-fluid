@@ -4,7 +4,7 @@ import { DriverContextType } from "react-native-fluid-transitions";
 import { NavigationState } from "../types";
 
 export const useDriverContext = (
-  screenName: string,
+  _screenName: string,
   navigationState: NavigationState,
   durationValue: Animated.Value<number>,
   current: Animated.Node<number>,
@@ -15,9 +15,9 @@ export const useDriverContext = (
       driver: current,
       requestDuration: (duration: number) => {
         durationValue.setValue(duration);
-        console.log("---", screenName, "got duration", duration);
+        // console.log("---", screenName, "got duration", duration);
       },
     }),
-    [current, durationValue, navigationState, screenName],
+    [current, durationValue, navigationState],
   );
 };

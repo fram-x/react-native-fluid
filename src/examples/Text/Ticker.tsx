@@ -1,18 +1,19 @@
 import React from "react";
-import Fluid from "react-native-fluid-transitions";
+import Fluid, { Staggered } from "react-native-fluid-transitions";
 import { Text, StyleSheet } from "react-native";
-
-const config = Fluid.createConfig({ childAnimation: { type: "staggered" } });
 
 const Ticker: React.FunctionComponent<{
   text: string;
   appear: any;
 }> = ({ text, appear }) => {
   return (
-    <Fluid.View label="textContainer" style={styles.container} config={config}>
+    <Fluid.View
+      label="textContainer"
+      style={styles.container}
+      config={Staggered()}>
       {text.split("").map((s: string, index: number) =>
         s === " " ? (
-          <Text key={text + index.toString()}> </Text>
+          <Text key={text + index.toString()} />
         ) : (
           <Fluid.Text
             label={s}

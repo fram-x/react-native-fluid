@@ -358,6 +358,29 @@ describe("getInterpolationTree / offset / stagger", () => {
       expect(valueToTest.children[1].offset).toEqual(100);
     }
   });
+
+  it("should not render hidden elements", () => {
+    const tree = createSimpleTree({
+      id: 1,
+      delay: 0,
+      childAnimation: "staggered",
+      stagger: 100,
+      children: [
+        { id: 2, duration: 100, isHidden: true },
+        { id: 3, duration: 100 },
+        { id: 4, duration: 100 },
+      ],
+    });
+    const valueToTest = getReducedInterpolationTree(tree, {
+      [2]: true,
+      [3]: true,
+      [4]: false,
+    });
+    expect(valueToTest).toBeDefined();
+    if (valueToTest) {
+      expect(valueToTest.subtreeDuration).toEqual(200);
+    }
+  });
 });
 
 /****************************************************************
@@ -370,6 +393,7 @@ export type MockNode = {
   duration?: number;
   delay?: number;
   stagger?: number;
+  isHidden?: boolean;
   childAnimation?: "staggered" | "parallel" | "sequential";
 };
 
@@ -389,6 +413,7 @@ export const createSimpleTree = (
     metrics: new Metrics(-1, -1, -1, -1),
     children: [],
     interpolationId: 0,
+    isHidden: mockNode.isHidden || false,
   };
   node.children = mockNode.children
     ? mockNode.children.map(c => createSimpleTree(c, node))

@@ -19,8 +19,10 @@ export type AnimationNode = {
   delay: number;
   stagger: number;
   staggerFunction?: ConfigStaggerFunction;
+  waitForMetrics?: () => Promise<unknown>;
   animation?: ConfigAnimationType;
   label?: string;
+  isHidden: boolean;
 };
 
 export type Animations = { [key: string]: boolean };

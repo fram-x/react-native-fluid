@@ -5,7 +5,7 @@ import Fluid from "react-native-fluid-transitions";
 import * as Colors from "../colors";
 import { createState } from "react-native-fluid-transitions";
 import {
-  useMergedConfigs,
+  useFluidConfig,
   WhenState,
   AnimationType,
   OnEnterState,
@@ -18,7 +18,7 @@ const EmailFolder: React.FunctionComponent<{}> = () => {
   const inactiveState = createState("inactive", counter === 0);
   const states = [countState, activeState];
 
-  const config = useMergedConfigs(
+  const config = useFluidConfig(
     WhenState(activeState, styles.activeNotification),
     WhenState(inactiveState, styles.inactiveNotification),
     OnEnterState("counter", {

@@ -92,6 +92,7 @@ export function withFluidTransitions<BasePropType, StyleType>(
         children: () => transitionItems,
         metrics: () => metrics,
         isAlive: () => isAliveRef.current,
+        waitForMetrics: () => waitForLayout,
         configuration: () => configuration,
         ref: () => componentRef.current,
         getCalculatedStyles: () => getCalculatedStyles(),
@@ -107,6 +108,7 @@ export function withFluidTransitions<BasePropType, StyleType>(
       transitionItemRef.current.clone = (props: BasePropType) =>
         cloneElement(props);
       transitionItemRef.current.isAlive = () => isAliveRef.current;
+      transitionItemRef.current.waitForMetrics = () => waitForLayout;
     }
 
     const transitionItem = transitionItemRef.current;
@@ -116,7 +118,10 @@ export function withFluidTransitions<BasePropType, StyleType>(
      ******************************************************/
 
     // Layout context
-    const { metrics, handleOnLayout } = useLayout(transitionItem, onLayout);
+    const { metrics, handleOnLayout, waitForLayout } = useLayout(
+      transitionItem,
+      onLayout,
+    );
 
     // // Touchable
     const { render: renderTouchable } = useTouchable(

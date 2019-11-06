@@ -23,8 +23,6 @@ const {
   and,
   block,
   always,
-  attach,
-  detach,
   cond,
 } = AnimationProvider.Animated;
 

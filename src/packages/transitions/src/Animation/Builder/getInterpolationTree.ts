@@ -7,6 +7,7 @@ import {
   ChildAnimationDirection,
   ConfigStaggerFunction,
 } from "../../Configuration";
+import { Dimensions } from "react-native";
 
 /**
  *
@@ -16,36 +17,53 @@ import {
  * @param item Root item to build tree from
  * @returns
  */
-export function getInterpolationTree(
+export async function getInterpolationTree(
   item: TransitionItem,
   interpolations: Array<InterpolationInfo>,
   interpolationIds: Array<number>,
-): AnimationNode | undefined {
+): Promise<AnimationNode | undefined> {
   // Build Tree
   const tree = createInterpolationNode(item, interpolations);
+
+  // Flatten tree
+  const nodes: AnimationNode[] = [];
+  flattenNode(tree, nodes);
+
+  // Resolve metrics
+  await resolveMetrics(nodes);
 
   // Resolve stagger
   resolveStagger(tree);
 
   // Get hash of items with interpolation
-  const hash = getInterpolations(interpolationIds);
+  const hash = getInterpolations(interpolationIds, nodes);
 
   // Trim tree of nodes to only include those containing interpolations
   // or having children with interpolation
   return getReducedInterpolationTree(tree, hash);
 }
 
-/**
- *
- * @description Returns a hash-map of ids for transition items that have
- * interpolations
- * @param ids list of transition item ids with interpolation
- * @returns A tree with interpolation
- */
-export function getInterpolations(ids: Array<number>): Animations {
+const dim = Dimensions.get("window");
+
+function getInterpolations(
+  ids: Array<number>,
+  nodes: AnimationNode[],
+): Animations {
   // Identifiers of interpolation nodes
   const interpolationIds: { [key: string]: boolean } = {};
-  ids.forEach(id => (interpolationIds[id] = true));
+  ids.forEach(id => {
+    const node = nodes.find(p => p.id === id);
+    if (node) {
+      interpolationIds[id] =
+        // node.metrics.x + node.metrics.width >= 0 &&
+        // node.metrics.x < dim.width &&
+        node.metrics.y + node.metrics.height >= 0 &&
+        node.metrics.y < dim.height;
+      // if (!interpolationIds[id]) {
+      //   console.log(node.label);
+      // }
+    }
+  });
   return interpolationIds;
 }
 
@@ -71,15 +89,17 @@ export function getReducedInterpolationTree(
   return retVal ? calculateOffset(retVal) : undefined;
 }
 
-export const flattenTree = (nodes: Array<AnimationNode>) => {
-  const nodeList: AnimationNode[] = [];
-  nodes.forEach(n => flattenNode(n, nodeList));
-  return nodeList;
-};
-
 const flattenNode = (node: AnimationNode, nodeList: Array<AnimationNode>) => {
   nodeList.push(node);
   node.children.forEach(c => flattenNode(c, nodeList));
+};
+
+const resolveMetrics = async (nodes: AnimationNode[]) => {
+  const metricsPromises: Promise<unknown>[] = [];
+  nodes.forEach(n => {
+    if (n.waitForMetrics) metricsPromises.push(n.waitForMetrics());
+  });
+  await Promise.all(metricsPromises);
 };
 
 const resolveStagger = (node: AnimationNode) => {
@@ -297,10 +317,12 @@ function createInterpolationNode(
     children: [],
     metrics: item.metrics(),
     offset: -1,
+    isHidden: false,
     stagger: resolvedStagger,
     childAnimation: resolvedChildAnimation.type,
     childDirection: resolvedChildDirection,
     staggerFunction: resolvedStaggerFunction,
+    waitForMetrics: item.waitForMetrics,
     duration:
       (singleInterpolation &&
         singleInterpolation.animationType &&
@@ -328,6 +350,7 @@ function createInterpolationNode(
         childAnimation: "-",
         childDirection: "-",
         stagger: 0,
+        isHidden: false,
         interpolationId: ip.id,
         duration:
           (ip.animationType &&

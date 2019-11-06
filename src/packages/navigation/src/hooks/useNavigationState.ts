@@ -13,14 +13,14 @@ import {
   NavigationRoute,
   NavigationParams,
 } from "react-navigation";
-import { StackAnimationIsSwipingContext } from "react-navigation-stack";
+import { StackCardAnimationContext } from "react-navigation-stack";
 
 // @ts-ignore
 import { always } from "react-native-reanimated/src/base";
 import Animated from "react-native-reanimated";
 
 export const useNavigationState = (
-  name: string,
+  _name: string,
 ): { navigationState: NavigationState; index: number } => {
   const [navigationState, setNavigationState] = useState<NavigationState>(
     NavigationState.None,
@@ -31,25 +31,24 @@ export const useNavigationState = (
   const prevIndexRef = useRef(getIndex(navigation));
 
   // Set up node for tracking swiping
-  const isSwipingValue = useContext(StackAnimationIsSwipingContext);
+  const stackCardAnimationContext = useContext(StackCardAnimationContext);
 
   const updateSwiping = useCallback((args: readonly (0 | 1)[]) => {
     const isSwiping = args[0];
-    const isClosing = args[1];
     if (isSwiping) {
       setNavigationState(NavigationState.BackFrom);
     }
   }, []);
 
-  const updateSwipingNode = useMemo(
-    () =>
-      always(
-        Animated.onChange(isSwipingValue, [
-          Animated.call([isSwipingValue], updateSwiping),
+  const updateSwipingNode = useMemo(() => {
+    if (stackCardAnimationContext) {
+      return always(
+        Animated.onChange(stackCardAnimationContext.swiping, [
+          Animated.call([stackCardAnimationContext.swiping], updateSwiping),
         ]),
-      ),
-    [isSwipingValue, updateSwiping],
-  );
+      );
+    } else return Animated.block([]);
+  }, [stackCardAnimationContext, updateSwiping]);
 
   useEffect(() => {
     updateSwipingNode.__attach();
@@ -58,7 +57,7 @@ export const useNavigationState = (
   }, []);
 
   useNavigationEvents(p => {
-    console.log(name, p.action.type);
+    // console.log(name, p.action.type);
     if (
       p.action.type === "Navigation/NAVIGATE" ||
       p.action.type === "Navigation/COMPLETE_TRANSITION"

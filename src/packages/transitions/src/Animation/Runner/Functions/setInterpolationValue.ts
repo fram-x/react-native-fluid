@@ -3,7 +3,6 @@ import {
   InterpolateFunction,
   AnimationProvider,
   IAnimationValue,
-  IAnimationNode,
 } from "react-native-fluid-animations";
 import { createProc } from "../../Functions/createProc";
 const { proc, block, cond, eq, set } = AnimationProvider.Animated;

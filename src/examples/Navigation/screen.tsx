@@ -1,5 +1,12 @@
 import React from "react";
-import { StyleSheet, Dimensions, Text, Button, View } from "react-native";
+import {
+  StyleSheet,
+  Dimensions,
+  Text,
+  Button,
+  View,
+  ScrollView,
+} from "react-native";
 import { useNavigation } from "react-navigation-hooks";
 import Fluid from "react-native-fluid-transitions";
 import {
@@ -12,9 +19,12 @@ import { Box } from "./box";
 import { useNavigationDirection } from "react-native-fluid-navigation";
 import { AnimatedButton } from "./button";
 import { useNavigationStates } from "react-native-fluid-navigation";
-import { useMergedConfigs, OnEnterState } from "react-native-fluid-transitions";
+import { useFluidConfig, OnEnterState } from "react-native-fluid-transitions";
+import { Staggered } from "react-native-fluid-transitions";
 
 const { width: screenWidth } = Dimensions.get("screen");
+
+type Mode = "bubbles" | "boxes" | "list";
 
 type Props = {
   name: string;
@@ -23,7 +33,7 @@ type Props = {
   interpolatorPosition: "flex-start" | "flex-end";
   next?: string;
   prev?: string;
-  showBubbles?: boolean;
+  mode?: Mode;
 };
 
 export const Screen: React.FC<Props> = ({
@@ -33,7 +43,7 @@ export const Screen: React.FC<Props> = ({
   interpolatorPosition,
   next,
   prev,
-  showBubbles = true,
+  mode = "bubbles",
 }) => {
   const navigation = useNavigation();
   const direction = useNavigationDirection();
@@ -42,7 +52,7 @@ export const Screen: React.FC<Props> = ({
   const buttonTransitions = useHorizontalTransition(screenWidth);
   const headerTransitions = useTopTransition(120);
 
-  const sharedTransition = useMergedConfigs(
+  const sharedTransition = useFluidConfig(
     OnEnterState(forwardTo, "Shared_" + next || ""),
     OnEnterState(backTo, "Shared_" + prev || ""),
   );
@@ -64,7 +74,7 @@ export const Screen: React.FC<Props> = ({
           {"Hello world from " + name + "!"}
         </Text>
       </Fluid.View>
-      {showBubbles && (
+      {mode === "bubbles" && (
         <Fluid.View
           label={"content-" + name}
           staticStyle={styles.verticalContent}
@@ -80,7 +90,7 @@ export const Screen: React.FC<Props> = ({
           <Bubble color={ColorE} />
         </Fluid.View>
       )}
-      {!showBubbles && (
+      {mode === "boxes" && (
         <Fluid.View
           staticStyle={styles.horizontalContent}
           config={{
@@ -96,7 +106,25 @@ export const Screen: React.FC<Props> = ({
           <Box color={ColorB} />
         </Fluid.View>
       )}
-      <View style={styles.interpolationContainer}>
+      {mode === "list" && (
+        <Fluid.View
+          label="listContainer"
+          staticStyle={styles.horizontalContent}
+          config={Staggered(100, direction)}>
+          <ScrollView style={styles.listContainer}>
+            {[...Array(50).keys()].map(p => (
+              <Fluid.View
+                label={"list" + p.toString()}
+                key={p}
+                style={styles.listItem}
+                config={buttonTransitions}>
+                <Text>{p}</Text>
+              </Fluid.View>
+            ))}
+          </ScrollView>
+        </Fluid.View>
+      )}
+      {/* <View style={styles.interpolationContainer}>
         <Fluid.View
           staticStyle={styles.interpolationBox}
           style={{
@@ -106,7 +134,7 @@ export const Screen: React.FC<Props> = ({
           label={"Shared_" + name}
           config={sharedTransition}
         />
-      </View>
+      </View> */}
       <View style={styles.buttonContainer}>
         <AnimatedButton>
           <Text>{name}</Text>
@@ -167,6 +195,21 @@ const styles = StyleSheet.create({
   interpolationBox: {
     width: 40,
     height: 40,
+  },
+  listContainer: {
+    margin: 20,
+    height: 250,
+    padding: 8,
+    borderColor: "#CCC",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: 8,
+    backgroundColor: "beige",
+  },
+  listItem: {
+    backgroundColor: "aqua",
+    margin: 4,
+    padding: 14,
+    borderRadius: 8,
   },
   buttonContainer: {
     alignItems: "center",

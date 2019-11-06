@@ -106,6 +106,11 @@ class HomeScreen extends React.PureComponent<any> {
             icon="car"
             onPress={() => this.openExample("driver")}
           />
+          <HomeScreenButton
+            text="Flutter"
+            icon="border-style"
+            onPress={() => this.openExample("flutter")}
+          />
         </View>
       </ScrollView>
     );

@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, Text } from "react-native";
 import Fluid, { useFluidState } from "react-native-fluid-transitions";
 import * as Colors from "../colors";
-import { useMergedConfigs } from "react-native-fluid-transitions";
+import { useFluidConfig } from "react-native-fluid-transitions";
 import { WhenState, AnimationType } from "react-native-fluid-transitions";
 
 const MovingButton: React.FunctionComponent<{}> = () => {
@@ -15,7 +15,7 @@ const MovingButton: React.FunctionComponent<{}> = () => {
   const onPressIn = () => setPressed(true);
   const onPressOut = () => setPressed(false);
 
-  const config = useMergedConfigs(
+  const config = useFluidConfig(
     AnimationType(Fluid.Animations.Springs.WobblySlow),
     WhenState(pressedState, styles.pressed, {
       animation: Fluid.Animations.Timings.Default,

@@ -1,4 +1,4 @@
-import App from "./Maze";
+import App from "./Stagger";
 import * as serviceWorker from "./serviceWorker";
 import { AppRegistry } from "react-native";
 

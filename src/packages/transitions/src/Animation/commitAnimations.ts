@@ -6,7 +6,7 @@ import {
   OnAnimationFunction,
   DriverContextType,
 } from "../Components/Types";
-import { fluidInternalException, LoggerLevel } from "../Types";
+import { LoggerLevel } from "../Types";
 import { AnimationProvider } from "react-native-fluid-animations";
 import { InteractionManager } from "react-native";
 import { getResolvedAnimation } from "./Functions/getResolvedAnimation";
@@ -22,7 +22,7 @@ import { AnimationInfo } from "../Components/Types/AnimationInfo";
 import { isConfigAnimationTiming } from "../Configuration";
 import { isInterpolationRunning } from "./Runner/interpolationStorage";
 
-export function commitAnimations(
+export async function commitAnimations(
   root: TransitionItem,
   driverContext: DriverContextType | undefined = undefined,
   interpolationInfos: Array<InterpolationInfo>,
@@ -31,6 +31,7 @@ export function commitAnimations(
   if (!root.isAlive()) {
     return;
   }
+
   // Skip empty
   if (interpolationInfos.length === 0) {
     return;
@@ -62,7 +63,7 @@ export function commitAnimations(
 
   // Build tree
   // Get interpolation tree
-  const tree = getInterpolationTree(root, interpolationInfos, itemIds);
+  const tree = await getInterpolationTree(root, interpolationInfos, itemIds);
   if (!tree) {
     // Let's just return - we might have started a repeat but the component
     // has been removed.
@@ -126,80 +127,78 @@ export function commitAnimations(
   interpolationInfos.forEach(interpolationInfo => {
     // Mark as started
     const node = findNodeByInterpolationId(interpolationInfo.id, tree);
-    if (!node) {
-      throw fluidInternalException("Could not find node for interpolationinfo");
+    if (node) {
+      const { interpolationConfig, onEnd, onBegin } = interpolationInfo;
+
+      const {
+        inputRange,
+        outputRange,
+        extrapolate,
+        extrapolateLeft,
+        extrapolateRight,
+      } = interpolationConfig;
+
+      const easing = interpolationInfo.animationType
+        ? interpolationInfo.animationType.type === "timing" &&
+          interpolationInfo.animationType.easing
+          ? interpolationInfo.animationType.easing
+          : Easings.linear
+        : Easings.linear;
+
+      if (!easing.name) {
+        console.warn("Easing is missing name");
+      }
+      const easingKey = easing.name || "unknown";
+
+      // Looping
+      let isRepeating = false;
+      if (interpolationInfo.loop) {
+        isRepeating = decorateWithRepeat(
+          "loop",
+          interpolationInfo.loop,
+          interpolationInfo,
+          loopAnimations,
+        );
+      } else if (interpolationInfo.flip) {
+        isRepeating = decorateWithRepeat(
+          "flip",
+          interpolationInfo.flip,
+          interpolationInfo,
+          loopAnimations,
+        );
+      } else if (interpolationInfo.yoyo) {
+        isRepeating = decorateWithRepeat(
+          "yoyo",
+          interpolationInfo.yoyo,
+          interpolationInfo,
+          loopAnimations,
+        );
+      }
+
+      let onAnimationEnd = isRepeating
+        ? checkForLoopedAnimations(interpolationInfo.id, onEnd)
+        : onEnd;
+
+      // Create tracker info
+      animationInfos.push({
+        animationId: interpolationInfo.id,
+        interpolate: interpolationInfo.interpolate,
+        ownerId: interpolationInfo.itemId,
+        key: interpolationInfo.key,
+        target: interpolationInfo.interpolator,
+        inputRange: inputRange || [0, 1],
+        outputRange,
+        duration: node.duration,
+        offset: node.offset,
+        extrapolate,
+        extrapolateLeft,
+        extrapolateRight,
+        easing,
+        easingKey,
+        onBegin,
+        onEnd: onAnimationEnd,
+      });
     }
-
-    const { interpolationConfig, onEnd, onBegin } = interpolationInfo;
-
-    const {
-      inputRange,
-      outputRange,
-      extrapolate,
-      extrapolateLeft,
-      extrapolateRight,
-    } = interpolationConfig;
-
-    const easing = interpolationInfo.animationType
-      ? interpolationInfo.animationType.type === "timing" &&
-        interpolationInfo.animationType.easing
-        ? interpolationInfo.animationType.easing
-        : Easings.linear
-      : Easings.linear;
-
-    if (!easing.name) {
-      console.warn("Easing is missing name");
-    }
-    const easingKey = easing.name || "unknown";
-
-    // Looping
-    let isRepeating = false;
-    if (interpolationInfo.loop) {
-      isRepeating = decorateWithRepeat(
-        "loop",
-        interpolationInfo.loop,
-        interpolationInfo,
-        loopAnimations,
-      );
-    } else if (interpolationInfo.flip) {
-      isRepeating = decorateWithRepeat(
-        "flip",
-        interpolationInfo.flip,
-        interpolationInfo,
-        loopAnimations,
-      );
-    } else if (interpolationInfo.yoyo) {
-      isRepeating = decorateWithRepeat(
-        "yoyo",
-        interpolationInfo.yoyo,
-        interpolationInfo,
-        loopAnimations,
-      );
-    }
-
-    let onAnimationEnd = isRepeating
-      ? checkForLoopedAnimations(interpolationInfo.id, onEnd)
-      : onEnd;
-
-    // Create tracker info
-    animationInfos.push({
-      animationId: interpolationInfo.id,
-      interpolate: interpolationInfo.interpolate,
-      ownerId: interpolationInfo.itemId,
-      key: interpolationInfo.key,
-      target: interpolationInfo.interpolator,
-      inputRange: inputRange || [0, 1],
-      outputRange,
-      duration: node.duration,
-      offset: node.offset,
-      extrapolate,
-      extrapolateLeft,
-      extrapolateRight,
-      easing,
-      easingKey,
-      onBegin,
-      onEnd: onAnimationEnd,
-    });
   });
 
   // Setup trackers

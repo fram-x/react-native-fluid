@@ -5,7 +5,6 @@ import * as Colors from "../colors";
 import { generateImageUri } from "../helpers";
 import {
   InterpolationValue,
-  useMergedConfigs,
   useFluidConfig,
   Interpolation,
 } from "react-native-fluid-transitions";
@@ -44,7 +43,7 @@ const ParallaxExampleScreen = () => {
     }),
   );
 
-  const headerTextConfig = useMergedConfigs(
+  const headerTextConfig = useFluidConfig(
     Interpolation(value, {
       styleKey: "transform.scale",
       inputRange: [0, imageSize - HeaderHeight + imageOffset],
