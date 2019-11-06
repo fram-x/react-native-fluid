@@ -28,7 +28,7 @@ yarn add react-native-fluid-transitions
 Getting your first transitions set up is really easy:
 
 ``` js
-import React from 'react';
+import React, {useState} from 'react';
 import { StyleSheet } from 'react-native';
 import Fluid from 'react-native-fluid-transitions';
 
@@ -37,12 +37,18 @@ const styles = StyleSheet.create({
   inactive: { width: 50, height: 50, backgroundColor: 'gold' },
 });
 
-const MyComponent = ({active}) => (
-  <Fluid.View style={active ? styles.active : styles.inactive}/>
-)
+const MyComponent = () => {
+  const [active, setActive] = useState(false);
+  const toggle = () => setActive(a => !a);
+
+  return <Fluid.View 
+    style={active ? styles.active : styles.inactive}
+    onPress={toggle}
+  />
+}
 ```
 
-Try using this component in your view and toggle the active property. The component should automatically interpolate between the two styles with default values that should work for the different style properties.
+Try using this component in your view and click the box. The component should automatically interpolate between the two styles with default values that should work for the different style properties.
 
 ## API
 
