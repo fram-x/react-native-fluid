@@ -1,8 +1,8 @@
 # Documentation
 
-## Getting Started
+Declarative animations for React Native and React Native Web.
 
-### Installation
+## Installation
 
 Installing react-native-fluid-transitions is simple, both in React Native Web and in React Native.
 
@@ -23,7 +23,7 @@ yarn add react-native-fluid-transitions
 
 > Remember to run `react-native-link` or `cd ios && pod install` (depending on your version of React Native) after installing the dependencies.
 
-### Example
+## Example
 
 Getting your first transitions set up is really easy:
 
@@ -44,7 +44,14 @@ const MyComponent = ({active}) => (
 
 Try using this component in your view and toggle the active property. The component should automatically interpolate between the two styles with default values that should work for the different style properties.
 
-## Api
+## API
+
+API reference for the Fluid.* components:
+
+- Fluid.View
+- Fluid.Image
+- Fluid.Text
+- Fluid.ScrollView
 
 ### Fluid.View
 
