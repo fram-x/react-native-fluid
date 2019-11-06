@@ -87,24 +87,24 @@ default values that should work for the different style properties.
 
 ### Properties
 
-| Property     | Description                                                    |
-| ------------ | -------------------------------------------------------------- |
-| style        | Style that will generate automatic interpolations when changed |
-| initialStyle | Initial style for component. Will be interpolated on mount     |
-| staticStyle  | Style that will not generate interpolations                    |
-| config       | Configuration object (see below)                               |
-| states       | State / states (see below)                                     |
-| animation    | Override default animation                                     |
+| Property     | Description                                                             |
+| ------------ | ----------------------------------------------------------------------- |
+| style        | Style that will generate automatic interpolations when changed          |
+| initialStyle | Initial style for component. Will be interpolated from on mount         |
+| staticStyle  | Style that will not generate interpolations (use for optimizing styles) |
+| config       | Configuration object (see below)                                        |
+| states       | State / states (see below)                                              |
+| animation    | Override default animation                                              |
 
 ### Events
 
-| Event            | Description                                       |
-| ---------------- | ------------------------------------------------- |
-| onPress          | Callback for touches                              |
-| onPressIn        | Callback for touch down                           |
-| onPressOut       | Callback for touch up                             |
-| onAnimationBegin | Called when automatic style interpolation starts  |
-| onAnimationEnd   | Called when automatic style interpolation is done |
+| Event            | Description                             |
+| ---------------- | --------------------------------------- |
+| onPress          | Callback when tapped                    |
+| onPressIn        | Callback for touch down                 |
+| onPressOut       | Callback for touch up                   |
+| onAnimationBegin | Called when style interpolation starts  |
+| onAnimationEnd   | Called when style interpolation is done |
 
 ### Configuration and States
 
@@ -145,55 +145,84 @@ const MyComponent = () => {
 
 #### Configuration
 
-| Field          | Description |
-| -------------- | ----------- |
-| when           |             |
-| onEnter        |             |
-| onExit         |             |
-| animation      |             |
-| childAnimation |             |
-| interpolation  |             |
+A configuration object consists of the following types:
+
+| Field          | Description                                                                                                                            |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| when           | Styles or interpolations that will be used when a given state is active                                                                |
+| onEnter        | Interpolation (animation) that will be played when a given state becomes active                                                        |
+| onExit         | Interpolation (animation) that will be played when a given state becomes inactive                                                      |
+| animation      | Animation definition for all items in configuration                                                                                    |
+| childAnimation | Describes how child animations should be ordered                                                                                       |
+| interpolation  | Describes interpolations that should be on at all times. Typically used for interpolations that are driven by a ScrollView or gesture. |
 
 
 ##### When
 
-The when configuration field can contain different types of configuration. All when configurations have a common set of properties:
+The when configuration field can contain different types of configuration. The when configuration field is created using the `WhenState` function. This function has several different overloads:
 
-| Field     | Description                           |
-| --------- | ------------------------------------- |
-| state     | State name or state element reference |
-| animation |                                       |
-| loop      |                                       |
-| flip      |                                       |
-| yoyo      |                                       |
-| onEnter   |                                       |
-| onExit    |                                       |
+**Creates a when configuration that applies the provided style when the state is active:**
 
-The simplest when configuration is to tell the component to change style when a state changes. This is similar to changing the component style directly and is set with the style property directly:
+`function WhenState(state, style, options?)`
 
-```js
-when: {
-  state: myState,
-  style: styles.myStyle
-}
-```
+**Creates a when configuration that applies an interpolation when the state is active:**
 
-If you want to control the interpolation more precisly, you can use an interpolation instead of the style field:
+`function WhenState(state, interpolation, options?)`
 
-```js
-when: {
-  state: myState,
-  interpolation: {
-    inputRange: [0, 0.5, 1],
-    outputRange: [1, 0.5, 1],
-    styleKey: "transform.scaleY",
-  }
-}
-```
+**Creates a when configuration that applies an interpolation returned by the factory function when the state is active:**
 
-The interpolation field can contain a single interpolation or an array of interpolations.
+`function WhenState(state, whenFactory, options?)`
 
-(See below for a description of the interpolation element)
+###### <a name="InterpolationType"></>Interpolation
+
+An interpolation element consists of the following fields:
+
+| Field             | Description                                               | Type                                      |
+| ----------------- | --------------------------------------------------------- | ----------------------------------------- |
+| styleKey/propName | Name of the property or style that should be interpolated | String                                    |
+| inputRange        | Array with input range values                             | number[]                                  |
+| outputRange       | Array with output range values                            | number[] or string[]                      |
+| extrapolate       | Extrapolation                                             | 'clamp', 'extend', 'identity'             |
+| extrapolateLeft   | Left extrapolation                                        | 'clamp', 'extend', 'identity'             |
+| extrapolateRight  | Right extrapolation                                       | 'clamp', 'extend', 'identity'             |
+| animation         | Animation type for interpolation                          | <a href="#AnimationType">AnimationType</> |
+
+> Note that the styleKey uses dot-notation, so to build an interpolation for the scale transform you would write "transform.scale".
+
+###### Options
+
+The object element has a set of optional fields that can be set:
+
+| Field   | Description                                            | Type               |
+| ------- | ------------------------------------------------------ | ------------------ |
+| onBegin | Callback on animation start                            | Function           |
+| onEnd   | Callback on animation end                              | Function           |
+| loop    | Number of times to loop animation                      | number or Infinity |
+| flip    | Number of times to flip animation                      | number or Infinity |
+| yoyo    | Number of times to play the animation with yoyo effect | number or Infinity |
+
+###### <a name="AnimationType"></>Animation
+
+An animation type is a description of the animation function to run a given animation and can be of two types, `spring` or `timing`. An animation type consists of the following fields:
+
+**Timing Animation**
+
+| Field    | Description                                         | Type               |
+| -------- | --------------------------------------------------- | ------------------ |
+| type     | Type of animation                                   | 'timing'           |
+| duration | Duration in number of milliseconds                  | number             |
+| delay    | Delay before starting the animation in milliseconds | number (optional)  |
+| easing   | Curve to apply to the animation                     | Easing  (optional) |
+
+
+**Spring Animation**
+
+| Field     | Description                       | Type     |
+| --------- | --------------------------------- | -------- |
+| type      | Type of animation                 | 'spring' |
+| mass      | Mass of the spring animation      | number   |
+| stiffness | Stiffness of the spring animation | number   |
+| damping   | Damping of the spring animation   | number   |
 
 ##### onEnter
 
