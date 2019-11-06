@@ -1,12 +1,12 @@
 {
   "name": "react-native-fluid-transitions",
-  "version": "1.0.3",
+  "version": "0.1.0",
   "description": "Fluid transition component for React Native and React Native Web",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "Fram X AS / Christian Falch",
+  "license": "MIT"
 }

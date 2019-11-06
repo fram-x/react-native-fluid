@@ -1,14 +1,14 @@
 {
   "name": "react-native-fluid-navigation",
-  "version": "1.0.3",
-  "description": "",
+  "version": "0.1.0",
+  "description": "Navigation transitions for React Navigation and react-nativve-fluid-transitions",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Fram X AS",
+  "license": "MIT",
   "peerDependencies": {
     "react-navigation-stack": "^5.0.0-alpha.26",
     "react-native-reanimated": "^1.3.0",
