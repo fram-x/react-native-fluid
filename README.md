@@ -59,9 +59,9 @@ API reference for the Fluid.* components:
 - Fluid.Text
 - Fluid.ScrollView
 
-### Fluid.View
+### Fluid.*
 
-The `Fluid.View` is the basic building block of react-native-fluid-transitions and shares the same properties as a regular React Native `View`.
+The `Fluid.*` components are the basic building blocks of react-native-fluid-transitions. They all implement the same properties as their corresponding React Native components.
 
 **Properties**
 
