@@ -74,7 +74,7 @@ export type AnimationConfig = ConfigAnimationType;
 export type WhenFactoryConfig = ConfigWhenFactoryType;
 export type OnFactoryConfig = ConfigOnFactoryType;
 
-export { useFluidConfig, useMergedConfigs, useFluidState } from "./src/Hooks";
+export { useFluidConfig, useFluidState } from "./src/Hooks";
 
 const Fluid = {
   View: TransitionView,
@@ -93,9 +93,9 @@ export {
   createConfig,
   createState,
   Easings,
-  MetricsInfo,
   InterpolatorContext,
   StateContext,
+  MetricsInfo,
   StateContextType,
   createFluidComponent,
   ValueDescriptorType,

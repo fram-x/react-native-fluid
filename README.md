@@ -127,12 +127,9 @@ const MyComponent = () => {
   const [activeState, setActiveState] = useFluidState(false);
   const toggle = () => setActiveState(s => !s);
 
-  const config = useFluidConfig({
-    when: {
-      state: activeState,
-      style: styles.active
-    }
-  });
+  const config = useFluidConfig(
+    WhenState(activeState, style: styles.active)
+  );
 
   return (
     <Fluid.View 

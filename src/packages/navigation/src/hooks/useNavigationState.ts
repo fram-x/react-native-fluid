@@ -20,7 +20,7 @@ import { always } from "react-native-reanimated/src/base";
 import Animated from "react-native-reanimated";
 
 export const useNavigationState = (
-  name: string,
+  _name: string,
 ): { navigationState: NavigationState; index: number } => {
   const [navigationState, setNavigationState] = useState<NavigationState>(
     NavigationState.None,

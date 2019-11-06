@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet } from "react-native";
 import Fluid, {
-  useMergedConfigs,
+  useFluidConfig,
   AnimationType,
   OnEnterState,
   WhenState,
@@ -15,7 +15,7 @@ type Props = {
 
 const Bubble: React.FunctionComponent<Props> = ({ label, color, active }) => {
   const activeState = { name: "active", active };
-  const config = useMergedConfigs(
+  const config = useFluidConfig(
     AnimationType(Fluid.Animations.Springs.Gentle),
     WhenState(activeState, {
       opacity: 0,

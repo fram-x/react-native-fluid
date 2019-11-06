@@ -1,6 +1,6 @@
 import React, { useState, useRef, useMemo, useEffect } from "react";
 import { View, StyleSheet, Animated, Easing } from "react-native";
-import Fluid, { useMergedConfigs } from "react-native-fluid-transitions";
+import Fluid, { useFluidConfig } from "react-native-fluid-transitions";
 import { InterpolationValue } from "react-native-fluid-transitions";
 import { Interpolation } from "react-native-fluid-transitions";
 
@@ -62,7 +62,7 @@ export const MyComponent: React.FC = ({ children }) => {
   }, [active, animatedValue]);
 
   const value = InterpolationValue("myScrollView", "scrollY");
-  const config = useMergedConfigs(
+  const config = useFluidConfig(
     Interpolation(value, {
       inputRange: [0, 10],
       outputRange: [1, 1.1],
