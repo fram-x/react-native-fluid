@@ -27,7 +27,7 @@
     "react-navigation": "^4.0.7",
     "react-navigation-drawer": "^2.2.2",
     "react-navigation-hooks": "^1.1.0",
-    "react-navigation-stack": "file://Users/christianfalch/Projects/libs/stack",
+    "react-navigation-stack": "2.0.0-alpha.36",
     "react-navigation-tabs": "^2.5.5"
   },
   "devDependencies": {
