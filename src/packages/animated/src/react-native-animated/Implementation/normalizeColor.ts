@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /**
  * Copyright (c) Facebook, Inc. and its affiliates.
  *
@@ -27,6 +28,7 @@ export function normalizeColor(color: string | number): number | null {
   }
 
   if (names.hasOwnProperty(color)) {
+    // @ts-ignore
     return names[color];
   }
 

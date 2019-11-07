@@ -1,6 +1,6 @@
 {
   "name": "react-native-fluid",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "scripts": {
     "dev": "concurrently \"cd src/packages/animated && tsc --watch\" \"cd src/packages/transitions && tsc --watch\" \"cd src/packages/gestures && tsc --watch\" \"cd src/packages/navigation && tsc --watch\"",

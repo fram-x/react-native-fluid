@@ -1,6 +1,6 @@
 {
   "name": "react-native-fluid-transitions",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Fluid transition component for React Native and React Native Web",
   "repository": {
     "type": "git",

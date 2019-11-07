@@ -11,5 +11,6 @@ export const getProcessedColor = (
     // @ts-ignore
     return normalizeColor((value as Animated.Value).__getValue());
   }
-  return normalizeColor(value);
+  // @ts-ignore
+  return normalizeColor(value as number);
 };
