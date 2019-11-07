@@ -14,7 +14,11 @@ const styles = StyleSheet.create({
 
 export const MyComponent: React.FC = ({ children }) => {
   const [active, setActive] = useState(true);
-  const [activeState] = useFluidState(false);
+
+  const [activeState, setActiveState] = useFluidState(false);
+  const toggle = () => setActiveState(a => !a);
+
+  const s = toggle;
   const toggleActive = () => setActive(p => !p);
 
   const cfg = useFluidConfig(

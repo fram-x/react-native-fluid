@@ -1,6 +1,6 @@
 {
   "name": "react-native-fluid-navigation",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Navigation transitions for React Navigation and react-nativve-fluid-transitions",
   "repository": {
     "type": "git",
