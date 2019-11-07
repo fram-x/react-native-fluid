@@ -4,14 +4,17 @@ import { View, StyleSheet } from "react-native";
 import AdCard from "./AdCard";
 import Ticker from "./Ticker";
 import Fluid from "react-native-fluid-transitions";
-
-const config = Fluid.createConfig({
-  childAnimation: { type: "staggered", stagger: 250 },
-  animation: Fluid.Animations.Springs.Wobbly,
-});
+import { useFluidConfig } from "react-native-fluid-transitions";
+import { Staggered } from "react-native-fluid-transitions";
+import { AnimationType } from "react-native-fluid-transitions";
 
 const TextExampleScreen = () => {
   const [counter, setCounter] = useState(0);
+
+  const config = useFluidConfig(
+    Staggered(),
+    AnimationType(Fluid.Animations.Springs.Wobbly),
+  );
 
   return (
     <View style={styles.container}>
