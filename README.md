@@ -11,6 +11,8 @@
 
 Declarative animations for React Native and React Native Web.
 
+> NOTE: This is pre-relase and should not be used in production.
+
 ## Installation
 
 Installing react-native-fluid-transitions is simple, both in React Native Web and in React Native.
