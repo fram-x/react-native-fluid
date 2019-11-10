@@ -11,7 +11,7 @@
 
 Declarative animations for React Native and React Native Web.
 
-*NOTE: This is pre-relase and should not be used in production.*
+*NOTE: This is a pre-release and should not be used in production.*
 
 ## Installation
 
