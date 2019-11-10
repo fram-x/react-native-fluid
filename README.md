@@ -63,7 +63,7 @@ Try using this component in your app and tap the box. The component should autom
 
 ## API
 
-API reference for the Fluid.* components:
+API reference for `Fluid.*` components:
 
 - Fluid.View
 - Fluid.Image
@@ -72,7 +72,7 @@ API reference for the Fluid.* components:
 
 ### Fluid.*
 
-The `Fluid.*` components are the basic building blocks of react-native-fluid-transitions. They all implement the same properties as their corresponding React Native components.
+`Fluid.*` components are the basic building blocks of react-native-fluid-transitions. They all implement the same properties as their corresponding React Native components.
 
 **Properties**
 
