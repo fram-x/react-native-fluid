@@ -5,7 +5,7 @@ import {
   PartialInterpolatorInfo,
 } from "../Types";
 import { useForceUpdate, useLog } from "../../Hooks";
-import { fluidException, LoggerLevel } from "../../Types";
+import { LoggerLevel } from "../../Types";
 
 /**
  *
@@ -31,23 +31,24 @@ export const useInterpolatorContext = (
 
   if (setupInterpolators && !interpolatorEntry.current) {
     if (!label) {
-      throw fluidException(
+      console.warn(
         "All components exposing interpolators must be named through the label property.",
       );
+    } else {
+      interpolatorEntry.current = {
+        label: label,
+        ...setupInterpolators(props),
+      };
+      logger(
+        () =>
+          "Registered " +
+          (interpolatorEntry.current &&
+            Object.keys(interpolatorEntry.current.interpolators).join(", ")) +
+          " in " +
+          label,
+        LoggerLevel.Detailed,
+      );
     }
-    interpolatorEntry.current = {
-      label: label,
-      ...setupInterpolators(props),
-    };
-    logger(
-      () =>
-        "Registered " +
-        (interpolatorEntry.current &&
-          Object.keys(interpolatorEntry.current.interpolators).join(", ")) +
-        " in " +
-        label,
-      LoggerLevel.Detailed,
-    );
   }
 
   /******************************************************
