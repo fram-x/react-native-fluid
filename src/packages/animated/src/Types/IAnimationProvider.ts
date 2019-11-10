@@ -28,11 +28,7 @@ export interface IAnimationProvider {
   /**
    * @description Creates a timing based animation
    */
-  runTiming: (
-    master: IAnimationValue,
-    duration: number,
-    callback?: () => void,
-  ) => void;
+  runTiming: (master: IAnimationValue, duration: number) => void;
 
   /**
    * @description Creates an animated value
