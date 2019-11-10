@@ -59,7 +59,7 @@ const MyComponent = () => {
 }
 ```
 
-Try using this component in your view and click the box. The component should automatically interpolate between the two styles with default values that should work for the different style properties.
+Try using this component in your app and tap the box. The component should automatically interpolate between the two styles - including using predefined animations that should work for the different style properties.
 
 ## API
 
