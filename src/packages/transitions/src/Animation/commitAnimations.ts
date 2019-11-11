@@ -217,18 +217,7 @@ export async function commitAnimations(
     );
   } else {
     const runAnimation = () => {
-      AnimationProvider.runTiming(masterInterpolator, duration, () => {
-        if (__DEV__) {
-          log(
-            root.label,
-            "animc",
-            "Master Animation finished for " +
-              interpolationInfos.length +
-              " animations.",
-            LoggerLevel.Verbose,
-          );
-        }
-      });
+      AnimationProvider.runTiming(masterInterpolator, duration);
     };
 
     // Run

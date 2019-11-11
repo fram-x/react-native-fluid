@@ -39,7 +39,7 @@ export enum StopReason {
  */
 export const getLifecycleFunc = (
   ownerId: number,
-  key: string,
+  _key: string,
   animationId: number,
   source: IAnimationNode,
   offset: number,

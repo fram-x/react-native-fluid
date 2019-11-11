@@ -1,4 +1,4 @@
-import Animated, { Easing } from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 import { IAnimationValue } from "../../Types";
 // @ts-ignore
 import { always } from "react-native-reanimated/src/base";
