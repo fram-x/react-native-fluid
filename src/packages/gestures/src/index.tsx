@@ -1,4 +1,4 @@
-import React, { useState, useContext, useMemo, useCallback } from "react";
+import React, { useContext, useMemo, useCallback } from "react";
 import { ViewStyle } from "react-native";
 import {
   PanGestureHandler,
@@ -19,15 +19,28 @@ type DraggableProps = ComponentProps<ViewStyle> & {
   onHandlerStateChange?: (event: PanGestureHandlerStateChangeEvent) => void;
 };
 
-export const GestureContainer: React.FC<DraggableProps> = ({ ...props }) => {
+const TranslateX = "TranslateX";
+const TranslateY = "TranslateY";
+const VelocityX = "VelocityX";
+const VelocityY = "VelocityY";
+
+type GestureContaineComponentType = React.FC<DraggableProps> & {
+  [TranslateX]: string;
+  [TranslateY]: string;
+  [VelocityX]: string;
+  [VelocityY]: string;
+};
+
+const GestureContainerInternal: React.FC<DraggableProps> &
+  Partial<GestureContaineComponentType> = ({ ...props }) => {
   const [isDraggingState, setIsDragging] = useFluidState(false);
   const stateContext = useContext(StateContext);
 
   // We're using state to avoid initializing too many values
-  const [translateX] = useState(() => AnimationProvider.createValue(0));
-  const [translateY] = useState(() => AnimationProvider.createValue(0));
-  const [velocityX] = useState(() => AnimationProvider.createValue(0));
-  const [velocityY] = useState(() => AnimationProvider.createValue(0));
+  const translateX = useMemo(() => AnimationProvider.createValue(0), []);
+  const translateY = useMemo(() => AnimationProvider.createValue(0), []);
+  const velocityX = useMemo(() => AnimationProvider.createValue(0), []);
+  const velocityY = useMemo(() => AnimationProvider.createValue(0), []);
 
   const onGestureEvent = AnimationProvider.Animated.event([
     {
@@ -74,10 +87,10 @@ export const GestureContainer: React.FC<DraggableProps> = ({ ...props }) => {
         () => {
           return {
             interpolators: {
-              translateX,
-              translateY,
-              velocityX,
-              velocityY,
+              [TranslateX]: translateX,
+              [TranslateY]: translateY,
+              [VelocityX]: velocityX,
+              [VelocityY]: velocityY,
             },
             props: {
               onGestureEvent,
@@ -102,3 +115,12 @@ export const GestureContainer: React.FC<DraggableProps> = ({ ...props }) => {
     </StateContext.Provider>
   );
 };
+
+GestureContainerInternal[TranslateX] = TranslateX;
+GestureContainerInternal[TranslateY] = TranslateY;
+GestureContainerInternal[VelocityX] = VelocityX;
+GestureContainerInternal[VelocityY] = VelocityY;
+
+const GestureContainer = GestureContainerInternal as GestureContaineComponentType;
+
+export { GestureContainer };

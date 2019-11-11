@@ -1,5 +1,5 @@
 import React, { useState, useRef, useMemo, useEffect } from "react";
-import { View, StyleSheet, Animated, Easing } from "react-native";
+import { StyleSheet, Animated, Easing } from "react-native";
 import Fluid, { useFluidConfig } from "react-native-fluid-transitions";
 import { InterpolationValue } from "react-native-fluid-transitions";
 import { Interpolation } from "react-native-fluid-transitions";

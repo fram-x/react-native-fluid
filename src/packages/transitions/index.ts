@@ -54,6 +54,7 @@ import {
   StateUnmounted,
   ValueDescriptorType,
   ComponentProps,
+  Label,
 } from "./src/Types";
 
 const Animations = {
@@ -95,9 +96,9 @@ export {
   Easings,
   InterpolatorContext,
   StateContext,
+  createFluidComponent,
   MetricsInfo,
   StateContextType,
-  createFluidComponent,
   ValueDescriptorType,
   interpolateColor,
   interpolateValue,
@@ -121,4 +122,5 @@ export {
   Parallel,
   Sequential,
   Staggered,
+  Label,
 };

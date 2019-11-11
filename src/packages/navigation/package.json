@@ -16,6 +16,8 @@
   "peerDependencies": {
     "react-navigation-stack": "*",
     "react-native-reanimated": "*",
-    "react-navigation-hooks": "*"
+    "react-navigation-hooks": "*",
+    "react-native-fluid-animations": "*",
+    "react-native-fluid-transitions": "*"
   }
 }

@@ -1,11 +1,12 @@
 import { ConfigInterpolatorType } from "./Types";
+import { FluidLabel, getResolvedLabel } from "../Types";
 
 export const InterpolationValue = (
-  owner: string,
+  owner: string | FluidLabel,
   value: string,
 ): ConfigInterpolatorType => {
   return {
-    ownerLabel: owner,
+    ownerLabel: getResolvedLabel(owner) || "unknown",
     valueName: value,
   };
 };

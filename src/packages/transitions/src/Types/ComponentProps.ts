@@ -6,8 +6,22 @@ import {
   ConfigType,
 } from "../Configuration";
 
+export type FluidLabel = {
+  name: string;
+};
+
+export const Label = (name: string) => {
+  return {
+    name,
+  };
+};
+
+export const getResolvedLabel = (label?: string | FluidLabel) => {
+  return !label ? undefined : typeof label === "string" ? label : label.name;
+};
+
 export interface ComponentProps<PT> {
-  label?: string;
+  label?: string | FluidLabel;
   initialStyle?: StyleProp<PT>;
   // We need to redeclare style/onLayout
   style?: StyleProp<PT>;
