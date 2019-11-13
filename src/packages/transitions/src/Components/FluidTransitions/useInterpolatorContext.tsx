@@ -3,16 +3,17 @@ import {
   InterpolatorContext,
   InterpolatorInfo,
   PartialInterpolatorInfo,
+  TransitionItem,
 } from "../Types";
 import { useForceUpdate, useLog } from "../../Hooks";
-import { LoggerLevel } from "../../Types";
+import { LoggerLevel, getResolvedLabel } from "../../Types";
 
 /**
  *
  * @description HOC to share interpolators between parent -> child
  */
 export const useInterpolatorContext = (
-  label: string | undefined,
+  transitionItem: TransitionItem,
   props: any,
   setupInterpolators?: (props: any) => PartialInterpolatorInfo,
 ) => {
@@ -20,7 +21,7 @@ export const useInterpolatorContext = (
    * Setup
    ******************************************************/
 
-  const logger = useLog(label, "ipctx");
+  const logger = useLog(transitionItem.label, "ipctx");
   const interpolatorEntries = useRef<Array<InterpolatorInfo>>([]);
   const interpolatorEntry = useRef<InterpolatorInfo | undefined>(undefined);
   const hasUpdated = useRef(false);
@@ -30,13 +31,13 @@ export const useInterpolatorContext = (
   const context = useContext(InterpolatorContext);
 
   if (setupInterpolators && !interpolatorEntry.current) {
-    if (!label) {
+    if (!transitionItem.label) {
       console.warn(
         "All components exposing interpolators must be named through the label property.",
       );
     } else {
       interpolatorEntry.current = {
-        label: label,
+        label: transitionItem.label,
         ...setupInterpolators(props),
       };
       logger(
@@ -45,7 +46,7 @@ export const useInterpolatorContext = (
           (interpolatorEntry.current &&
             Object.keys(interpolatorEntry.current.interpolators).join(", ")) +
           " in " +
-          label,
+          transitionItem.label,
         LoggerLevel.Detailed,
       );
     }
@@ -62,9 +63,12 @@ export const useInterpolatorContext = (
         return;
       }
       interpolatorEntries.current.push(interpolatorInfo);
-      logger(() => "Registered interpolator through context in " + label);
+      logger(
+        () =>
+          "Registered interpolator through context in " + transitionItem.label,
+      );
     },
-    [context, label, logger],
+    [context, transitionItem.label, logger],
   );
 
   const getInterpolator = (lbl: string, name: string) => {
@@ -82,7 +86,7 @@ export const useInterpolatorContext = (
     if (
       interpolatorEntry.current &&
       interpolatorEntry.current.interpolators[name] &&
-      label === lbl
+      transitionItem.label === lbl
     ) {
       return interpolatorEntry.current.interpolators[name];
     }

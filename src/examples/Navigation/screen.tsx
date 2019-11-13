@@ -18,8 +18,8 @@ import { ColorA, ColorB, ColorC, ColorE, ColorD } from "../colors";
 import { Box } from "./box";
 import { useNavigationDirection } from "react-native-fluid-navigation";
 import { AnimatedButton } from "./button";
-import { useNavigationStates } from "react-native-fluid-navigation";
-import { useFluidConfig, OnEnterState } from "react-native-fluid-transitions";
+// import { useNavigationStates } from "react-native-fluid-navigation";
+// import { useFluidConfig, OnEnterState } from "react-native-fluid-transitions";
 import { Staggered } from "react-native-fluid-transitions";
 
 const { width: screenWidth } = Dimensions.get("screen");
@@ -39,23 +39,23 @@ type Props = {
 export const Screen: React.FC<Props> = ({
   name,
   color,
-  interpolationColor,
-  interpolatorPosition,
+  //interpolationColor,
+  //interpolatorPosition,
   next,
   prev,
   mode = "bubbles",
 }) => {
   const navigation = useNavigation();
   const direction = useNavigationDirection();
-  const { forwardFrom, forwardTo, backFrom, backTo } = useNavigationStates();
+  // const { forwardTo, backTo, forwardFrom, backFrom } = useNavigationStates();
 
   const buttonTransitions = useHorizontalTransition(screenWidth);
   const headerTransitions = useTopTransition(120);
 
-  const sharedTransition = useFluidConfig(
-    OnEnterState(forwardTo, "Shared_" + next || ""),
-    OnEnterState(backTo, "Shared_" + prev || ""),
-  );
+  // const sharedTransition = useFluidConfig(
+  //   OnEnterState(forwardTo, "Shared_" + next || ""),
+  //   OnEnterState(backTo, "Shared_" + prev || ""),
+  // );
 
   return (
     <Fluid.View

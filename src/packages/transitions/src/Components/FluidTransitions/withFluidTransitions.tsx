@@ -32,6 +32,7 @@ import {
 import { usePropContext } from "./usePropContext";
 import { getMergedStyles } from "../../Styles/getMergedStyles";
 import { getResolvedStyle } from "../../Styles/getResolvedStyle";
+import { getResolvedLabel } from "../../Types";
 
 let TransitionId = 1;
 
@@ -49,7 +50,7 @@ export function withFluidTransitions<BasePropType, StyleType>(
   hasChildren: boolean,
   setupInterpolators?: (props: BasePropType) => PartialInterpolatorInfo,
   getAnimatedPropDescriptors?: () => T.ValueDescriptorsType,
-) {
+): React.ComponentType<BasePropType & T.TouchableComponentProps<StyleType>> {
   // Resolve prop descriptors
   const propDescriptors = getAnimatedPropDescriptors
     ? getAnimatedPropDescriptors()
@@ -88,7 +89,7 @@ export function withFluidTransitions<BasePropType, StyleType>(
     if (!transitionItemRef.current) {
       transitionItemRef.current = {
         id: transitionId,
-        label,
+        label: getResolvedLabel(label),
         children: () => transitionItems,
         metrics: () => metrics,
         isAlive: () => isAliveRef.current,
@@ -144,7 +145,7 @@ export function withFluidTransitions<BasePropType, StyleType>(
 
     // Interpolator context
     const { interpolatorContext, extraProps } = useInterpolatorContext(
-      label,
+      transitionItem,
       rest,
       setupInterpolators,
     );

@@ -7,6 +7,7 @@ import {
   InterpolationValue,
   useFluidConfig,
   Interpolation,
+  Label,
 } from "react-native-fluid-transitions";
 
 const HeaderHeight = 52;
@@ -23,7 +24,8 @@ const ParallaxExampleScreen = () => {
   const { width: imageSize } = size;
   const uri = generateImageUri(20, imageSize, imageSize);
 
-  const value = InterpolationValue("scroller", "scrollY");
+  const scrollerLabel = Label("scroller");
+  const value = InterpolationValue(scrollerLabel, Fluid.ScrollView.ScrollY);
 
   const imageConfig = useFluidConfig(
     Interpolation(value, {
@@ -66,7 +68,7 @@ const ParallaxExampleScreen = () => {
 
   return (
     <Fluid.View staticStyle={styles.container} label="container">
-      <Fluid.ScrollView label={"scroller"}>
+      <Fluid.ScrollView label={scrollerLabel}>
         <Fluid.View
           label="image"
           staticStyle={styles.image}

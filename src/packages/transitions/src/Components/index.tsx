@@ -14,7 +14,12 @@ import {
 import { AnimationProvider } from "react-native-fluid-animations";
 import { withFluidTransitions } from "./FluidTransitions/withFluidTransitions";
 import { PartialInterpolatorInfo } from "./Types/InterpolatorContext";
-import { ValueDescriptorsType, ValueDescriptorType } from "../Types";
+import {
+  ValueDescriptorsType,
+  ValueDescriptorType,
+  ComponentProps,
+  TouchableComponentProps,
+} from "../Types";
 import { SpringDefaultAnimationType } from "../Utilities";
 import { interpolateValue } from "../Animation/Runner/Functions";
 
@@ -69,7 +74,18 @@ const TransitionText = createFluidComponent<TextProps, TextStyle>(
   getDefaultDescriptors,
 );
 
-const TransitionScrollView = createFluidComponent<ScrollViewProps, ViewStyle>(
+export const ScrollX = "ScrollX";
+export const ScrollY = "ScrollY";
+
+export type TransitionScrollViewType = React.FC<ComponentProps<ViewStyle>> & {
+  [ScrollX]: string;
+  [ScrollY]: string;
+};
+
+const TransitionScrollViewInternal = createFluidComponent<
+  ScrollViewProps,
+  ViewStyle
+>(
   ScrollView,
   true,
   () => {
@@ -77,7 +93,7 @@ const TransitionScrollView = createFluidComponent<ScrollViewProps, ViewStyle>(
     const scrollX = AnimationProvider.createValue(0);
     const scrollY = AnimationProvider.createValue(0);
     return {
-      interpolators: { scrollX, scrollY },
+      interpolators: { [ScrollX]: scrollX, [ScrollY]: scrollY },
       props: {
         scrollEventThrottle: 4,
         onScroll: AnimationProvider.Animated.event([
@@ -89,7 +105,12 @@ const TransitionScrollView = createFluidComponent<ScrollViewProps, ViewStyle>(
     };
   },
   getDefaultDescriptors,
-);
+) as React.FC<ScrollViewProps> & Partial<TransitionScrollViewType>;
+
+TransitionScrollViewInternal.ScrollX = ScrollX;
+TransitionScrollViewInternal.ScrollY = ScrollY;
+
+const TransitionScrollView: TransitionScrollViewType = TransitionScrollViewInternal as TransitionScrollViewType;
 
 export {
   TransitionView,
