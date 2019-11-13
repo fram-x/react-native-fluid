@@ -17,11 +17,11 @@ import { Dimensions } from "react-native";
  * @param item Root item to build tree from
  * @returns
  */
-export async function getInterpolationTree(
+export function getInterpolationTree(
   item: TransitionItem,
   interpolations: Array<InterpolationInfo>,
   interpolationIds: Array<number>,
-): Promise<AnimationNode | undefined> {
+): AnimationNode | undefined {
   // Build Tree
   const tree = createInterpolationNode(item, interpolations);
 
@@ -30,8 +30,7 @@ export async function getInterpolationTree(
   flattenNode(tree, nodes);
 
   // Resolve metrics
-  await resolveMetrics(nodes);
-
+  //return resolveMetrics(nodes).then(() => {
   // Resolve stagger
   resolveStagger(tree);
 
@@ -43,26 +42,25 @@ export async function getInterpolationTree(
   return getReducedInterpolationTree(tree, hash);
 }
 
-const dim = Dimensions.get("window");
-
 function getInterpolations(
   ids: Array<number>,
   nodes: AnimationNode[],
 ): Animations {
   // Identifiers of interpolation nodes
+  const dim = Dimensions.get("window");
   const interpolationIds: { [key: string]: boolean } = {};
   ids.forEach(id => {
-    const node = nodes.find(p => p.id === id);
-    if (node) {
-      interpolationIds[id] =
-        // node.metrics.x + node.metrics.width >= 0 &&
-        // node.metrics.x < dim.width &&
-        node.metrics.y + node.metrics.height >= 0 &&
-        node.metrics.y < dim.height;
-      // if (!interpolationIds[id]) {
-      //   console.log(node.label);
-      // }
-    }
+    //const node = nodes.find(p => p.id === id);
+    //if (node) {
+    interpolationIds[id] = true;
+    // // node.metrics.x + node.metrics.width >= 0 &&
+    // // node.metrics.x < dim.width &&
+    // node.metrics.y + node.metrics.height >= 0 &&
+    // node.metrics.y < dim.height;
+    // if (!interpolationIds[id]) {
+    //   console.log(node.label);
+    // }
+    //}
   });
   return interpolationIds;
 }
@@ -94,12 +92,12 @@ const flattenNode = (node: AnimationNode, nodeList: Array<AnimationNode>) => {
   node.children.forEach(c => flattenNode(c, nodeList));
 };
 
-const resolveMetrics = async (nodes: AnimationNode[]) => {
+const resolveMetrics = (nodes: AnimationNode[]) => {
   const metricsPromises: Promise<unknown>[] = [];
   nodes.forEach(n => {
     if (n.waitForMetrics) metricsPromises.push(n.waitForMetrics());
   });
-  await Promise.all(metricsPromises);
+  return Promise.all(metricsPromises);
 };
 
 const resolveStagger = (node: AnimationNode) => {

@@ -59,7 +59,7 @@ export const useLayout = (
               `Measured ${transitionItem.label}: (${x.toFixed(0)}, ${y.toFixed(
                 0,
               )}, ${w.toFixed(0)}, ${h.toFixed(0)})`,
-            LoggerLevel.Verbose,
+            LoggerLevel.Detailed,
           );
         }
         metrics.current.setValues(x, y, w, h);

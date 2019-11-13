@@ -33,6 +33,8 @@ import { usePropContext } from "./usePropContext";
 import { getMergedStyles } from "../../Styles/getMergedStyles";
 import { getResolvedStyle } from "../../Styles/getResolvedStyle";
 import { getResolvedLabel } from "../../Types";
+import { useLog } from "../../Hooks";
+import { LoggerLevel } from "../../Types";
 
 let TransitionId = 1;
 
@@ -83,6 +85,9 @@ export function withFluidTransitions<BasePropType, StyleType>(
      ******************************************************/
     const transitionId = useMemo(() => TransitionId++, []);
     const componentRef = useRef(null);
+    const logger = useLog(getResolvedLabel(label), "fluid");
+
+    logger(() => "-----> begin", LoggerLevel.Verbose);
 
     // Create transition item
     const transitionItemRef = useRef<TransitionItem>();
@@ -91,9 +96,9 @@ export function withFluidTransitions<BasePropType, StyleType>(
         id: transitionId,
         label: getResolvedLabel(label),
         children: () => transitionItems,
-        metrics: () => metrics,
+        metrics: () => new T.Metrics(-1, -1, -1, -1),
         isAlive: () => isAliveRef.current,
-        waitForMetrics: () => waitForLayout,
+        waitForMetrics: () => Promise.resolve(),
         configuration: () => configuration,
         ref: () => componentRef.current,
         getCalculatedStyles: () => getCalculatedStyles(),
@@ -101,7 +106,7 @@ export function withFluidTransitions<BasePropType, StyleType>(
       };
     } else {
       transitionItemRef.current.children = () => transitionItems;
-      transitionItemRef.current.metrics = () => metrics;
+      //transitionItemRef.current.metrics = () => metrics;
       transitionItemRef.current.configuration = () => configuration;
       transitionItemRef.current.ref = () => componentRef.current;
       transitionItemRef.current.getCalculatedStyles = () =>
@@ -109,7 +114,7 @@ export function withFluidTransitions<BasePropType, StyleType>(
       transitionItemRef.current.clone = (props: BasePropType) =>
         cloneElement(props);
       transitionItemRef.current.isAlive = () => isAliveRef.current;
-      transitionItemRef.current.waitForMetrics = () => waitForLayout;
+      //transitionItemRef.current.waitForMetrics = () => waitForLayout;
     }
 
     const transitionItem = transitionItemRef.current;
@@ -119,10 +124,10 @@ export function withFluidTransitions<BasePropType, StyleType>(
      ******************************************************/
 
     // Layout context
-    const { metrics, handleOnLayout, waitForLayout } = useLayout(
-      transitionItem,
-      onLayout,
-    );
+    // const { metrics, handleOnLayout, waitForLayout } = useLayout(
+    //   transitionItem,
+    //   onLayout,
+    // );
 
     // // Touchable
     const { render: renderTouchable } = useTouchable(
@@ -284,7 +289,7 @@ export function withFluidTransitions<BasePropType, StyleType>(
       ...extraProps,
       ...getAnimatedProps(),
       style: styles,
-      onLayout: handleOnLayout,
+      // onLayout: handleOnLayout,
       children,
       collapsable: false,
       ref: componentRef,
@@ -292,12 +297,14 @@ export function withFluidTransitions<BasePropType, StyleType>(
 
     // Without children we don't need any context either
     if (React.Children.count(children) === 0) {
+      logger(() => "render light", LoggerLevel.Verbose);
       return renderTouchable(
         renderSharedOverlay(Component, props, hasChildren),
         props,
       );
     }
 
+    logger(() => "render full", LoggerLevel.Verbose);
     return (
       <SharedInterpolationContext.Provider value={sharedInterpolationContext}>
         <InterpolatorContext.Provider value={interpolatorContext}>

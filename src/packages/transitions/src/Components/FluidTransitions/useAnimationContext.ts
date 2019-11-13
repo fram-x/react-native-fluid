@@ -113,12 +113,15 @@ export const useAnimationContext = (
       if (__DEV__) {
         logger(
           () =>
-            "Setting up " +
-            interpolationInfos.current.length +
-            " animations: " +
-            interpolationInfos.current.map(p => p.id).join(", "),
+            `Setting up ${
+              interpolationInfos.current.length
+            } animations: ${interpolationInfos.current
+              .map(p => p.id)
+              .join(", ")}`,
+          LoggerLevel.Verbose,
         );
       }
+
       // Now lets create animations from all interpolations waiting.
       commitAnimations(
         transitionItem,
@@ -126,6 +129,10 @@ export const useAnimationContext = (
         interpolationInfos.current,
         isInitialAnimation.current,
       );
+
+      if (__DEV__) {
+        logger(() => `Animations committed`, LoggerLevel.Verbose);
+      }
 
       // Save animations if we are in a driver context
       if (driverContextActiveRef.current) {
@@ -160,7 +167,6 @@ export const useAnimationContext = (
   useEffect(() => {
     // Turn off flag until next update cycle
     const wasInContext = animationStatus.current.isInAnimationContext;
-
     if (!isMounted && context && context.isInAnimationContext()) {
       // let parent to perform animations
       return;
