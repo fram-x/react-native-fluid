@@ -30,7 +30,7 @@ export const useStateChanges = (
             (removed.length > 0
               ? "r: [" + removed.map(s => s.name).join(", ") + "], "
               : ""),
-          LoggerLevel.Always,
+          LoggerLevel.Detailed,
         );
       }
       // Make a copy

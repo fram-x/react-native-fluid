@@ -22,7 +22,7 @@ import { AnimationInfo } from "../Components/Types/AnimationInfo";
 import { isConfigAnimationTiming } from "../Configuration";
 import { isInterpolationRunning } from "./Runner/interpolationStorage";
 
-export async function commitAnimations(
+export function commitAnimations(
   root: TransitionItem,
   driverContext: DriverContextType | undefined = undefined,
   interpolationInfos: Array<InterpolationInfo>,
@@ -41,10 +41,7 @@ export async function commitAnimations(
     log(
       root.label,
       "animc",
-      "Starting " +
-        interpolationInfos.length +
-        " animations:" +
-        interpolationInfos.map(p => p.id).join(", "),
+      `Comitting ${interpolationInfos.length} animations.`,
       LoggerLevel.Verbose,
     );
   }
@@ -63,7 +60,7 @@ export async function commitAnimations(
 
   // Build tree
   // Get interpolation tree
-  const tree = await getInterpolationTree(root, interpolationInfos, itemIds);
+  const tree = getInterpolationTree(root, interpolationInfos, itemIds);
   if (!tree) {
     // Let's just return - we might have started a repeat but the component
     // has been removed.
@@ -104,7 +101,7 @@ export async function commitAnimations(
     if (Object.keys(loopAnimations).length === 0) {
       log(
         root.label,
-        "commit",
+        "commt",
         "restart" + interpolationId.toString(),
         LoggerLevel.Always,
       );
@@ -217,6 +214,7 @@ export async function commitAnimations(
     );
   } else {
     const runAnimation = () => {
+      log(root.label, "commt", "runTiming", LoggerLevel.Verbose);
       AnimationProvider.runTiming(masterInterpolator, duration);
     };
 

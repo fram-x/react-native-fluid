@@ -3,7 +3,7 @@ import { CurrentLogLevel } from "../config";
 
 export const useLog = (
   label: string | undefined,
-  owner: string
+  owner: string,
 ): UseLoggerFunction => {
   return (msgFunc: LoggerFunc, level?: LoggerLevel) =>
     log(label, owner, msgFunc(), level);
@@ -15,7 +15,7 @@ export const log = (
   label: string | undefined,
   owner: string,
   msg: string | undefined,
-  level: LoggerLevel = LoggerLevel.Info
+  level: LoggerLevel = LoggerLevel.Always,
 ) => {
   if (level <= CurrentLogLevel) {
     if (!msg) return;
@@ -25,7 +25,7 @@ export const log = (
         " " +
         (getFormattedTime(timestamp) + " " + label || "undefined") +
         ":",
-      msg
+      msg,
     );
   }
 };
