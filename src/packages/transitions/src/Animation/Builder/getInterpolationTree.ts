@@ -108,7 +108,7 @@ const resolveStagger = (node: AnimationNode) => {
       const childMetrics = node.children.map(c => c.metrics);
       const staggerValues = staggerFunc(node.metrics, childMetrics);
       node.children.forEach((child, index) => {
-        child.stagger = staggerValues[index];
+        child.stagger = isNaN(staggerValues[index]) ? 0 : staggerValues[index];
         resolveStagger(child);
       });
     }
