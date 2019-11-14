@@ -11,7 +11,6 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Fluid, { Easings } from "react-native-fluid-transitions";
 
 import * as Colors from "../colors";
-import { useLog } from "react-native-fluid-transitions";
 
 type Props = {
   easing?: any;
@@ -45,12 +44,7 @@ const EC: React.FC<Props> = ({ easing, isActive, color }) => (
 
 const EasingExampleScreen = () => {
   const [isActive, setIsActive] = useState(false);
-  const logger = useLog("abba", "bbabb");
-  const toggle = () => {
-    logger(() => "Toggling");
-    setIsActive(p => !p);
-  };
-  logger(() => "Rendering");
+  const toggle = () => setIsActive(p => !p);
   return (
     <Fluid.View style={styles.container} label="container">
       <View style={styles.componentsContainer}>

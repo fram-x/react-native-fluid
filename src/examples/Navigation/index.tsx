@@ -21,7 +21,7 @@ const NavigationExampleScreen = createFluidStackNavigator({
   screen2: () => (
     <FluidNavigationContainer name="screen2">
       <Screen
-        mode={"list"}
+        mode="boxes"
         name="Screen 2"
         interpolationColor={ColorA}
         interpolatorPosition={"flex-end"}
