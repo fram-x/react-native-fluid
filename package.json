@@ -3,6 +3,7 @@
   "version": "0.1.1",
   "private": true,
   "scripts": {
+    "bootstrap": "yarn && cd ios && pod install && cd .. && cd src/packages/animated && tsc && cd ../transitions && tsc && cd ../gestures && tsc && cd ../navigation && tsc && cd ../svg && tsc && cd ..",
     "dev": "concurrently \"cd src/packages/animated && tsc --watch\" \"cd src/packages/transitions && tsc --watch\" \"cd src/packages/gestures && tsc --watch\" \"cd src/packages/navigation && tsc --watch\" \"cd src/packages/svg && tsc --watch\"",
     "web": "concurrently \"cd src/web && yarn start\"",
     "run-ios": "react-native run-ios",

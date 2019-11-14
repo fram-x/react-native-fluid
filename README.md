@@ -11,7 +11,7 @@
 
 Declarative animations for React Native and React Native Web.
 
-*NOTE: This is a pre-release and should not be used in production.*
+_NOTE: This is a pre-release and should not be used in production._
 
 ## Installation
 
@@ -38,25 +38,27 @@ yarn add react-native-fluid-transitions
 
 Getting your first transitions set up is really easy:
 
-``` js
-import React, {useState} from 'react';
-import { StyleSheet } from 'react-native';
-import Fluid from 'react-native-fluid-transitions';
+```js
+import React, { useState } from "react";
+import { StyleSheet } from "react-native";
+import Fluid from "react-native-fluid-transitions";
 
 const styles = StyleSheet.create({
-  active: { width: 100, height: 100, backgroundColor: 'aqua' },
-  inactive: { width: 50, height: 50, backgroundColor: 'gold' },
+  active: { width: 100, height: 100, backgroundColor: "aqua" },
+  inactive: { width: 50, height: 50, backgroundColor: "gold" },
 });
 
 const MyComponent = () => {
   const [active, setActive] = useState(false);
   const toggle = () => setActive(a => !a);
 
-  return <Fluid.View 
-    style={active ? styles.active : styles.inactive}
-    onPress={toggle}
-  />
-}
+  return (
+    <Fluid.View
+      style={active ? styles.active : styles.inactive}
+      onPress={toggle}
+    />
+  );
+};
 ```
 
 Try using this component in your app and tap the box. The component should automatically interpolate between the two styles - including using predefined animations that should work for the different style properties.
@@ -70,7 +72,7 @@ API reference for `Fluid.*` components:
 - Fluid.Text
 - Fluid.ScrollView
 
-### Fluid.*
+### Fluid.\*
 
 `Fluid.*` components are the basic building blocks of react-native-fluid-transitions. They all implement the same properties as their corresponding React Native components.
 
@@ -101,34 +103,36 @@ If you want more control over how animations are played, you can build your own 
 
 A simple example illustrates how states and configuration can be used to build transitions:
 
-``` js
-import React from 'react';
-import { StyleSheet } from 'react-native';
-import Fluid, { useFluidState, useFluidConfig } from 'react-native-fluid-transitions';
+```js
+import React from "react";
+import { StyleSheet } from "react-native";
+import Fluid, {
+  useFluidState,
+  useFluidConfig,
+} from "react-native-fluid-transitions";
 
 const styles = StyleSheet.create({
-  active: { width: 100, height: 100, backgroundColor: 'aqua' },
-  inactive: { width: 50, height: 50, backgroundColor: 'gold' },
+  active: { width: 100, height: 100, backgroundColor: "aqua" },
+  inactive: { width: 50, height: 50, backgroundColor: "gold" },
 });
 
 const MyComponent = () => {
   const [activeState, setActiveState] = useFluidState(false);
   const toggle = () => setActiveState(s => !s);
 
-  const config = useFluidConfig(
-    WhenState(activeState, styles.active),
-  );
+  const config = useFluidConfig(WhenState(activeState, styles.active));
 
   return (
-    <Fluid.View 
+    <Fluid.View
       onPress={toggle}
       config={config}
       states={activeState}
       style={styles.inactive}
     />
   );
-}
+};
 ```
+
 #### <a name="States">States</a>
 
 A fluid state works as a regular React Native state, and can be created with the hook <a href="#useFluidState">`useFluidState`</a>. It returns a state variable and a function for updating the state. This object can be passed along to the Fluid.View through the state property.
@@ -152,7 +156,6 @@ A configuration object consists of the following types:
 | animation      | Animation definition for all items in configuration                                                                                    |
 | childAnimation | Describes how child animations should be ordered                                                                                       |
 | interpolation  | Describes interpolations that should be on at all times. Typically used for interpolations that are driven by a ScrollView or gesture. |
-
 
 #### <a name="When">When</a>
 
@@ -210,13 +213,12 @@ An animation type is a description of the animation function to run a given anim
 
 **Timing Animation**
 
-| Field    | Description                                         | Type               |
-| -------- | --------------------------------------------------- | ------------------ |
-| type     | Type of animation                                   | 'timing'           |
-| duration | Duration in number of milliseconds                  | number             |
-| delay    | Delay before starting the animation in milliseconds | number (optional)  |
-| easing   | Curve to apply to the animation                     | Easing  (optional) |
-
+| Field    | Description                                         | Type              |
+| -------- | --------------------------------------------------- | ----------------- |
+| type     | Type of animation                                   | 'timing'          |
+| duration | Duration in number of milliseconds                  | number            |
+| delay    | Delay before starting the animation in milliseconds | number (optional) |
+| easing   | Curve to apply to the animation                     | Easing (optional) |
 
 **Spring Animation**
 
@@ -234,7 +236,7 @@ If you want an interpolation to run when a state change occurs, you can add `OnE
 **Creates a new onEnter / onExit element describing the interpolation that should be run when the state changes to / from active.**
 
 ```js
-function (state, interpolation, options?) 
+function (state, interpolation, options?)
 ```
 
 Where the parameters <a href="#States">state</a>, <a href="#InterpolationType">interpolation</a> and <a href="#Options">options</a> shares the same types as the `When` element.
@@ -256,11 +258,11 @@ const config = useFluidConfig(
 When animations are played in the context of a parent `Fluid.View`, you can control how these animations should be played by changing the child configuration. There are three different types of child configuration available:
 
 ```js
-Sequential()
+Sequential();
 ```
 
 ```js
-Paralell()
+Paralell();
 ```
 
 ```js
@@ -268,6 +270,7 @@ Staggered(staggerMs? | staggerFunction?, direction)
 ```
 
 ## Value Interpolations
+
 One of the more advanced techniques when building animations and transitions in React Native is when you need your interpolation to depend on a gesture value or a scrolliew position. In `react-native-fluid-transitions` this is already taken care of for you.
 
 Given a view tree that contains a header and a scroll view:
@@ -275,12 +278,16 @@ Given a view tree that contains a header and a scroll view:
 ```js
 const label = Label("myScrollView");
 return (
-<Fluid.View>
-  <Fluid.View config={config} staticStyle={styles.header}/>
-  <Fluid.ScrollView label={label}>      
-    {children}
-  </Fluid.ScrollView>
-</Fluid.View>);
+  <Fluid.View>
+      
+    <Fluid.View config={config} staticStyle={styles.header} />
+      
+    <Fluid.ScrollView label={label}>
+                 {children}
+        
+    </Fluid.ScrollView>
+  </Fluid.View>
+);
 ```
 
 You can add interpolations to the header component's configuration using the scroll position from the scroll view:
@@ -296,3 +303,20 @@ const config = useFluidConfig(
 ```
 
 A `Fluid.ScrollView` exposes two values, `ScrollY` and `ScrollX`.
+
+# Examples
+
+Getting started developing with the examples:
+
+**To set up and install:**
+
+`yarn bootstrap`
+
+**Start watchers:**
+
+`yarn dev`
+
+**Run on iOS / Android:**
+
+`yarn run-android`
+`yarn run-ios`
