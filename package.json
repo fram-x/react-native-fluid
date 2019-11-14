@@ -3,7 +3,7 @@
   "version": "0.1.1",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"cd src/packages/animated && tsc --watch\" \"cd src/packages/transitions && tsc --watch\" \"cd src/packages/gestures && tsc --watch\" \"cd src/packages/navigation && tsc --watch\"",
+    "dev": "concurrently \"cd src/packages/animated && tsc --watch\" \"cd src/packages/transitions && tsc --watch\" \"cd src/packages/gestures && tsc --watch\" \"cd src/packages/navigation && tsc --watch\" \"cd src/packages/svg && tsc --watch\"",
     "web": "concurrently \"cd src/web && yarn start\"",
     "run-ios": "react-native run-ios",
     "run-android": "react-native run-android",
