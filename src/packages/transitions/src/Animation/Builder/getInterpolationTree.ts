@@ -205,16 +205,10 @@ const getSortedChildren = (
   childDirection?: ChildAnimationDirection,
 ): AnimationNode[] => {
   if (childDirection === ChildAnimationDirection.Forward) {
-    // TODO: Add support for sorting children by position!
     return children;
   } else if (childDirection === ChildAnimationDirection.Backward) {
     return children.slice().reverse();
   } else {
-    // Check for other types of child sorting - metrics etc.
-    const hasMetrics = children.filter(s => s.metrics.x === -1).length === 0;
-    if (!hasMetrics) {
-      return children;
-    }
     return children;
   }
 };
