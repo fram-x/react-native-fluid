@@ -153,7 +153,7 @@ export const getStopPreviousAnimationNode = (
 ) => {
   const runningKey = getKey(itemId, key);
   if (!_runningInterpolations[runningKey]) {
-    return AnimationProvider.Animated.block([]);
+    return 0;
   }
   const interpolationKeys = Object.keys(_runningInterpolations[runningKey]);
   const prevInterpolations = interpolationKeys
