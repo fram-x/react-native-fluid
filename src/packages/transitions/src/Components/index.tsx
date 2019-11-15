@@ -18,7 +18,6 @@ import {
   ValueDescriptorsType,
   ValueDescriptorType,
   ComponentProps,
-  TouchableComponentProps,
 } from "../Types";
 import { SpringDefaultAnimationType } from "../Utilities";
 import { interpolateValue } from "../Animation/Runner/Functions";
@@ -31,6 +30,7 @@ const DefaultDescriptor: ValueDescriptorType = {
   defaultAnimation: SpringDefaultAnimationType,
   extrapolate: "extend",
   interpolate: interpolateValue,
+  interpolateKey: "value",
 };
 
 const getDefaultDescriptors = () => ({
@@ -120,8 +120,8 @@ export {
   createFluidComponent,
 };
 
+export const NodeCallInfo = { nodeCallCount: 0, totalCount: 0 };
 // import MessageQueue from "react-native/Libraries/BatchedBridge/MessageQueue.js";
-// let nodeCallCount = 0;
 // const spyFunction = (data: SpyData) => {
 //   const m = data.method;
 //   if (
@@ -132,12 +132,22 @@ export {
 //     !m.toString().includes("createAnimatedNode")
 //   ) {
 //     if (data.args.length === 2 && data.args[1].hasOwnProperty("type")) {
-//       nodeCallCount++;
+//       NodeCallInfo.nodeCallCount++;
+//       NodeCallInfo.totalCount++;
 //       const type = data.args[1].type;
 //       if (type === "callfunc") {
-//         console.log(nodeCallCount, type);
+//         console.log(
+//           NodeCallInfo.nodeCallCount,
+//           "[total: " + NodeCallInfo.totalCount + "]",
+//           type,
+//           "(" + data.args[1].params.length + ")",
+//         );
 //       } else {
-//         console.log(nodeCallCount, type);
+//         console.log(
+//           NodeCallInfo.nodeCallCount,
+//           "[total: " + NodeCallInfo.totalCount + "]",
+//           type,
+//         );
 //       }
 //     }
 //   }

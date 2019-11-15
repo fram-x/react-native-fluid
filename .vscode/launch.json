@@ -5,6 +5,13 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Debug iOS",
+      "cwd": "${workspaceFolder}",
+      "type": "reactnative",
+      "request": "launch",
+      "platform": "ios"
+    },
+    {
       "type": "chrome",
       "request": "launch",
       "name": "Launch Chrome",

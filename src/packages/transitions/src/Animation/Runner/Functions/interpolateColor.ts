@@ -9,21 +9,21 @@ const {
   divide,
   sub,
   cond,
-  lessThan
+  lessThan,
 } = AnimationProvider.Animated;
 
 const floor = createProc("floor", () =>
-  proc("floor", a => cond(lessThan(a, round(a)), round(sub(a, 0.5)), round(a)))
+  proc("floor", a => cond(lessThan(a, round(a)), round(sub(a, 0.5)), round(a))),
 );
 
 const getAlpha = createProc("getAlpha", () =>
-  proc("getAlpha", color => floor(divide(color, 0x01000000)))
+  proc("getAlpha", color => floor(divide(color, 0x01000000))),
 );
 
 const getRed = createProc("getRed", () =>
   proc("getRed", color =>
-    floor(sub(divide(color, 0x010000), multiply(getAlpha(color), 0x0100)))
-  )
+    floor(sub(divide(color, 0x010000), multiply(getAlpha(color), 0x0100))),
+  ),
 );
 
 const getGreen = createProc("getGreen", () =>
@@ -33,11 +33,11 @@ const getGreen = createProc("getGreen", () =>
         divide(color, 0x0100),
         add(
           multiply(getAlpha(color), 0x010000),
-          multiply(getRed(color), 0x0100)
-        )
-      )
-    )
-  )
+          multiply(getRed(color), 0x0100),
+        ),
+      ),
+    ),
+  ),
 );
 
 const getBlue = createProc("getBlue", () =>
@@ -48,11 +48,11 @@ const getBlue = createProc("getBlue", () =>
         add(
           multiply(getAlpha(color), 0x01000000),
           multiply(getRed(color), 0x010000),
-          multiply(getGreen(color), 0x0100)
-        )
-      )
-    )
-  )
+          multiply(getGreen(color), 0x0100),
+        ),
+      ),
+    ),
+  ),
 );
 
 const interpolateInternal = createProc("interpolateInternal", () =>
@@ -65,12 +65,12 @@ const interpolateInternal = createProc("interpolateInternal", () =>
             outputMin,
             multiply(
               divide(sub(inputValue, inputMin), sub(inputMax, inputMin)),
-              sub(outputMax, outputMin)
-            )
-          )
-        )
-      )
-  )
+              sub(outputMax, outputMin),
+            ),
+          ),
+        ),
+      ),
+  ),
 );
 
 // Input value is comming from react native processColor which is in 0xaarrggbb
@@ -93,9 +93,10 @@ export const interpolateColor = createProc("interpolateColor", () => {
             inputMin,
             inputMax,
             getAlpha(outputMin),
-            getAlpha(outputMax)
+            getAlpha(outputMax),
           ),
-          1 << 24
+          // eslint-disable-next-line no-bitwise
+          1 << 24,
         ),
         // Red
         multiply(
@@ -104,9 +105,10 @@ export const interpolateColor = createProc("interpolateColor", () => {
             inputMin,
             inputMax,
             getRed(outputMin),
-            getRed(outputMax)
+            getRed(outputMax),
           ),
-          1 << 16
+          // eslint-disable-next-line no-bitwise
+          1 << 16,
         ),
         // Green
         multiply(
@@ -115,9 +117,10 @@ export const interpolateColor = createProc("interpolateColor", () => {
             inputMin,
             inputMax,
             getGreen(outputMin),
-            getGreen(outputMax)
+            getGreen(outputMax),
           ),
-          1 << 8
+          // eslint-disable-next-line no-bitwise
+          1 << 8,
         ),
         // Blue
         interpolateInternal(
@@ -125,8 +128,13 @@ export const interpolateColor = createProc("interpolateColor", () => {
           inputMin,
           inputMax,
           getBlue(outputMin),
-          getBlue(outputMax)
-        )
-      )
+          getBlue(outputMax),
+        ),
+      ),
   );
+});
+
+Object.defineProperty(interpolateColor, "interpolationKey", {
+  writable: false,
+  value: "color",
 });

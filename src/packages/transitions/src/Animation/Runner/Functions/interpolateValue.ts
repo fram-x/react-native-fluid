@@ -1,6 +1,6 @@
 import {
   IAnimationNode,
-  AnimationProvider
+  AnimationProvider,
 } from "react-native-fluid-animations";
 import { createProc } from "../../Functions/createProc";
 
@@ -14,10 +14,10 @@ const interpolateValueProc = createProc("interpolateValue", () =>
         outputMin,
         multiply(
           divide(sub(inputValue, inputMin), sub(inputMax, inputMin)),
-          sub(outputMax, outputMin)
-        )
-      )
-  )
+          sub(outputMax, outputMin),
+        ),
+      ),
+  ),
 );
 
 export const interpolateValue = (
@@ -25,7 +25,12 @@ export const interpolateValue = (
   inputMin: any,
   inputMax: any,
   outputMin: any,
-  outputMax: any
+  outputMax: any,
 ) => {
   return interpolateValueProc(input, inputMin, inputMax, outputMin, outputMax);
 };
+
+Object.defineProperty(interpolateValue, "interpolationKey", {
+  writable: false,
+  value: "value",
+});

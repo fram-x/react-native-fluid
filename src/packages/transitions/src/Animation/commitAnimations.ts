@@ -21,6 +21,7 @@ import { addAnimations } from "./Runner";
 import { AnimationInfo } from "../Components/Types/AnimationInfo";
 import { isConfigAnimationTiming } from "../Configuration";
 import { isInterpolationRunning } from "./Runner/interpolationStorage";
+import { NodeCallInfo } from "../Components";
 
 export function commitAnimations(
   root: TransitionItem,
@@ -36,7 +37,8 @@ export function commitAnimations(
   if (interpolationInfos.length === 0) {
     return;
   }
-
+  console.log("Setting up animations");
+  NodeCallInfo.nodeCallCount = 0;
   if (__DEV__) {
     log(
       root.label,
@@ -214,6 +216,7 @@ export function commitAnimations(
     );
   } else {
     const runAnimation = () => {
+      console.log("runTiming");
       log(root.label, "commt", "runTiming", LoggerLevel.Verbose);
       AnimationProvider.runTiming(masterInterpolator, duration);
     };
