@@ -145,7 +145,7 @@ export const createAnimationNode = (
 
   // Get statement for removing previous nodes
   const stopPrevAnimationsNode = isExternalDriver()
-    ? AnimationProvider.Animated.block([])
+    ? 0
     : getStopPreviousAnimationNode(ownerId, key, animationId);
 
   // Build lifecycle function
