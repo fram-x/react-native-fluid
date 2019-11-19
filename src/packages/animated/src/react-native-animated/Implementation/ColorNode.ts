@@ -31,11 +31,9 @@ export class ColorNode extends Animated.Value {
   __getValue = () => {
     // @ts-ignore
     const l = this._parent.__getValue();
-    // const r = (l >> 24) & 0xff;
-    // const g = (l >> 16) & 0xff;
-    // const b = (l >> 8) & 0xff;
-    // const a = l & 0xff;
+    // eslint-disable-next-line no-bitwise
     const clr = `rgba(${(l >> 24) & 0xff},${(l >> 16) & 0xff},${(l >> 8) &
+      // eslint-disable-next-line no-bitwise
       0xff},${l & 0xff})`;
     return clr;
   };

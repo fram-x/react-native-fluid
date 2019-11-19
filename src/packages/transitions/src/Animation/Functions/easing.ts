@@ -1,6 +1,6 @@
 import {
   AnimationProvider,
-  IAnimationNode
+  IAnimationNode,
 } from "react-native-fluid-animations";
 
 import { createProc } from "./createProc";
@@ -16,12 +16,13 @@ const {
   sub,
   add,
   divide,
-  proc
+  js,
+  proc,
 } = AnimationProvider.Animated;
 
 const defineEasingProc = (
   name: string,
-  p: (t: IAnimationNode) => IAnimationNode
+  p: (t: IAnimationNode) => IAnimationNode,
 ) => {
   Object.defineProperty(p, "name", { value: name });
   return p;
@@ -96,7 +97,7 @@ export default class Easings {
    * http://easings.net/#easeInCubic
    */
   static cubic = defineEasingProc("cubic", (t: IAnimationNode) =>
-    multiply(t, t, t)
+    multiply(t, t, t),
   );
 
   /**
@@ -115,9 +116,14 @@ export default class Easings {
    */
   static sin = defineEasingProc(
     "sin",
-    createProc("sin", () =>
-      proc("sin", t => sub(1, cos(multiply(t, Math.PI, 0.5))))
-    )
+    createProc(
+      "sin",
+      () =>
+        proc("sin", t =>
+          js("function(t) { return 1 - Math.cos(t*Math.PI*0.5)}", t),
+        ),
+      // sub(1, cos(multiply(t, Math.PI, 0.5)))),
+    ),
   );
 
   /**
@@ -128,8 +134,8 @@ export default class Easings {
   static circle = defineEasingProc(
     "circle",
     createProc("circle", () =>
-      proc("circle", t => sub(1, sqrt(sub(1, multiply(t, t)))))
-    )
+      proc("circle", t => js("function(t) {return 1-Math.sqrt(1-t*t)}", t)),
+    ),
   );
 
   /**
@@ -139,7 +145,10 @@ export default class Easings {
    */
   static exp = defineEasingProc(
     "exp",
-    createProc("exp", () => proc("exp", t => pow(2, multiply(10, sub(t, 1)))))
+    createProc("exp", () =>
+      proc("exp", t => js("function(t){return Math.pow(2, 10*(t-1))}", t)),
+    ),
+    // pow(2, multiply(10, sub(t, 1))))),
   );
 
   /**
@@ -157,16 +166,22 @@ export default class Easings {
     return defineEasingProc(
       `elastic${bounciness}`,
       createProc(`elastic${p}`, () =>
-        proc("elastic", t =>
-          sub(
-            1,
-            multiply(
-              pow(cos(multiply(t, Math.PI, 0.5)), 3),
-              cos(multiply(t, p))
-            )
-          )
-        )
-      )
+        proc(
+          "elastic",
+          t =>
+            js(
+              `function(t){return 1-(Math.pow(Math.cos(t*Math.PI*0.5), 3)*Math.cos(t*${p}))}`,
+              t,
+            ),
+          // sub(
+          //   1,
+          //   multiply(
+          //     pow(cos(multiply(t, Math.PI, 0.5)), 3),
+          //     cos(multiply(t, p)),
+          //   ),
+          // ),
+        ),
+      ),
     );
   };
 
@@ -181,9 +196,14 @@ export default class Easings {
   static back = (s: number = 1.70158) => {
     return defineEasingProc(
       `back${s}`,
-      createProc(`back${s}`, () =>
-        proc("back", t => multiply(t, t, sub(multiply(add(s, 1), t), s)))
-      )
+      createProc(
+        `back${s}`,
+        () =>
+          proc("back", t =>
+            js(`function(t){return t*t*(((${s}+1)*t)-${s})}`, t),
+          ),
+        //multiply(t, t, sub(multiply(add(s, 1), t), s))),
+      ),
     );
   };
 
@@ -198,22 +218,38 @@ export default class Easings {
   static bounce = defineEasingProc(
     "bounce",
     createProc("bounce", () =>
-      proc("bounce", t =>
-        cond(
-          lessThan(t, 1 / 2.75),
-          Easings.sq()(t),
-          cond(
-            lessThan(t, 2 / 2.75),
-            add(0.75, Easings.sq()(sub(t, 1.5 / 2.75))),
-            cond(
-              lessThan(t, 2.5 / 2.76),
-              add(0.9375, Easings.sq()(sub(t, 2.25 / 2.75))),
-              add(0.984375, Easings.sq()(sub(t, 2.625 / 2.75)))
-            )
-          )
-        )
-      )
-    )
+      proc(
+        "bounce",
+        t =>
+          js(
+            `function(t){
+          if(t < 1 / 2.57){
+            return 7.5625*t*t;
+          } else if(t < 2 / 2.75) {
+            return 0.75 + 7.5625 * (t-1.5/2.75)* (t-1.5/2.75);
+          } else if(t < 2.5 / 2.76) {
+            return 0.9375 + 7.5625 * (t-2.25/2.75)* (t-2.25/2.75);
+          } else {
+            return 0.984375 + 7.5625 * (t-2.625/2.75)* (t-2.625/2.75);
+          }
+        }`,
+            t,
+          ),
+        // cond(
+        //   lessThan(t, 1 / 2.75),
+        //   Easings.sq()(t),
+        //   cond(
+        //     lessThan(t, 2 / 2.75),
+        //     add(0.75, Easings.sq()(sub(t, 1.5 / 2.75))),
+        //     cond(
+        //       lessThan(t, 2.5 / 2.76),
+        //       add(0.9375, Easings.sq()(sub(t, 2.25 / 2.75))),
+        //       add(0.984375, Easings.sq()(sub(t, 2.625 / 2.75))),
+        //     ),
+        //   ),
+        // ),
+      ),
+    ),
   );
 
   /**
@@ -226,7 +262,7 @@ export default class Easings {
   static bezier = (x1: number, y1: number, x2: number, y2: number) => {
     return defineEasingProc(
       `bezier${x1}${y1}${x2}${y2}`,
-      AnimationProvider.Animated.bezier(x1, y1, x2, y2)
+      AnimationProvider.Animated.bezier(x1, y1, x2, y2),
     );
   };
 
@@ -237,7 +273,7 @@ export default class Easings {
    * http://cubic-bezier.com/#.42,0,1,1
    */
   static ease = defineEasingProc("ease", (t: IAnimationNode) =>
-    AnimationProvider.Animated.bezier(0.42, 0, 1, 1)(t)
+    AnimationProvider.Animated.bezier(0.42, 0, 1, 1)(t),
   );
 
   /**
@@ -253,7 +289,7 @@ export default class Easings {
   static out(easing: EasingFunction) {
     // @ts-ignore
     return defineEasingProc(`out${easing.name}`, (t: IAnimationNode) =>
-      sub(1, easing(sub(1, t)))
+      sub(1, easing(sub(1, t))),
     );
   }
 
@@ -264,9 +300,9 @@ export default class Easings {
         cond(
           lessThan(t, 0.5),
           divide(easing1(multiply(t, 2)), 2),
-          add(multiply(0.5, easing2(sub(multiply(t, 2), 1))), 0.5)
-        )
-      )
+          add(multiply(0.5, easing2(sub(multiply(t, 2), 1))), 0.5),
+        ),
+      ),
     );
   }
 
@@ -282,8 +318,8 @@ export default class Easings {
         // @ts-ignore
         divide(easing(multiply(t, 2)), 2),
         // @ts-ignore
-        sub(1, divide(easing(multiply(sub(1, t), 2)), 2))
-      )
+        sub(1, divide(easing(multiply(sub(1, t), 2)), 2)),
+      ),
     );
   };
 }

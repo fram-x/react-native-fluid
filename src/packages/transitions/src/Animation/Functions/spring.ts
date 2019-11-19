@@ -72,31 +72,48 @@ const createSpringFunction = (
     zeta < 1 ? (zeta * w0 + -initialVelocity) / wd : -initialVelocity + w0;
 
   const springBody = (t: IAnimationNode) => {
-    let progress = divide(multiply(duration, t), 1000);
-    let result: IAnimationNode;
-    if (zeta < 1) {
-      /*
-          Math.exp(-progress * zeta * w0) *
-          (a * Math.cos(wd * progress) + b * Math.sin(wd * progress));
-      */
-      result = multiply(
-        exp(multiply(multiply(multiply(-1, progress), zeta), w0)),
-        add(
-          multiply(a, cos(multiply(wd, progress))),
-          multiply(b, sin(multiply(wd, progress))),
-        ),
-      );
-    } else {
-      /*
-         (a + b * progress) * Math.exp(-progress * w0);
-      */
-      result = multiply(
-        add(a, multiply(b, progress)),
-        exp(multiply(multiply(-1, progress), w0)),
-      );
-    }
+    return AnimationProvider.Animated.js(
+      `function (t) {      
+      var progress = (${duration} * t) / 1000;
+      if (${zeta} < 1) {
+        progress =
+          Math.exp(-progress * ${zeta} * ${w0}) *
+          (${a} * Math.cos(${wd} * progress) + ${b} * Math.sin(${wd} * progress));
+      } else {
+        progress = (${a} + ${b} * progress) * Math.exp(-progress * ${w0});
+      }
+      if (t === 0 || t === 1) {
+        return t;
+      }
+      return 1 - progress;      
+    }`,
+      t,
+    );
+    // let progress = divide(multiply(duration, t), 1000);
+    // let result: IAnimationNode;
+    // if (zeta < 1) {
+    //   /*
+    //       Math.exp(-progress * zeta * w0) *
+    //       (a * Math.cos(wd * progress) + b * Math.sin(wd * progress));
+    //   */
+    //   result = multiply(
+    //     exp(multiply(multiply(multiply(-1, progress), zeta), w0)),
+    //     add(
+    //       multiply(a, cos(multiply(wd, progress))),
+    //       multiply(b, sin(multiply(wd, progress))),
+    //     ),
+    //   );
+    // } else {
+    //   /*
+    //      (a + b * progress) * Math.exp(-progress * w0);
+    //   */
+    //   result = multiply(
+    //     add(a, multiply(b, progress)),
+    //     exp(multiply(multiply(-1, progress), w0)),
+    //   );
+    // }
     // return 1 - progress;
-    return sub(1, result);
+    // return sub(1, result);
   };
 
   return proc(`spring-${key}`, t => springBody(t));

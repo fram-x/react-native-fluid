@@ -65,6 +65,8 @@ const ReanimatedAnimationProvider: IAnimationProvider = {
   Animated: {
     // @ts-ignore
     event,
+    js: (code: string, ...args: Array<number | IAnimationNode>) =>
+      Animated.js(code, ...(args as any)),
     round: (a: IAnimationNode) => round(a as Animated.Adaptable<number>),
     multiply: (
       a: IAnimationNode,

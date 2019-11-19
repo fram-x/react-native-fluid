@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-
+import Animated from "react-native-reanimated";
 import EmailFolder from "./EMailFolder";
 import MovingButton from "./MovingButton";
 import { ProgressBar, ProgressItem } from "./ProgressBar";

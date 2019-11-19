@@ -12,6 +12,8 @@ import { RadNode } from "./Implementation/RadNode";
 
 const { event } = Animated;
 
+let jsFunctionId = 1000;
+
 export type AnimatedNode = {
   name: string;
   evaluate: () => AnimatedNode;
@@ -61,7 +63,7 @@ const createBlockFunc = (items: ReadonlyArray<IAnimationNode>) =>
   );
 
 const createProxyNode = () => {
-  const _argStack = new Array<IAnimationNode>();
+  const _argStack: IAnimationNode[] = [];
   let cache: { [key: number]: any } = {};
   return {
     _argStack,
@@ -146,9 +148,7 @@ const ReactNativeAnimationProvider: IAnimationProvider = {
   },
   Animated: {
     event,
-
     /* Operators */
-
     add: (...args: IAnimationNode[]): IAnimationNode =>
       createNode(
         "add",
@@ -305,6 +305,21 @@ const ReactNativeAnimationProvider: IAnimationProvider = {
       ),
 
     /* Helpers */
+    js: (code: string, ...args: Array<number | IAnimationNode>) => {
+      const funcName = `update${jsFunctionId}`;
+      // Install the function
+      const installFunction = `var ${funcName} = ${code}`;
+      // eslint-disable-next-line no-eval
+      eval(installFunction);
+      return createNode("js" + funcName, () => {
+        // run the function
+        // eslint-disable-next-line no-eval        
+        const retVal = eval(
+          `${funcName}(${args.map(a => evalNode(a)).join(", ")})`,
+        );
+        return retVal;
+      });
+    },
     proc: (
       name: string,
       callback: (...params: Array<IAnimationNode>) => IAnimationNode,

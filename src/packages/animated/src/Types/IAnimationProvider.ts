@@ -71,6 +71,10 @@ export interface IAnimationProvider {
     ScrollView: any;
   };
   Animated: {
+    js: (
+      code: string,
+      ...args: Array<number | IAnimationNode>
+    ) => IAnimationNode;
     round: (inputNode: IAnimationNode) => IAnimationNode;
     event: (argMapping: any[], config?: Object) => Function;
     multiply: (...args: IAnimationNode[]) => IAnimationNode;
