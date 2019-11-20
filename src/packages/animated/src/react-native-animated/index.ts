@@ -13,6 +13,7 @@ import { RadNode } from "./Implementation/RadNode";
 const { event } = Animated;
 
 let jsFunctionId = 1000;
+const scope = {};
 
 export type AnimatedNode = {
   name: string;
@@ -306,18 +307,17 @@ const ReactNativeAnimationProvider: IAnimationProvider = {
 
     /* Helpers */
     js: (code: string, ...args: Array<number | IAnimationNode>) => {
-      const funcName = `update${jsFunctionId}`;
+      const funcName = `update${jsFunctionId++}`;
       // Install the function
       const installFunction = `var ${funcName} = ${code}`;
       // eslint-disable-next-line no-eval
-      eval(installFunction);
+      eval.call(scope, installFunction);
       return createNode("js" + funcName, () => {
-        // run the function
-        // eslint-disable-next-line no-eval        
-        const retVal = eval(
+        // eslint-disable-next-line no-eval
+        return eval.call(
+          scope,
           `${funcName}(${args.map(a => evalNode(a)).join(", ")})`,
         );
-        return retVal;
       });
     },
     proc: (

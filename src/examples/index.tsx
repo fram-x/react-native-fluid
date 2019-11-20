@@ -26,27 +26,30 @@ import FlutterExampleScreen from "./Flutter";
 import Fluid from "react-native-fluid-transitions";
 import { StyleSheet } from "react-native";
 
-const Stack = createStackNavigator({
-  home: HomeScreen,
-  styles: StylesExampleScreen,
-  text: TextExampleScreen,
-  interpolate: InterpolateExampleScreen,
-  maze: MazeExampleScreen,
-  parallax: ParallaxExampleScreen,
-  stagger: StaggerExampleScreen,
-  easings: EasingsExampleScreen,
-  style: StyleExampleScreen,
-  svg: SvgExampleScreen,
-  repeat: RepeatExampleScreen,
-  dragging: DraggingExampleScreen,
-  navigation: NavigationExampleScreen,
-  interactions: InteractionsExampleScreen,
-  driver: DriverExampleScreen,
-  children: ChildExampleScreen,
-  appStore: AppStoreExampleScreen,
-  list: ListExampleScreen,
-  flutter: FlutterExampleScreen,
-});
+const Stack = createStackNavigator(
+  {
+    home: HomeScreen,
+    styles: StylesExampleScreen,
+    text: TextExampleScreen,
+    interpolate: InterpolateExampleScreen,
+    maze: MazeExampleScreen,
+    parallax: ParallaxExampleScreen,
+    stagger: StaggerExampleScreen,
+    easings: EasingsExampleScreen,
+    style: StyleExampleScreen,
+    svg: SvgExampleScreen,
+    repeat: RepeatExampleScreen,
+    dragging: DraggingExampleScreen,
+    navigation: NavigationExampleScreen,
+    interactions: InteractionsExampleScreen,
+    driver: DriverExampleScreen,
+    children: ChildExampleScreen,
+    appStore: AppStoreExampleScreen,
+    list: ListExampleScreen,
+    flutter: FlutterExampleScreen,
+  },
+  { initialRouteName: "style" },
+);
 
 const AppNavigator = createAppContainer(Stack);
 
