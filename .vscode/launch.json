@@ -5,6 +5,27 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Debug iOS",
+      "cwd": "${workspaceFolder}",
+      "type": "reactnative",
+      "request": "launch",
+      "platform": "ios"
+    },
+    {
+      "name": "Debug Android",
+      "cwd": "${workspaceFolder}",
+      "type": "reactnative",
+      "request": "launch",
+      "platform": "android"
+    },
+    {
+      "name": "Debug Android (Hermes) - Experimental",
+      "cwd": "${workspaceFolder}",
+      "type": "reactnativedirect",
+      "request": "launch",
+      "platform": "android"
+    },
+    {
       "type": "chrome",
       "request": "launch",
       "name": "Launch Chrome",

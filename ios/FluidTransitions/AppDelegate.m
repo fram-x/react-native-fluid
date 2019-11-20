@@ -36,12 +36,12 @@
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {
 #if DEBUG
-  // https://twitter.com/nparashuram/status/1187425725726412801
-  return [NSURL URLWithString:[[[[RCTBundleURLProvider sharedSettings] 
-    jsBundleURLForBundleRoot:@"index" fallbackResource:nil] absoluteString] 
-    stringByAppendingString:@"&inlineSourceMap=true" ]];
+  // // https://twitter.com/nparashuram/status/1187425725726412801
+  // return [NSURL URLWithString:[[[[RCTBundleURLProvider sharedSettings] 
+  //   jsBundleURLForBundleRoot:@"index" fallbackResource:nil] absoluteString] 
+  //   stringByAppendingString:@"&inlineSourceMap=true" ]];
 
-  //return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
+  return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
 #else
   return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 #endif
